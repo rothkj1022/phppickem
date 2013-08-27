@@ -1,0 +1,10 @@
+AuthType Basic
+AuthName "No access"
+AuthUserFile .htnopasswd
+AuthGroupFile /dev/null
+Require valid-user
+
+Order Deny,Allow
+Deny From All
+
+Satisfy Any

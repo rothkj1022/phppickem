@@ -1,0 +1,24 @@
+PHP Pick 'Em change log
+
+1.0.10 - 8/26/2013 - updated installer with 2013 schedule
+1.0.9 - 9/2/2012 - updated installer with 2012 schedule
+1.0.8 - 8/8/2011 - updated phpmailer to 5.2
+1.0.8 - 8/8/2011 - updated htmlpurifier to lite v 1.3.0
+1.0.8 - 8/8/2011 - updated installer with 2011 schedule
+1.0.7.1 - 9/19/2010 - Fixed conflict with HTMLPurifier on scores page
+1.0.7 - 9/15/2010 - added config option for display of users' names/usernames (real names, usernames, or both)
+1.0.7 - 9/15/2010 - added HTMLPurifier to prevent cross-site scripting attacks
+1.0.6 - 9/3/2010 - changed results & standings pages to display usernames instead of full names
+1.0.6 - 9/3/2010 - fixed clickable helmets for Internet Explorer (all versions)
+1.0.5 - 8/13/2010 - fixed signup page (did not work when register_globals is off)
+1.0.4 - 8/4/2010 - updated CBRTE to latest version (3.12a)
+1.0.4 - 8/4/2010 - updated jquery timepicker to latest version (0.2), fixes am/pm bug
+1.0.4 - 8/4/2010 - fixed schedule update mysql error
+1.0.3 - 4/21/2010 - updated auto score retrieval script for 2010
+1.0.3 - 4/21/2010 - updated install script with 2010 NFL schedule
+1.0.2 - 9/14/2009 - fixed picks entry when after current week is closed but not all games are complete for the week.
+1.0.1 - 9/11/2009 - fixed load scores function
+1.0.1 - 9/8/2009 - added username to body of password reset email
+1.0.1 - 9/8/2009 - fixed bug with display of results
+1.0.0 - 8/27/2009 - Initial Release
+0.9.0 - 8/28/2008 - Beta Release

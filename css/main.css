@@ -1,0 +1,301 @@
+html, body {
+	margin:0; padding:0;
+	height:100%;
+}
+
+body {
+	/*background-color: #000;
+	background: #000 url(../images/bg2.jpg) center top no-repeat;*/
+	background-color: #2f692c;
+	color: #000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	/*width: 980px;
+	margin: 20px;*/
+}
+
+#bgextend {
+	width: 980px;
+	position: relative;
+	margin: 20px auto;
+	/*background: #fff url(../images/bg-inner6.png) top center no-repeat;
+	background-color: #fff;*/
+}
+
+#pageContent {
+	/*margin: 20px;*/
+	padding: 20px;
+	/*background-color: #FFF;*/
+	display: block;
+	width: 940px;
+	margin: auto;
+	border: 1px solid #555;
+}
+
+a {
+	color: #044DA6;
+	text-decoration: underline;
+}
+
+a.white {
+	color: #fff;
+	text-decoration: underline;
+}
+
+a.hover {
+	text-decoration: none;
+}
+
+a img {
+	border: none;
+}
+
+abbrev {
+	border-bottom: 1px dotted #ccc;
+}
+
+td {
+	/*vertical-align: top;*/
+}
+
+td.fieldLabel {
+	font-weight: bold;
+}
+
+table.table1 {
+	border: 1px solid #ccc;
+}
+
+table.table1 th {
+	background-color: #636363;
+	border-left: 1px solid #ccc;
+	border-bottom: 2px solid #000;
+	color: #FFF;
+	font-size: 11px;
+}
+
+table.table1 tr {
+	background-color: #5c7d59;
+}
+
+table.table1 tr td.lighter {
+	background-color: #eee;
+	color: #000;
+}
+
+table.table1 tr.altrow {
+	background-color: #2f692c;
+}
+
+table.table1 tr.altrow td.lighter {
+	background-color: #ccc;
+}
+
+table.table1 tr.subheader {
+	background-color: gray;
+	color: #000;
+	font-weight: bold;
+}
+
+table.table1 td {
+	color: #FFF;
+	border-left: 1px solid #ccc;
+	border-top: 1px solid #000;
+}
+
+table.table1 tr.over td, table.table1 tr.overPerm td {
+	background: #eee;
+	color: #000;
+	border-left: 1px solid #ccc;
+}
+
+table.nostyle, table.nostyle tr, table.nostyle td {
+	background-color: #fff;
+	border: none;
+	color: #000;
+}
+
+.tiny {
+	font-size: 10px;
+}
+
+h1 {
+	font-family: georgia, sans-serif;
+	font-size: 18px;
+	letter-spacing: 0.1em;
+	margin-top: 10px;
+}
+
+h2 {
+	font-family: georgia, sans-serif;
+	font-size: 16px;
+	margin-top: 10px;
+}
+
+h3 {
+	font-family: georgia, sans-serif;
+	font-size: 14px;
+	margin-top: 10px;
+}
+
+h4 {
+	font-family: georgia, sans-serif;
+	font-size: 12px;
+	margin-top: 10px;
+}
+
+fieldset {
+	display: inline;
+}
+
+label {
+	cursor: pointer;
+	cursor: hand;
+}
+
+.infoFlag {
+	cursor: pointer;
+}
+
+.info {
+	display: none;
+	position: absolute;
+	background-color: #FFF;
+	border: 1px solid #000;
+	padding: 4px;
+}
+
+.info h4 {
+	margin: 0px 0px 6px 0px;
+	font-size: 12px;
+}
+
+.info p {
+	margin-top: 0px;
+}
+
+.required {
+	color: red;
+	font-weight: bold;
+}
+
+#errors {
+	margin-top: 10px;
+	padding: 6px;
+	border: 1px solid #000;
+	background-color: #eee;
+	color: red;
+	font-weight: bold;
+	line-height: 1.5em;
+}
+
+#login {
+	width: 550px;
+}
+
+#pageContent, #login {
+	position: relative;
+	clear: left;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #fff;
+	border: 1px solid #000;
+}
+
+.warning {
+	padding: 20px;
+	color: red;
+	font-size: 16px;
+	font-weight: bold;
+	border: 1px dashed red;
+	background-color: #f3f3f3;
+	margin-bottom: 10px;
+}
+
+#columnRight {
+	width: 180px;
+	float: right;
+}
+
+.boxRight {
+	/*background-image: url(/images/grey_bg.png);*/
+	background-repeat: repeat-y;
+	background-color: #eee;
+	background-position: top left;
+	font-size: 11px;
+	border: 1px solid #ccc;
+	padding: 4px;
+	margin-bottom: 10px;
+}
+
+.navbar {
+	background: #5C7D59;
+	border: 1px solid #2F692C;
+	margin-bottom: 10px;
+	padding: 10px;
+	color: #FFF;
+}
+
+.navbar a {
+	color: #FFF;
+}
+
+.navbar2 {
+	background: #FFFAEB;
+	border: 1px solid #B88A00;
+	margin-bottom: 10px;
+	padding: 10px;
+}
+
+.navbar3 {
+	background: #EEE;
+	border: 1px solid #CCC;
+	margin-bottom: 20px;
+	padding: 5px;
+	width: 570px;
+}
+
+.responseError {
+	font-size: 12px;
+	padding: 15px;
+	border: 2px solid #F00;
+	background-color: #F1F1F1;
+	width: 360px;
+}
+.responseOk {
+	line-height: 18px;
+	font-size: 12px;
+	padding: 15px;
+	border: 1px solid #999;
+	background-color: #F1F1F1;
+}
+
+.winner {
+	border: 1px solid #aaa;
+}
+
+div.fieldLoaded,
+input.fieldLoaded {
+	background-color: #f0e0d0;
+	border: 1px solid #a06020;
+	padding: 2px 1px;
+}
+
+div.fieldLoaded {
+	padding: 0px;
+}
+
+#warnings {
+	background: #eee;
+	border: 1px solid #000;
+	margin-bottom: 10px;
+	padding: 10px;
+	color: red;
+	font-weight: bold;
+}
+
+#donate {
+	margin: 0 auto;
+	padding: 10px 0;
+	text-align: center;
+}

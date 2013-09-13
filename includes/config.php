@@ -11,6 +11,8 @@ $allow_signup = true;
 $show_signup_link = true;
 $user_names_display = 3; // 1 = real names, 2 = usernames, 3 = usernames w/ real names on hover
 
+define('SEASON_YEAR', '2013');
+
 //set timezone offset, hours difference between your server's timezone and eastern
 define('SERVER_TIMEZONE_OFFSET', 1);
 

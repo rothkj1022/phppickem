@@ -4,8 +4,7 @@ require('includes/application_top.php');
 $week = (int)$_GET['week'];
 
 //load source code, depending on the current week, of the website into a variable as a string
-//$url = "http://scores.espn.go.com/nfl/scoreboard?seasonYear=2008&seasonType=2&weekNumber=2";
-$url = "http://scores.espn.go.com/nfl/scoreboard?seasonYear=2011&seasonType=2&weekNumber=" . $week;
+$url = "http://scores.espn.go.com/nfl/scoreboard?seasonYear=".SEASON_YEAR."&seasonType=2&weekNumber=" . $week;
 $raw = file_get_contents($url);
 
 $teamCodes = array(

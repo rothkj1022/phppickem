@@ -32,9 +32,11 @@ class Login{
 			$_SESSION['loggedInUser'] = $user->userName;
 //			$_SESSION['level'] = md5($user->user_level);
 			header('Location: index.php?login=success');
+			exit;
 		} else {
 			$_SESSION = array();
 			header('Location: login.php?login=failed');
+			exit;
 		}
 	}
 	

@@ -2,208 +2,225 @@
 // functions.php
 function getCurrentWeek() {
 	//get the current week number
-	global $db_prefix;
-	$sql = "select distinct weekNum from " . $db_prefix . "schedule where DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern order by weekNum limit 1";
-	$qryGetCurrentWeek = mysql_query($sql);
-	if (mysql_num_rows($qryGetCurrentWeek) > 0) {
-		$rstGetCurrentWeek = mysql_fetch_array($qryGetCurrentWeek);
-		return $rstGetCurrentWeek['weekNum'];
+	global $mysqli;
+	$sql = "select distinct weekNum from " . DB_PREFIX . "schedule where DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern order by weekNum limit 1";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query->fetch_assoc();
+		return $row['weekNum'];
 	} else {
-		$sql = "select max(weekNum) as weekNum from " . $db_prefix . "schedule";
-		$qryGetCurrentWeek = mysql_query($sql);
-		if (mysql_num_rows($qryGetCurrentWeek) > 0) {
-			$rstGetCurrentWeek = mysql_fetch_array($qryGetCurrentWeek);
-			return $rstGetCurrentWeek['weekNum'];
+		$sql = "select max(weekNum) as weekNum from " . DB_PREFIX . "schedule";
+		$query2 = $mysqli->query($sql);
+		if ($query2->num_rows > 0) {
+			$row = $query2->fetch_assoc();
+			return $row['weekNum'];
 		}
+		$query2->free;
 	}
-	die('Error getting current week: ' . mysql_error());
+	$query->free;
+	die('Error getting current week: ' . $mysqli->error);
 }
 
 function getCutoffDateTime($week) {
 	//get the cutoff date for a given week
-	global $db_prefix;
-	$sql = "select gameTimeEastern from " . $db_prefix . "schedule where weekNum = " . $week . " and DATE_FORMAT(gameTimeEastern, '%W') = 'Sunday' order by gameTimeEastern limit 1;";
-	$qryCutoff = mysql_query($sql);
-	if (mysql_num_rows($qryCutoff) > 0) {
-		$rstCutoff = mysql_fetch_array($qryCutoff);
-		return $rstCutoff['gameTimeEastern'];
+	global $mysqli;
+	$sql = "select gameTimeEastern from " . DB_PREFIX . "schedule where weekNum = " . $week . " and DATE_FORMAT(gameTimeEastern, '%W') = 'Sunday' order by gameTimeEastern limit 1;";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query->fetch_assoc();
+		return $row['gameTimeEastern'];
 	}
-	die('Error getting cutoff date: ' . mysql_error());
+	$query->free;
+	die('Error getting cutoff date: ' . $mysqli->error);
 }
 
 function getFirstGameTime($week) {
 	//get the first game time for a given week
-	global $db_prefix;
-	$sql = "select gameTimeEastern from " . $db_prefix . "schedule where weekNum = " . $week . " order by gameTimeEastern limit 1";
-	$qryFirstGameTime = mysql_query($sql);
-	if (mysql_num_rows($qryFirstGameTime) > 0) {
-		$rstFirstGameTime = mysql_fetch_array($qryFirstGameTime);
-		return $rstFirstGameTime['gameTimeEastern'];
+	global $mysqli;
+	$sql = "select gameTimeEastern from " . DB_PREFIX . "schedule where weekNum = " . $week . " order by gameTimeEastern limit 1";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query->fetch_assoc();
+		return $row['gameTimeEastern'];
 	}
-	die('Error getting first game time: ' . mysql_error());
+	$query->free;
+	die('Error getting first game time: ' . $mysqli->error);
 }
 
 function getPickID($gameID, $userID) {
 	//get the pick id for a particular game
-	global $db_prefix;
-	$sql = "select pickID from " . $db_prefix . "picks where gameID = " . $gameID . " and userID = " . $userID;
-	$qryPickID = mysql_query($sql);
-	if (mysql_num_rows($qryPickID) > 0) {
-		$rstPickID = mysql_fetch_array($qryPickID);
-		return $rstPickID['pickID'];
+	global $mysqli;
+	$sql = "select pickID from " . DB_PREFIX . "picks where gameID = " . $gameID . " and userID = " . $userID;
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query->fetch_assoc();
+		return $row['pickID'];
 	} else {
 		return false;
 	}
+	$query->free;
+	die('Error getting pick id: ' . $mysqli->error);
 }
 
 function getGameIDByTeamName($week, $teamName) {
 	//get the pick id for a particular game
-	global $db_prefix;
+	global $mysqli;
 	$sql = "select gameID ";
-	$sql .= "from " . $db_prefix . "schedule s ";
-	$sql .= "inner join " . $db_prefix . "teams t1 on s.homeID = t1.teamID ";
-	$sql .= "inner join " . $db_prefix . "teams t2 on s.visitorID = t2.teamID ";
+	$sql .= "from " . DB_PREFIX . "schedule s ";
+	$sql .= "inner join " . DB_PREFIX . "teams t1 on s.homeID = t1.teamID ";
+	$sql .= "inner join " . DB_PREFIX . "teams t2 on s.visitorID = t2.teamID ";
 	$sql .= "where weekNum = " . $week;
 	$sql .= " and ((t1.city = '" . $teamName . "' or t1.displayName = '" . $teamName . "') or (t2.city = '" . $teamName . "' or t2.displayName = '" . $teamName . "'))";
-	$qryGameID = mysql_query($sql);
-	if (mysql_num_rows($qryGameID) > 0) {
-		$rstGameID = mysql_fetch_array($qryGameID);
-		return $rstGameID['gameID'];
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query->fetch_assoc();
+		return $row['gameID'];
 	} else {
 		return false;
 	}
+	$query->free;
+	die('Error getting game id: ' . $mysqli->error);
 }
 
 function getGameIDByTeamID($week, $teamID) {
 	//get the pick id for a particular game
-	global $db_prefix;
+	global $mysqli;
 	$sql = "select gameID ";
-	$sql .= "from " . $db_prefix . "schedule s ";
-	$sql .= "inner join " . $db_prefix . "teams t1 on s.homeID = t1.teamID ";
-	$sql .= "inner join " . $db_prefix . "teams t2 on s.visitorID = t2.teamID ";
+	$sql .= "from " . DB_PREFIX . "schedule s ";
+	$sql .= "inner join " . DB_PREFIX . "teams t1 on s.homeID = t1.teamID ";
+	$sql .= "inner join " . DB_PREFIX . "teams t2 on s.visitorID = t2.teamID ";
 	$sql .= "where weekNum = " . $week;
 	$sql .= " and (t1.teamID = '" . $teamID . "' or t2.teamID = '" . $teamID . "')";
 	//echo $sql . "\n\n";
-	$qryGameID = mysql_query($sql);
-	if (mysql_num_rows($qryGameID) > 0) {
-		$rstGameID = mysql_fetch_array($qryGameID);
-		return $rstGameID['gameID'];
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query->fetch_assoc();
+		return $row['gameID'];
 	} else {
 		return false;
 	}
+	$query->free;
+	die('Error getting game id: ' . $mysqli->error);
 }
 
 function getUserPicks($week, $userID) {
 	//gets user picks for a given week
-	global $db_prefix;
+	global $mysqli;
 	$picks = array();
 	$sql = "select p.* ";
-	$sql .= "from " . $db_prefix . "picks p ";
-	$sql .= "inner join " . $db_prefix . "schedule s on p.gameID = s.gameID ";
+	$sql .= "from " . DB_PREFIX . "picks p ";
+	$sql .= "inner join " . DB_PREFIX . "schedule s on p.gameID = s.gameID ";
 	$sql .= "where s.weekNum = " . $week . " and p.userID = " . $userID . ";";
-	$qryUserPicks = mysql_query($sql);
-	while ($rstUserPicks = mysql_fetch_array($qryUserPicks)) {
-		$picks[$rstUserPicks['gameID']] = array('pickID' => $rstUserPicks['pickID'], 'points' => $rstUserPicks['points']);
+	$query = $mysqli->query($sql);
+	while ($row = $query->fetch_assoc()) {
+		$picks[$row['gameID']] = array('pickID' => $row['pickID'], 'points' => $row['points']);
 	}
+	$query->free;
 	return $picks;
 }
 
 function getUserScore($week, $userID) {
-	global $db_prefix, $user;
-	
+	global $mysqli, $user;
+
 	$score = 0;
-	
+
 	//get array of games
 	$games = array();
-	$sql = "select * from " . $db_prefix . "schedule where weekNum = " . $week . " order by gameTimeEastern, gameID";
-	$query = mysql_query($sql);
-	while ($result = mysql_fetch_array($query)) {
-		$games[$result['gameID']]['gameID'] = $result['gameID'];
-		$games[$result['gameID']]['homeID'] = $result['homeID'];
-		$games[$result['gameID']]['visitorID'] = $result['visitorID'];
-		if ((int)$result['homeScore'] > (int)$result['visitorScore']) {
-			$games[$result['gameID']]['winnerID'] = $result['homeID'];
+	$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $week . " order by gameTimeEastern, gameID";
+	$query = $mysqli->query($sql);
+	while ($row = $query->fetch_assoc()) {
+		$games[$row['gameID']]['gameID'] = $row['gameID'];
+		$games[$row['gameID']]['homeID'] = $row['homeID'];
+		$games[$row['gameID']]['visitorID'] = $row['visitorID'];
+		if ((int)$row['homeScore'] > (int)$row['visitorScore']) {
+			$games[$row['gameID']]['winnerID'] = $row['homeID'];
 		}
-		if ((int)$result['visitorScore'] > (int)$result['homeScore']) {
-			$games[$result['gameID']]['winnerID'] = $result['visitorID'];
+		if ((int)$row['visitorScore'] > (int)$row['homeScore']) {
+			$games[$row['gameID']]['winnerID'] = $row['visitorID'];
 		}
 	}
-	
+	$query->free;
+
 	//loop through player picks & calculate score
 	$sql = "select p.userID, p.gameID, p.pickID, p.points ";
-	$sql .= "from " . $db_prefix . "picks p ";
-	$sql .= "inner join " . $db_prefix . "users u on p.userID = u.userID ";
-	$sql .= "inner join " . $db_prefix . "schedule s on p.gameID = s.gameID ";
+	$sql .= "from " . DB_PREFIX . "picks p ";
+	$sql .= "inner join " . DB_PREFIX . "users u on p.userID = u.userID ";
+	$sql .= "inner join " . DB_PREFIX . "schedule s on p.gameID = s.gameID ";
 	$sql .= "where s.weekNum = " . $week . " and u.userID = " . $user->userID . " ";
 	$sql .= "order by u.lastname, u.firstname, s.gameTimeEastern";
-	$query = mysql_query($sql);
-	while ($result = mysql_fetch_array($query)) {
-		if (!empty($games[$result['gameID']]['winnerID']) && $result['pickID'] == $games[$result['gameID']]['winnerID']) {
+	$query = $mysqli->query($sql);
+	while ($row = $query->fetch_assoc()) {
+		if (!empty($games[$row['gameID']]['winnerID']) && $row['pickID'] == $games[$row['gameID']]['winnerID']) {
 			//player has picked the winning team
 			$score++;
 		}
 	}
-	
+	$query->free;
+
 	return $score;
 }
 
 function getGameTotal($week) {
 	//get the total number of games for a given week
-	global $db_prefix;
-	$sql = "select count(gameID) as gameTotal from " . $db_prefix . "schedule where weekNum = " . $week;
-	$qryGameTotal = mysql_query($sql);
-	if (mysql_num_rows($qryGameTotal) > 0) {
-		$rstGameTotal = mysql_fetch_array($qryGameTotal);
-		return $rstGameTotal['gameTotal'];
+	global $mysqli;
+	$sql = "select count(gameID) as gameTotal from " . DB_PREFIX . "schedule where weekNum = " . $week;
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query-fetch_assoc();
+		return $row['gameTotal'];
 	}
-	die('Error getting game total: ' . mysql_error());
+	$query->free;
+	die('Error getting game total: ' . $mysqli->error);
 }
 
 function gameIsLocked($gameID) {
 	//find out if a game is locked
-	global $cutoffDateTime, $db_prefix;
-	$sql = "select (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > gameTimeEastern or DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > '" . $cutoffDateTime . "')  as expired from " . $db_prefix . "schedule where gameID = " . $gameID;
-	$qryGameLocked = mysql_query($sql);
-	if (mysql_num_rows($qryGameLocked) > 0) {
-		$rstGameLocked = mysql_fetch_array($qryGameLocked);
-		return $rstGameLocked['expired'];
+	global $mysqli, $cutoffDateTime;
+	$sql = "select (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > gameTimeEastern or DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > '" . $cutoffDateTime . "')  as expired from " . DB_PREFIX . "schedule where gameID = " . $gameID;
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query-fetch_assoc();
+		return $row['expired'];
 	}
+	$query->free;
 	die('Error getting game locked status: ' . mysql_error());
 }
 
 function hidePicks($userID, $week) {
 	//find out if user is hiding picks for a given week
-	global $db_prefix;
-	$sql = "select showPicks from " . $db_prefix . "picksummary where userID = " . $userID . " and weekNum = " . $week;
-	$qryHidePicks = mysql_query($sql);
-	if (mysql_num_rows($qryHidePicks) > 0) {
-		$rstHidePicks = mysql_fetch_array($qryHidePicks);
-		return (($rstHidePicks['showPicks']) ? 0 : 1);
+	global $mysqli;
+	$sql = "select showPicks from " . DB_PREFIX . "picksummary where userID = " . $userID . " and weekNum = " . $week;
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query-fetch_assoc();
+		return (($row['showPicks']) ? 0 : 1);
 	}
+	$query->free;
 	return 0;
 }
 
 function getLastCompletedWeek() {
-	global $db_prefix;
+	global $mysqli;
 	$lastCompletedWeek = 0;
 	$sql = "select s.weekNum, max(s.gameTimeEastern) as lastGameTime,";
-	$sql .= " (select count(*) from " . $db_prefix . "schedule where weekNum = s.weekNum and (homeScore is NULL or visitorScore is null)) as scoresMissing ";
-	$sql .= "from " . $db_prefix . "schedule s ";
+	$sql .= " (select count(*) from " . DB_PREFIX . "schedule where weekNum = s.weekNum and (homeScore is NULL or visitorScore is null)) as scoresMissing ";
+	$sql .= "from " . DB_PREFIX . "schedule s ";
 	$sql .= "where s.gameTimeEastern < DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) ";
 	$sql .= "group by s.weekNum ";
 	$sql .= "order by s.weekNum";
 	//echo $sql;
-	$query = mysql_query($sql);
-	while ($result = mysql_fetch_array($query)) {
-		if ((int)$result['scoresMissing'] == 0) {
-			$lastCompletedWeek = (int)$result['weekNum'];
+	$query = $mysqli->query($sql);
+	while ($row = $query->fetch_assoc()) {
+		if ((int)$row['scoresMissing'] == 0) {
+			$lastCompletedWeek = (int)$row['weekNum'];
 		}
 	}
+	$query->free;
 	return $lastCompletedWeek;
 }
 
 function calculateStats() {
-	global $db_prefix, $weekStats, $playerTotals, $possibleScoreTotal;
+	global $mysqli, $weekStats, $playerTotals, $possibleScoreTotal;
 	//get latest week with all entered scores
 	$lastCompletedWeek = getLastCompletedWeek();
 
@@ -211,46 +228,48 @@ function calculateStats() {
 	for ($week = 1; $week <= $lastCompletedWeek; $week++) {
 		//get array of games
 		$games = array();
-		$sql = "select * from " . $db_prefix . "schedule where weekNum = " . $week . " order by gameTimeEastern, gameID";
-		$query = mysql_query($sql);
-		while ($result = mysql_fetch_array($query)) {
-			$games[$result['gameID']]['gameID'] = $result['gameID'];
-			$games[$result['gameID']]['homeID'] = $result['homeID'];
-			$games[$result['gameID']]['visitorID'] = $result['visitorID'];
-			if ((int)$result['homeScore'] > (int)$result['visitorScore']) {
-				$games[$result['gameID']]['winnerID'] = $result['homeID'];
+		$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $week . " order by gameTimeEastern, gameID";
+		$query = $mysqli->query($sql);
+		while ($row = $query->fetch_assoc()) {
+			$games[$row['gameID']]['gameID'] = $row['gameID'];
+			$games[$row['gameID']]['homeID'] = $row['homeID'];
+			$games[$row['gameID']]['visitorID'] = $row['visitorID'];
+			if ((int)$row['homeScore'] > (int)$row['visitorScore']) {
+				$games[$row['gameID']]['winnerID'] = $row['homeID'];
 			}
-			if ((int)$result['visitorScore'] > (int)$result['homeScore']) {
-				$games[$result['gameID']]['winnerID'] = $result['visitorID'];
+			if ((int)$row['visitorScore'] > (int)$row['homeScore']) {
+				$games[$row['gameID']]['winnerID'] = $row['visitorID'];
 			}
 		}
-		
+		$query->free;
+
 		//get array of player picks
 		$playerPicks = array();
 		$playerWeeklyTotals = array();
 		$sql = "select p.userID, p.gameID, p.pickID, p.points, u.firstname, u.lastname, u.userName ";
-		$sql .= "from " . $db_prefix . "picks p ";
-		$sql .= "inner join " . $db_prefix . "users u on p.userID = u.userID ";
-		$sql .= "inner join " . $db_prefix . "schedule s on p.gameID = s.gameID ";
+		$sql .= "from " . DB_PREFIX . "picks p ";
+		$sql .= "inner join " . DB_PREFIX . "users u on p.userID = u.userID ";
+		$sql .= "inner join " . DB_PREFIX . "schedule s on p.gameID = s.gameID ";
 		$sql .= "where s.weekNum = " . $week . " and u.userName <> 'admin' ";
 		$sql .= "order by u.lastname, u.firstname, s.gameTimeEastern";
-		$query = mysql_query($sql);
-		while ($result = mysql_fetch_array($query)) {
-			$playerPicks[$result['userID'] . $result['gameID']] = $result['pickID'];
-			$playerWeeklyTotals[$result['userID']][week] = $week;
-			$playerTotals[$result['userID']][wins] += 0;
-			$playerTotals[$result['userID']][name] = $result['firstname'] . ' ' . $result['lastname'];
-			$playerTotals[$result['userID']][userName] = $result['userName'];
-			if (!empty($games[$result['gameID']]['winnerID']) && $result['pickID'] == $games[$result['gameID']]['winnerID']) {
+		$query = $mysqli->query($sql);
+		while ($row = $query->fetch_assoc()) {
+			$playerPicks[$row['userID'] . $row['gameID']] = $row['pickID'];
+			$playerWeeklyTotals[$row['userID']][week] = $week;
+			$playerTotals[$row['userID']][wins] += 0;
+			$playerTotals[$row['userID']][name] = $row['firstname'] . ' ' . $row['lastname'];
+			$playerTotals[$row['userID']][userName] = $row['userName'];
+			if (!empty($games[$row['gameID']]['winnerID']) && $row['pickID'] == $games[$row['gameID']]['winnerID']) {
 				//player has picked the winning team
-				$playerWeeklyTotals[$result['userID']][score] += 1;
-				$playerTotals[$result['userID']][score] += 1;
+				$playerWeeklyTotals[$row['userID']][score] += 1;
+				$playerTotals[$row['userID']][score] += 1;
 			} else {
-				$playerWeeklyTotals[$result['userID']][score] += 0;
-				$playerTotals[$result['userID']][score] += 0;
+				$playerWeeklyTotals[$row['userID']][score] += 0;
+				$playerTotals[$row['userID']][score] += 0;
 			}
 		}
-		
+		$query->free;
+
 		//get winners & highest score for current week
 		$highestScore = 0;
 		arsort($playerWeeklyTotals);
@@ -269,21 +288,21 @@ function calculateStats() {
 function rteSafe($strText) {
 	//returns safe code for preloading in the RTE
 	$tmpString = $strText;
-	
+
 	//convert all types of single quotes
 	$tmpString = str_replace(chr(145), chr(39), $tmpString);
 	$tmpString = str_replace(chr(146), chr(39), $tmpString);
 	$tmpString = str_replace("'", "&#39;", $tmpString);
-	
+
 	//convert all types of double quotes
 	$tmpString = str_replace(chr(147), chr(34), $tmpString);
 	$tmpString = str_replace(chr(148), chr(34), $tmpString);
 //	$tmpString = str_replace("\"", "\"", $tmpString);
-	
+
 	//replace carriage returns & line feeds
 	$tmpString = str_replace(chr(10), " ", $tmpString);
 	$tmpString = str_replace(chr(13), " ", $tmpString);
-	
+
 	return $tmpString;
 }
 
@@ -310,28 +329,28 @@ function sort2d ($array, $index, $order='asc', $natsort=FALSE, $case_sensitive=F
 }
 
 function getTeamRecord($teamID) {
-	global $db_prefix;
-	
+	global $mysqli;
+
 	$sql = "select weekNum, (homeScore > visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
-	$sql .= "from " . $db_prefix . "schedule ";
+	$sql .= "from " . DB_PREFIX . "schedule ";
 	$sql .= "where (homeScore is not null and visitorScore is not null)";
 	$sql .= " and homeID = '" . $teamID . "' ";
 	$sql .= "union ";
 	$sql .= "select weekNum, (homeScore < visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
-	$sql .= "from " . $db_prefix . "schedule ";
+	$sql .= "from " . DB_PREFIX . "schedule ";
 	$sql .= "where (homeScore is not null and visitorScore is not null)";
 	$sql .= " and visitorID = '" . $teamID . "' ";
 	$sql .= "order by weekNum";
 	//echo $sql;
-	$query = mysql_query($sql);
-	if (mysql_num_rows($query)) {
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
 		$wins = 0;
 		$losses = 0;
 		$ties = 0;
-		while ($result = mysql_fetch_array($query)) {
-			if ($result['gameTied']) {
+		while ($row = $query->fetch_assoc()) {
+			if ($row['gameTied']) {
 				$ties++;
-			} else if ($result['gameWon']) {
+			} else if ($row['gameWon']) {
 				$wins++;
 			} else {
 				$losses++;
@@ -341,30 +360,31 @@ function getTeamRecord($teamID) {
 	} else {
 		return '';
 	}
+	$query->free;
 }
 
 function getTeamStreak($teamID) {
-	global $db_prefix;
-	
+	global $mysqli;
+
 	$sql = "select weekNum, (homeScore > visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
-	$sql .= "from " . $db_prefix . "schedule ";
+	$sql .= "from " . DB_PREFIX . "schedule ";
 	$sql .= "where (homeScore is not null and visitorScore is not null)";
 	$sql .= " and homeID = '" . $teamID . "' ";
 	$sql .= "union ";
 	$sql .= "select weekNum, (homeScore < visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
-	$sql .= "from " . $db_prefix . "schedule ";
+	$sql .= "from " . DB_PREFIX . "schedule ";
 	$sql .= "where (homeScore is not null and visitorScore is not null)";
 	$sql .= " and visitorID = '" . $teamID . "' ";
 	$sql .= "order by weekNum";
 	//echo $sql;
-	$query = mysql_query($sql);
-	if (mysql_num_rows($query)) {
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
 		$prev = '';
 		$iStreak = 0;
-		while ($result = mysql_fetch_array($query)) {
-			if ($result['gameTied']) {
+		while ($row = $query->fetch_assoc()) {
+			if ($row['gameTied']) {
 				$current = 'T';
-			} else if ($result['gameWon']) {
+			} else if ($row['gameWon']) {
 				$current = 'W';
 			} else {
 				$current = 'L';
@@ -380,4 +400,5 @@ function getTeamStreak($teamID) {
 	} else {
 		return '';
 	}
+	$query->free;
 }

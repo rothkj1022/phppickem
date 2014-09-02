@@ -5,26 +5,30 @@ require('includes/classes/team.php');
 if ($_POST['action'] == 'Submit') {
 	$week = $_POST['week'];
 	$cutoffDateTime = getCutoffDateTime($week);
-	
+
 	//update summary table
-	$sql = "delete from " . $db_prefix . "picksummary where weekNum = " . $_POST['week'] . " and userID = " . $user->userID . ";";
-	mysql_query($sql) or die('Error updating picks summary: ' . mysql_error());
-	$sql = "insert into " . $db_prefix . "picksummary (weekNum, userID, showPicks) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ");";
-	mysql_query($sql) or die('Error updating picks summary: ' . mysql_error());
-	
+	$sql = "delete from " . DB_PREFIX . "picksummary where weekNum = " . $_POST['week'] . " and userID = " . $user->userID . ";";
+	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
+	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ");";
+	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
+
 	//loop through non-expire weeks and update picks
-	$sql = "select * from " . $db_prefix . "schedule where weekNum = " . $_POST['week'] . " and (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern and DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < '" . $cutoffDateTime . "');";
-	$query = mysql_query($sql);
-	while ($result = mysql_fetch_array($query)) {
-		$sql = "delete from " . $db_prefix . "picks where userID = " . $user->userID . " and gameID = " . $result['gameID'];
-		mysql_query($sql) or die('Error deleting picks: ' . mysql_error());
-		
-		if (!empty($_POST['game' . $result['gameID']])) {
-			$sql = "insert into " . $db_prefix . "picks (userID, gameID, pickID) values (" . $user->userID . ", " . $result['gameID'] . ", '" . $_POST['game' . $result['gameID']] . "')";
-			mysql_query($sql) or die('Error inserting pick: ' . mysql_error());
+	$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $_POST['week'] . " and (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern and DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < '" . $cutoffDateTime . "');";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		while ($row = $query->fetch_assoc()) {
+			$sql = "delete from " . DB_PREFIX . "picks where userID = " . $user->userID . " and gameID = " . $row['gameID'];
+			$mysqli->query($sql) or die('Error deleting picks: ' . $mysqli->error);
+
+			if (!empty($_POST['game' . $row['gameID']])) {
+				$sql = "insert into " . DB_PREFIX . "picks (userID, gameID, pickID) values (" . $user->userID . ", " . $row['gameID'] . ", '" . $_POST['game' . $row['gameID']] . "')";
+				$mysqli->query($sql) or die('Error inserting picks: ' . $mysqli->error);
+			}
 		}
 	}
+	$query->free;
 	header('Location: results.php?week=' . $_POST['week']);
+	exit;
 } else {
 	$week = (int)$_GET['week'];
 	if (empty($week)) {
@@ -39,19 +43,22 @@ include('includes/header.php');
 include('includes/column_right.php');
 
 //display week nav
-$sql = "select distinct weekNum from " . $db_prefix . "schedule order by weekNum;";
-$query = mysql_query($sql);
+$sql = "select distinct weekNum from " . DB_PREFIX . "schedule order by weekNum;";
+$query = $mysqli->query($sql);
 $weekNav = '<div class="navbar3"><b>Go to week:</b> ';
 $i = 0;
-while ($result = mysql_fetch_array($query)) {
-	if ($i > 0) $weekNav .= ' | ';
-	if ($week !== (int)$result['weekNum']) {
-		$weekNav .= '<a href="entry_form.php?week=' . $result['weekNum'] . '">' . $result['weekNum'] . '</a>';
-	} else {
-		$weekNav .= $result['weekNum'];
+if ($query->num_rows > 0) {
+	while ($row = $query->fetch_assoc()) {
+		if ($i > 0) $weekNav .= ' | ';
+		if ($week !== (int)$row['weekNum']) {
+			$weekNav .= '<a href="entry_form.php?week=' . $row['weekNum'] . '">' . $row['weekNum'] . '</a>';
+		} else {
+			$weekNav .= $row['weekNum'];
+		}
+		$i++;
 	}
-	$i++;
 }
+$query->free;
 $weekNav .= '</div>' . "\n";
 echo $weekNav;
 ?>
@@ -73,7 +80,7 @@ echo $weekNav;
 							if (!radioIsChecked(allR[i].name)) {
 								allChecked = false;
 							}
-						}      
+						}
 				    }
 				    if (!allChecked) {
     					return confirm('One or more picks are missing for the current week.  Do you wish to submit anyway?');
@@ -94,62 +101,63 @@ echo $weekNav;
 	<?php
 	//get existing picks
 	$picks = getUserPicks($week, $user->userID);
-	
+
 	//get show picks status
-	$sql = "select * from " . $db_prefix . "picksummary where weekNum = " . $week . " and userID = " . $user->userID . ";";
-	$query = mysql_query($sql);
-	if (mysql_num_rows($query) > 0) {
-		$result = mysql_fetch_array($query);
-		$showPicks = (int)$result['showPicks'];
+	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user->userID . ";";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$row = $query->fetch_assoc();
+		$showPicks = (int)$row['showPicks'];
 	} else {
 		$showPicks = 1;
 	}
-	
+	$query->free;
+
 	//display schedule for week
 	$sql = "select s.*, (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > gameTimeEastern or DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > '" . $cutoffDateTime . "')  as expired ";
-	$sql .= "from " . $db_prefix . "schedule s ";
-	$sql .= "inner join " . $db_prefix . "teams ht on s.homeID = ht.teamID ";
-	$sql .= "inner join " . $db_prefix . "teams vt on s.visitorID = vt.teamID ";
+	$sql .= "from " . DB_PREFIX . "schedule s ";
+	$sql .= "inner join " . DB_PREFIX . "teams ht on s.homeID = ht.teamID ";
+	$sql .= "inner join " . DB_PREFIX . "teams vt on s.visitorID = vt.teamID ";
 	$sql .= "where s.weekNum = " . $week . " ";
 	$sql .= "order by s.gameTimeEastern, s.gameID";
 	//echo $sql;
-	$query = mysql_query($sql);
-	if (mysql_num_rows($query) > 0) {
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
 		echo '<form name="entryForm" action="entry_form.php" method="post" onsubmit="return checkform();">' . "\n";
 		echo '<input type="hidden" name="week" value="' . $week . '" />' . "\n";
 		echo '<table cellpadding="4" cellspacing="0" class="table1">' . "\n";
 		//echo '	<tr><th>Home</th><th>Visitor</th><th align="left">Game</th><th>Time / Result</th><th>Your Pick</th></tr>' . "\n";
 		$i = 0;
-		while ($result = mysql_fetch_array($query)) {
-			$homeTeam = new team($result['homeID']);
-			$visitorTeam = new team($result['visitorID']);
+		while ($row = $query->fetch_assoc()) {
+			$homeTeam = new team($row['homeID']);
+			$visitorTeam = new team($row['visitorID']);
 			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
-			//$pickExpired = ((date("U") > strtotime($result['gameTimeEastern'])) ? true : false);
+			//$pickExpired = ((date("U") > strtotime($row['gameTimeEastern'])) ? true : false);
 			echo '		<tr' . $rowclass . '>' . "\n";
 			echo '			<td align="center">' . "\n";
 			echo '				<table width="100%" border="0" cellpadding="2" cellspacing="0" class="nostyle">' . "\n";
 			echo '					<tr valign="middle">' . "\n";
-			echo '						<td align="center"><label for="' . $result['gameID'] . $visitorTeam->teamID . '"><img src="images/helmets_big/' . strtolower($visitorTeam->teamID) . '1.gif" onclick="document.entryForm.game' . $result['gameID'] . '[0].checked=true;" /></label><br /><span style="font-size: 9px;"><b>' . $visitorTeam->city . ' ' . $visitorTeam->team . '</b><br />Record: ' . getTeamRecord($visitorTeam->teamID) . '<br />Streak: ' . getTeamStreak($visitorTeam->teamID) . '</span></td>' . "\n";
+			echo '						<td align="center"><label for="' . $row['gameID'] . $visitorTeam->teamID . '"><img src="images/helmets_big/' . strtolower($visitorTeam->teamID) . '1.gif" onclick="document.entryForm.game' . $row['gameID'] . '[0].checked=true;" /></label><br /><span style="font-size: 9px;"><b>' . $visitorTeam->city . ' ' . $visitorTeam->team . '</b><br />Record: ' . getTeamRecord($visitorTeam->teamID) . '<br />Streak: ' . getTeamStreak($visitorTeam->teamID) . '</span></td>' . "\n";
 			echo '						<td align="center">at</td>' . "\n";
-			echo '						<td align="center"><label for="' . $result['gameID'] . $homeTeam->teamID . '"><img src="images/helmets_big/' . strtolower($homeTeam->teamID) . '2.gif" onclick="document.entryForm.game' . $result['gameID'] . '[1].checked=true;" /></label><br /><span style="font-size: 9px;"><b>' . $homeTeam->city . ' ' . $homeTeam->team . '</b><br />Record: ' . getTeamRecord($homeTeam->teamID) . '<br />Streak: ' . getTeamStreak($homeTeam->teamID) . '</span></td>' . "\n";
+			echo '						<td align="center"><label for="' . $row['gameID'] . $homeTeam->teamID . '"><img src="images/helmets_big/' . strtolower($homeTeam->teamID) . '2.gif" onclick="document.entryForm.game' . $row['gameID'] . '[1].checked=true;" /></label><br /><span style="font-size: 9px;"><b>' . $homeTeam->city . ' ' . $homeTeam->team . '</b><br />Record: ' . getTeamRecord($homeTeam->teamID) . '<br />Streak: ' . getTeamStreak($homeTeam->teamID) . '</span></td>' . "\n";
 			echo '					</tr>' . "\n";
-			if (strlen($result['homeScore']) > 0 && strlen($result['visitorScore']) > 0) {
+			if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
 				//if score is entered, show score
-				echo '					<tr><td colspan="3" align="center"><b>Final: ' . $result['visitorScore'] . ' - ' . $result['homeScore'] . '</b></td></tr>' . "\n";
+				echo '					<tr><td colspan="3" align="center"><b>Final: ' . $row['visitorScore'] . ' - ' . $row['homeScore'] . '</b></td></tr>' . "\n";
 			} else {
 				//else show time of game
-				echo '					<tr><td colspan="3" align="center">' . date('D n/j g:i a', strtotime($result['gameTimeEastern'])) . ' ET</td></tr>' . "\n";
+				echo '					<tr><td colspan="3" align="center">' . date('D n/j g:i a', strtotime($row['gameTimeEastern'])) . ' ET</td></tr>' . "\n";
 			}
 			echo '				</table>' . "\n";
 			echo '			</td>' . "\n";
 			echo '			<td align="left"><b>Your Pick:</b><br />' . "\n";
-			if (!$result['expired']) {
+			if (!$row['expired']) {
 				//if game is not expired, show pick
-				echo '			<input type="radio" name="game' . $result['gameID'] . '" value="' . $visitorTeam->teamID . '" id="' . $result['gameID'] . $visitorTeam->teamID . '"' . (($picks[$result['gameID']]['pickID'] == $visitorTeam->teamID) ? ' checked="checked"' : '') . ' /> <label for="' . $result['gameID'] . $visitorTeam->teamID . '">' . $visitorTeam->teamName . '</label><br />' . "\n";
-				echo '			<input type="radio" name="game' . $result['gameID'] . '" value="' . $homeTeam->teamID . '" id="' . $result['gameID'] . $homeTeam->teamID . '"' . (($picks[$result['gameID']]['pickID'] == $homeTeam->teamID) ? ' checked="checked"' : '') . ' /> <label for="' . $result['gameID'] . $homeTeam->teamID . '">' . $homeTeam->teamName . '</label><br />' . "\n";
+				echo '			<input type="radio" name="game' . $row['gameID'] . '" value="' . $visitorTeam->teamID . '" id="' . $row['gameID'] . $visitorTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $visitorTeam->teamID) ? ' checked="checked"' : '') . ' /> <label for="' . $row['gameID'] . $visitorTeam->teamID . '">' . $visitorTeam->teamName . '</label><br />' . "\n";
+				echo '			<input type="radio" name="game' . $row['gameID'] . '" value="' . $homeTeam->teamID . '" id="' . $row['gameID'] . $homeTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $homeTeam->teamID) ? ' checked="checked"' : '') . ' /> <label for="' . $row['gameID'] . $homeTeam->teamID . '">' . $homeTeam->teamName . '</label><br />' . "\n";
 			} else {
 				//else show locked pick
-				$pickID = getPickID($result['gameID'], $user->userID);
+				$pickID = getPickID($row['gameID'], $user->userID);
 				if (!empty($pickID)) {
 					$statusImg = '';
 					$pickTeam = new team($pickID);
@@ -160,7 +168,7 @@ echo $weekNav;
 				}
 				if ($scoreEntered) {
 					//set status of pick (correct, incorrect)
-					if ($pickID == $result['winnerID']) {
+					if ($pickID == $row['winnerID']) {
 						$statusImg = '<img src="images/check_16x16.png" width="16" height="16" alt="" />';
 					} else {
 						$statusImg = '<img src="images/cross_16x16.png" width="16" height="16" alt="" />';
@@ -184,12 +192,11 @@ echo $weekNav;
 				<h2>Latest Comments:</h2>
 				<p>comment</p>
 				<div>
-				
+
 				</div>
 			</td>
 		</tr>
 	</table>
 //-->
 <?php
-include('includes/footer.php'); 
-?>
+include('includes/footer.php');

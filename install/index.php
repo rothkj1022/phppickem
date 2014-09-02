@@ -47,8 +47,8 @@ switch ($step) {
 				// If it has a semicolon at the end, it's the end of the query
 				if (substr(trim($line), -1, 1) == ';') {
 					// Perform the query
-					$templine = str_replace('nflp_', $db_prefix, $templine);
-					if (!mysql_query($templine)) {
+					$templine = str_replace('nflp_', DB_PREFIX, $templine);
+					if (!$mysqli->query($templine)) {
 						$errors[] = '<p>Error performing query \'<b>' . $templine . '</b>\': ' . mysql_error() . '</p>';
 					}
 					// Reset temp variable to empty

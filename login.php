@@ -19,7 +19,7 @@ if(empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>NFL Pick 'Em Login</title>
-	<link href="css/main.css" rel="stylesheet" type="text/css" media="screen" />
+	<link href="css/all.css" rel="stylesheet" type="text/css" media="screen" />
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 </head>
 
@@ -62,7 +62,7 @@ if(empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
 						}
 						?>
 						<p>Having trouble logging in?  Click here to <a href="password_reset.php">reset your password</a>.</p>
-						
+
 					</div>
 					<script type="text/javascript">
 					document.login.username.focus();
@@ -75,4 +75,3 @@ if(empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
 }
 
 require('includes/footer.php');
-?>

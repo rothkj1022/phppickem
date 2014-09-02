@@ -9,32 +9,32 @@ require_once('includes/header.php');
 	<tr valign="top">
 		<td>
 <?php
-$sql = "select t.*, d.conference, d.division
-from " . $db_prefix . "teams t
-inner join " . $db_prefix . "divisions d on t.divisionid = d.divisionid
-order by d.divisionid";
-$query = mysql_query($sql);
+$sql = "select t.*, d.conference, d.division ".
+	"from " . DB_PREFIX . "teams t ".
+	"inner join " . DB_PREFIX . "divisions d on t.divisionid = d.divisionid ".
+	"order by d.divisionid";
+$query = $mysqli->query($sql);
 $conference = '';
 $division = '';
-while ($result = mysql_fetch_array($query)) {
-	if ($result['conference'] !== $conference) {
+while ($row = $query->fetch_assoc()) {
+	if ($row['conference'] !== $conference) {
 		if ($conference !== '') {
 			echo '</td><td>' . "\n";
 		}
-		echo '<h2><img src="images/logos/' . strtolower($result['conference']) . '_logo.gif" />' . $result['conference'] . '</h2>' . "\n";
+		echo '<h2><img src="images/logos/' . strtolower($row['conference']) . '_logo.gif" />' . $row['conference'] . '</h2>' . "\n";
 	}
-	if ($result['division'] !== $division) {
-		echo '<h3>' . $result['division'] . '</h3>' . "\n";
+	if ($row['division'] !== $division) {
+		echo '<h3>' . $row['division'] . '</h3>' . "\n";
 	}
-	//echo '<img src="images/helmets_small/' . $result['teamID'] . 'R.gif" /> ';
-	echo '<a href="schedules.php?team=' . $result['teamID'] . '">' . $result['city'] . ' ' . $result['team'] . '</a><br />' . "\n";
-	$conference = $result['conference'];
-	$division = $result['division'];
+	//echo '<img src="images/helmets_small/' . $row['teamID'] . 'R.gif" /> ';
+	echo '<a href="schedules.php?team=' . $row['teamID'] . '">' . $row['city'] . ' ' . $row['team'] . '</a><br />' . "\n";
+	$conference = $row['conference'];
+	$division = $row['division'];
 }
+$query->free;
 ?>
 		</td>
 	</tr>
 </table>
 <?php
 include('includes/footer.php');
-?>

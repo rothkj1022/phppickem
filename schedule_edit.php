@@ -4,6 +4,7 @@ require('includes/classes/team.php');
 
 if (!$isAdmin) {
 	header('Location: index.php');
+	exit;
 }
 
 $action = $_GET['action'];
@@ -14,48 +15,51 @@ switch ($action) {
 		$gameTimeEastern = date('Y-m-d G:i:00', strtotime($_POST['gameTimeEastern'] . ' ' . $_POST['gameTimeEastern2']));
 		$homeID = $_POST['homeID'];
 		$visitorID = $_POST['visitorID'];
-		
+
 		//make sure all required fields are filled in and valid
 		if (empty($homeID) || empty($visitorID)) {
 			die('error: missing home or visiting team.');
 		}
-		
+
 		//delete all picks already entered for this game
 		//IF teams or week num changed, and game is still in the future
-		$sql = "select * from " . $db_prefix . "schedule where gameID = " . $gameID;
-		$query = mysql_query($sql);
-		if (mysql_num_rows($query) > 0) {
-			$result = mysql_fetch_array($query);
-			if (date('U') < strtotime($result['gameTimeEastern'])) {
-				if ($week !== $result['weekNum'] || $homeID !== $result['homeID'] || $visitorID !== $result['visitorID']) {
+		$sql = "select * from " . DB_PREFIX . "schedule where gameID = " . $gameID;
+		$query = $mysqli->query($sql);
+		if ($query->num_rows > 0) {
+			$row = $query->fetch_assoc();
+			if (date('U') < strtotime($row['gameTimeEastern'])) {
+				if ($week !== $row['weekNum'] || $homeID !== $row['homeID'] || $visitorID !== $row['visitorID']) {
 					//delete picks for current game
-					$sql = "delete from " . $db_prefix . "picks where gameID = " . $gameID;
-					mysql_query($sql) or die('error deleting picks');
+					$sql = "delete from " . DB_PREFIX . "picks where gameID = " . $gameID;
+					$mysqli->query($sql) or die('error deleting picks');
 				}
 			}
 		} else {
 			die('ah, something isn\'t quite right here...');
 		}
-		
+		$query->free;
+
 		//update game and redirect to same week
-		$sql = "update " . $db_prefix . "schedule ";
+		$sql = "update " . DB_PREFIX . "schedule ";
 		$sql .= "set weekNum = " . $week . ", gameTimeEastern = '" . $gameTimeEastern . "', homeID = '" . $homeID . "', visitorID = '" . $visitorID . "' ";
 		$sql .= "where gameID = " . $gameID;
-		mysql_query($sql) or die(mysql_error() . '. Query:' . $sql);
-		
+		$mysqli->query($sql) or die($mysqli->error . '. Query:' . $sql);
+
 		header('Location: ' . $_SERVER['PHP_SELF'] . '?week=' . $week);
+		exit;
 		break;
 	case 'delete':
 		$gameID = $_GET['id'];
 		$week = $_GET['week'];
-		
+
 		//delete picks for current game
-		$sql = "delete from " . $db_prefix . "picks where gameID = " . $gameID;
-		mysql_query($sql) or die('error deleting picks');
-		
-		$sql = "delete from " . $db_prefix . "schedule where gameID = " . $gameID;
-		mysql_query($sql) or die('error deleting game: ' . $sql);
+		$sql = "delete from " . DB_PREFIX . "picks where gameID = " . $gameID;
+		$mysqli->query($sql) or die('error deleting picks');
+
+		$sql = "delete from " . DB_PREFIX . "schedule where gameID = " . $gameID;
+		$mysqli->query($sql) or die('error deleting game: ' . $sql);
 		header('Location: ' . $_SERVER['PHP_SELF'] . '?week=' . $week);
+		exit;
 		break;
 	default:
 		break;
@@ -71,17 +75,19 @@ if ($action == 'add' || $action == 'edit') {
 			$week = getCurrentWeek();
 		}
 	} else if ($action == 'edit') {
-		$sql = "select * from " . $db_prefix . "schedule where gameID = " . (int)$_GET['id'];
-		$query = mysql_query($sql);
-		if (mysql_num_rows($query) > 0) {
-			$result = mysql_fetch_array($query);
-			$week = $result['weekNum'];
-			$gameTimeEastern = $result['gameTimeEastern'];
-			$homeID = $result['homeID'];
-			$visitorID = $result['visitorID'];
+		$sql = "select * from " . DB_PREFIX . "schedule where gameID = " . (int)$_GET['id'];
+		$query = $mysqli->query($sql);
+		if ($query->num_rows > 0) {
+			$row = $mysqli->fetch_assoc();
+			$week = $row['weekNum'];
+			$gameTimeEastern = $row['gameTimeEastern'];
+			$homeID = $row['homeID'];
+			$visitorID = $row['visitorID'];
 		} else {
 			header('Location: ' . $_SERVER['PHP_SELF']);
+			exit;
 		}
+		$query->free;
 	}
 ?>
 <script type="text/javascript" src="js/ui.core.js"></script>
@@ -106,11 +112,11 @@ if ($action == 'add' || $action == 'edit') {
 			<input type="text" id="gameTimeEastern" name="gameTimeEastern" value="<?php echo date('Y-m-d', strtotime($gameTimeEastern)); ?>" size="10" />
 			<input type="text" id="gameTimeEastern2" name="gameTimeEastern2" value="<?php echo date('h:i A', strtotime($gameTimeEastern)); ?>" size="10" />
 			<script type="text/javascript">
-			$("#gameTimeEastern").datepicker({ 
+			$("#gameTimeEastern").datepicker({
 			    dateFormat: $.datepicker.W3C,
-			    showOn: "both", 
-			    buttonImage: "images/icons/calendar_16x16.png", 
-			    buttonImageOnly: true 
+			    showOn: "both",
+			    buttonImage: "images/icons/calendar_16x16.png",
+			    buttonImageOnly: true
 			});
 			$("#gameTimeEastern2").timePicker({
 				show24Hours:false,
@@ -125,15 +131,18 @@ if ($action == 'add' || $action == 'edit') {
 			<select name="homeID">
 				<option value=""></option>
 <?php
-$sql = "select * from " . $db_prefix . "teams order by city, team";
-$query = mysql_query($sql);
-while($result = mysql_fetch_array($query)) {
-	if ($homeID == $result['teamID']) {
-		echo '				<option value="' . $result['teamID'] . '" selected="selected">' . $result['city'] . ' ' . $result['team'] . '</option>';
-	} else {
-		echo '				<option value="' . $result['teamID'] . '">' . $result['city'] . ' ' . $result['team'] . '</option>';
+$sql = "select * from " . DB_PREFIX . "teams order by city, team";
+$query = $mysqli->query($sql);
+if ($query->num_rows > 0) {
+	while ($row = $query->fetch_assoc()) {
+		if ($homeID == $row['teamID']) {
+			echo '				<option value="' . $row['teamID'] . '" selected="selected">' . $row['city'] . ' ' . $row['team'] . '</option>';
+		} else {
+			echo '				<option value="' . $row['teamID'] . '">' . $row['city'] . ' ' . $row['team'] . '</option>';
+		}
 	}
 }
+$query->free;
 ?>
 			</select>
 		</td>
@@ -144,15 +153,18 @@ while($result = mysql_fetch_array($query)) {
 			<select name="visitorID">
 				<option value=""></option>
 <?php
-$sql = "select * from " . $db_prefix . "teams order by city, team";
-$query = mysql_query($sql);
-while($result = mysql_fetch_array($query)) {
-	if ($visitorID == $result['teamID']) {
-		echo '				<option value="' . $result['teamID'] . '" selected="selected">' . $result['city'] . ' ' . $result['team'] . '</option>';
-	} else {
-		echo '				<option value="' . $result['teamID'] . '">' . $result['city'] . ' ' . $result['team'] . '</option>';
+$sql = "select * from " . DB_PREFIX . "teams order by city, team";
+$query = $mysqli->query($sql);
+if ($query->num_rows > 0) {
+	while ($row = $query->fetch_assoc()) {
+		if ($visitorID == $row['teamID']) {
+			echo '				<option value="' . $row['teamID'] . '" selected="selected">' . $row['city'] . ' ' . $row['team'] . '</option>';
+		} else {
+			echo '				<option value="' . $row['teamID'] . '">' . $row['city'] . ' ' . $row['team'] . '</option>';
+		}
 	}
 }
+$query->free;
 ?>
 			</select>
 		</td>
@@ -175,50 +187,53 @@ while($result = mysql_fetch_array($query)) {
 	}
 ?>
 <h1>Edit Schedule</h1>
-<p>Select a Week: 
+<p>Select a Week:
 <select name="week" onchange="javascript:location.href='<?php echo $_SERVER['PHP_SELF']; ?>?week=' + this.value;">
 <?php
-	$sql = "select distinct weekNum from " . $db_prefix . "schedule order by weekNum;";
-	$query = mysql_query($sql);
-	while ($result = mysql_fetch_array($query)) {
-		echo '	<option value="' . $result['weekNum'] . '"' . ((!empty($week) && $week == $result['weekNum']) ? ' selected="selected"' : '') . '>' . $result['weekNum'] . '</option>' . "\n";
+	$sql = "select distinct weekNum from " . DB_PREFIX . "schedule order by weekNum;";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		while ($row = $query->fetch_assoc()) {
+			echo '	<option value="' . $row['weekNum'] . '"' . ((!empty($week) && $week == $row['weekNum']) ? ' selected="selected"' : '') . '>' . $row['weekNum'] . '</option>' . "\n";
+		}
 	}
+	$query->free;
 ?>
 </select></p>
 <!--p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=add&week=<?php echo $week; ?>"><img src="images/icons/add_16x16.png" width="16" height="16" alt="Add Game" /></a>&nbsp;<a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=add">Add Game</a></p-->
 <?php
-	$sql = "select s.*, ht.city, ht.team, ht.displayName, vt.city, vt.team, vt.displayName from " . $db_prefix . "schedule s ";
-	$sql .= "inner join " . $db_prefix . "teams ht on s.homeID = ht.teamID ";
-	$sql .= "inner join " . $db_prefix . "teams vt on s.visitorID = vt.teamID ";
+	$sql = "select s.*, ht.city, ht.team, ht.displayName, vt.city, vt.team, vt.displayName from " . DB_PREFIX . "schedule s ";
+	$sql .= "inner join " . DB_PREFIX . "teams ht on s.homeID = ht.teamID ";
+	$sql .= "inner join " . DB_PREFIX . "teams vt on s.visitorID = vt.teamID ";
 	$where .= " where weekNum = " . $week;
 	$sql .= $where . " order by gameTimeEastern";
-	$query = mysql_query($sql);
-	if (mysql_num_rows($query) > 0) {
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
 		echo '<table cellpadding="4" cellspacing="0" class="table1">' . "\n";
 		echo '	<tr><th>Home</th><th>Visitor</th><th align="left">Game</th><th>Time / Result</th><th>&nbsp;</th></tr>' . "\n";
 		$i = 0;
 		$prevWeek = 0;
-		while ($result = mysql_fetch_array($query)) {
-			if ($prevWeek !== $result['weekNum'] && empty($team)) {
-				echo '		<tr class="subheader"><td colspan="5">Week ' . $result['weekNum'] . '</td></tr>' . "\n";
+		while ($row = $query->fetch_assoc()) {
+			if ($prevWeek !== $row['weekNum'] && empty($team)) {
+				echo '		<tr class="subheader"><td colspan="5">Week ' . $row['weekNum'] . '</td></tr>' . "\n";
 			}
-			$homeTeam = new team($result['homeID']);
-			$visitorTeam = new team($result['visitorID']);
+			$homeTeam = new team($row['homeID']);
+			$visitorTeam = new team($row['visitorID']);
 			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 			echo '		<tr' . $rowclass . '>' . "\n";
 			echo '			<td><img src="images/helmets_small/' . $homeTeam->teamID . 'R.gif" /></td>' . "\n";
 			echo '			<td><img src="images/helmets_small/' . $visitorTeam->teamID . 'L.gif" /></td>' . "\n";
 			echo '			<td>' . $visitorTeam->teamName . ' @ ' . $homeTeam->teamName . '</td>' . "\n";
-			if (is_numeric($result['homeScore']) && is_numeric($result['visitorScore'])) {
+			if (is_numeric($row['homeScore']) && is_numeric($row['visitorScore'])) {
 				//if score is entered, show result
 				echo '			<td></td>' . "\n";
 			} else {
 				//show time
-				echo '			<td>' . date('D n/j g:i a', strtotime($result['gameTimeEastern'])) . ' ET</td>' . "\n";
+				echo '			<td>' . date('D n/j g:i a', strtotime($row['gameTimeEastern'])) . ' ET</td>' . "\n";
 			}
-			echo '			<td><a href="' . $_SERVER['PHP_SELF'] . '?action=edit&id=' . $result['gameID'] . '"><img src="images/icons/edit_16x16.png" width="16" height="16" alt="edit" /></a>&nbsp;<a href="javascript:confirmDelete(\'' . $result['gameID'] . '\');"><img src="images/icons/delete_16x16.png" width="16" height="16" alt="delete" /></a></td>' . "\n";
+			echo '			<td><a href="' . $_SERVER['PHP_SELF'] . '?action=edit&id=' . $row['gameID'] . '"><img src="images/icons/edit_16x16.png" width="16" height="16" alt="edit" /></a>&nbsp;<a href="javascript:confirmDelete(\'' . $row['gameID'] . '\');"><img src="images/icons/delete_16x16.png" width="16" height="16" alt="delete" /></a></td>' . "\n";
 			echo '		</tr>' . "\n";
-			$prevWeek = $result['weekNum'];
+			$prevWeek = $row['weekNum'];
 			$i++;
 		}
 		echo '</table>' . "\n";
@@ -226,15 +241,12 @@ while($result = mysql_fetch_array($query)) {
 }
 ?>
 <script type="text/javascript">
-<!--
 function confirmDelete(id) {
 	//confirm delete
 	if (confirm('Are you sure you want to delete this game? This action cannot be undone.')) {
 		location.href = "<?php echo $_SERVER['PHP_SELF']; ?>?action=delete&id=" + id;
 	}
 }
-//-->
 </script>
 <?php
 include('includes/footer.php');
-?>

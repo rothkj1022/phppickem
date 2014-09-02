@@ -1,15 +1,16 @@
 <?php
 //modify vars below
-$db_host = 'localhost';
-$db_user = '';
-$db_password = '';
-$database = 'nflpickem';
-$db_prefix = 'nflp_';
+// Database
+define('DB_HOSTNAME', 'localhost');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', 'g5W!jMt@#t2W');
+define('DB_DATABASE', 'nflpickem');
+define('DB_PREFIX', 'nflp_');
 
-$siteUrl = 'http://localhost/personal/phppickem.com/application/';
-$allow_signup = true;
-$show_signup_link = true;
-$user_names_display = 3; // 1 = real names, 2 = usernames, 3 = usernames w/ real names on hover
+define('SITE_URL', 'http://localhost/personal/applications/phppickem/');
+define('ALLOW_SIGNUP', true);
+define('SHOW_SIGNUP_LINK', true);
+define('USER_NAMES_DISPLAY', 3); // 1 = real names, 2 = usernames, 3 = usernames w/ real names on hover
 
 define('SEASON_YEAR', '2014');
 
@@ -17,11 +18,4 @@ define('SEASON_YEAR', '2014');
 define('SERVER_TIMEZONE_OFFSET', 1);
 
 // ***DO NOT EDIT ANYTHING BELOW THIS LINE***
-$dbConnected = false;
-error_reporting(0);
-if (mysql_connect($db_host, $db_user, $db_password)) {
-	if (mysql_select_db($database)) {
-		$dbConnected = true;
-	}
-}
 error_reporting(E_ALL ^ E_NOTICE);

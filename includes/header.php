@@ -1,9 +1,25 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<?php
+header('Content-Type:text/html; charset=utf-8');
+header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta tag when under Local Intranet
+?>
+<!DOCTYPE html>
+<html xml:lang="en" lang="en">
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>NFL Pick 'Em</title>
-	<link href="css/main.css" rel="stylesheet" type="text/css" media="screen" />
+
+	<base href="<?php echo SITE_URL; ?>" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/all.css" />
+	<!--link rel="shortcut icon" type="image/x-icon" href="<?php echo $currentUri['protocol'] . '://' . WS_DOMAIN . WS_WWW_ROOT; ?>favicon.ico" /-->
+	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/modernizr-2.7.0.min.js"></script>
+	<script type="text/javascript" src="js/svgeezy.min.js"></script>
+	<script type="text/javascript" src="js/jquery.main.js"></script>
+
+
 	<link href="css/jquery.countdown.css" rel="stylesheet" type="text/css" media="screen" />
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<script type="text/javascript" src="js/common.js"></script>
@@ -22,7 +38,7 @@
 			<?php if ($isAdmin) { ?><div class="navbar2"><a href="scores.php">Enter Scores</a> | <a href="send_email.php">Send Email</a> | <a href="users.php">Update Users</a> | <a href="schedule_edit.php">Edit Schedule</a> | <a href="email_templates.php">Email Templates</a></div><?php } ?>
 		<?php
 		}
-	
+
 		if ($isAdmin && is_array($warnings) && sizeof($warnings) > 0) {
 			echo '<div id="warnings">';
 			foreach ($warnings as $warning) {

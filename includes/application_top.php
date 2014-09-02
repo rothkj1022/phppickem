@@ -18,25 +18,30 @@ foreach($_GET as $key=>$value){
 	$_GET[$key] = $purifier->purify($value);
 }
 
-if ($dbConnected) {
+$mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE) or die('error connecting to db');
+//echo DB_HOSTNAME.' '.DB_USERNAME.' '.DB_PASSWORD.' '.DB_DATABASE;
+//echo 'kjr';
+$mysqli->set_charset('utf8');
+//if (!$mysqli) {
 	//check for presence of install folder
 	if (is_dir('install')) {
 		//do a query to see if db installed
 		//$testQueryOK = false;
-		$sql = "select * from  " . $db_prefix . "teams";
+		$sql = "select * from  " . DB_PREFIX . "teams";
 		//die($sql);
-		if ($query = mysql_query($sql)) {
+		if ($query = $mysqli->query($sql)) {
 			//query is ok, display warning
 			$warnings[] = 'For security, please delete or rename the install folder.';
+			$query->free();
 		} else {
 			//tables not not present, redirect to installer
 			header('location: ./install/');
 			exit;
 		}
 	}
-} else {
-	die('Database not connected.  Please check your config file for proper installation.');
-}
+//} else {
+//	die('Database not connected.  Please check your config file for proper installation.');
+//}
 
 session_start();
 require('includes/classes/login.php');
@@ -44,8 +49,9 @@ $login = new Login;
 
 $okFiles = array('login.php', 'signup.php', 'password_reset.php');
 if (!in_array(basename($_SERVER['PHP_SELF']), $okFiles) && (empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes')) {
-	header( 'Location: login.php' ) ;
-} else {
+	header( 'Location: login.php' );
+	exit;
+} else if (!empty($_SESSION['loggedInUser'])) {
 	$user = $login->get_user($_SESSION['loggedInUser']);
 	$adminUser = $login->get_user('admin');
 }

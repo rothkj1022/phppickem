@@ -9,19 +9,19 @@ include('includes/classes/class.phpmailer.php');
 if (isset($_POST['submit'])) {
 	$my_form = new validator;
 	$mail = new PHPMailer();
-	
+
 	if($my_form->checkEmail($_POST['email'])) { // check for good mail
-				
+
 		if ($my_form->validate_fields('firstname,lastname,email,password')) { // comma delimited list of the required form fields
 			if ($_POST['password'] == $_POST['password2']) {
 				$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
 				$secure_password = $crypto->encrypt($salt . $crypto->encrypt($_POST['password']));
-				$sql = "update " . $db_prefix . "users ";
+				$sql = "update " . DB_PREFIX . "users ";
 				$sql .= "set password = '".$secure_password."', salt = '".$salt."', firstname = '".$_POST['firstname']."', lastname = '".$_POST['lastname']."', email = '".$_POST['email']."' ";
 				$sql .= "where userID = " . $user->userID . ";";
 				//die($sql);
-				mysql_query($sql) or die(mysql_error());
-				
+				$mysqli->query($sql) or die($mysqli->error);
+
 				//set confirmation message
 				$display = '<div class="responseOk">Account updated successfully.</div><br/>';
 			} else {
@@ -38,13 +38,13 @@ if (isset($_POST['submit'])) {
 
 include('includes/header.php');
 
-$sql = "select * from " . $db_prefix . "users where userID = " . $user->userID;
-$query = mysql_query($sql);
-if (mysql_num_rows($query)) {
-	$result = mysql_fetch_array($query);
-	$firstname = $result['firstname'];
-	$lastname = $result['lastname'];
-	$email = $result['email'];
+$sql = "select * from " . DB_PREFIX . "users where userID = " . $user->userID;
+$query = $mysqli->query($sql);
+if ($query->num_rows > 0) {
+	$row = $query->fetch_assoc();
+	$firstname = $row['firstname'];
+	$lastname = $row['lastname'];
+	$email = $row['email'];
 }
 
 if (!empty($_POST['firstname'])) $firstname = $_POST['firstname'];
@@ -53,7 +53,7 @@ if (!empty($_POST['email'])) $email = $_POST['email'];
 ?>
 	<h1>Edit User Account Details</h1>
 	<?php if(isset($display)) echo $display; ?>
-	<form action="user_edit.php" method="post" name="edituser">	
+	<form action="user_edit.php" method="post" name="edituser">
 		<fieldset>
 		<legend style="font-weight:bold;">Enter User Details:</legend>
 			<table cellpadding="3" cellspacing="0" border="0">
@@ -68,4 +68,3 @@ if (!empty($_POST['email'])) $email = $_POST['email'];
 	</form>
 <?php
 include('includes/footer.php');
-?>

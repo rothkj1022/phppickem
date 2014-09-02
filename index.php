@@ -7,13 +7,13 @@ include('includes/header.php');
 if (!$isAdmin) {
 	//get current week
 	$currentWeek = getCurrentWeek();
-	
+
 	$cutoffDateTime = getCutoffDateTime($currentWeek);
 	$firstGameTime = getFirstGameTime($currentWeek);
-	
+
 	$firstGameExpired = ((date("U", time()+(SERVER_TIMEZONE_OFFSET * 3600)) > strtotime($firstGameTime)) ? true : false);
 	$weekExpired = ((date("U", time()+(SERVER_TIMEZONE_OFFSET * 3600)) > strtotime($cutoffDateTime)) ? true : false);
-	
+
 	if ($weekExpired) {
 		//current week is expired, show message
 		echo '	<div class="warning">The current week is locked.  <a href="results.php">Check the Results &gt;&gt;</a></div>' . "\n";
@@ -28,62 +28,58 @@ if (!$isAdmin) {
 
 	include('includes/column_right.php');
 ?>
-	
+
 	<!-- start countdown code - http://keith-wood.name/countdown.html -->
 	<?php if ($firstGameTime !== $cutoffDateTime && !$firstGameExpired) { ?>
 	<div id="firstGame" class="countdown"></div>
 	<script type="text/javascript">
-	<!--
 	//set up countdown for first game
 	var firstGameTime = new Date("<?php echo date('F j, Y H:i:00', strtotime($firstGameTime)); ?>");
-	firstGameTime.setHours(firstGameTime.getHours() -1); 
+	firstGameTime.setHours(firstGameTime.getHours() -1);
 	$('#firstGame').countdown({until: firstGameTime, description: 'until first game is locked'});
-	//-->
 	</script>
 	<?php } ?>
 	<?php if (!$weekExpired) { ?>
 	<div id="picksLocked" class="countdown"></div>
 	<script type="text/javascript">
-	<!--
 	//set up countdown for picks lock time
 	var picksLockedTime = new Date("<?php echo date('F j, Y H:i:00', strtotime($cutoffDateTime)); ?>");
-	picksLockedTime.setHours(picksLockedTime.getHours() -1); 
+	picksLockedTime.setHours(picksLockedTime.getHours() -1);
 	$('#picksLocked').countdown({until: picksLockedTime, description: 'until week <?php echo $currentWeek; ?> is locked'});
-	//-->
 	</script>
 	<?php } ?>
 	<div style="clear: left;"></div>
 	<!-- end countdown code -->
-	
+
 	<h3>Your Picks At A Glance:</h3>
 	<table cellpadding="4" cellspacing="0" class="table1">
 		<tr><th>Week</th><th>First Game</th><th>Cutoff</th><th>Picks</th></tr>
 	<?php
 	$lastCompletedWeek = getLastCompletedWeek();
-	
+
 	$sql = "select s.weekNum, count(s.gameID) as gamesTotal,";
 	$sql .= " min(s.gameTimeEastern) as firstGameTime,";
-	$sql .= " (select gameTimeEastern from " . $db_prefix . "schedule where weekNum = s.weekNum and DATE_FORMAT(gameTimeEastern, '%W') = 'Sunday' order by gameTimeEastern limit 1) as cutoffTime,";
-	$sql .= " (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > (select gameTimeEastern from " . $db_prefix . "schedule where weekNum = s.weekNum and DATE_FORMAT(gameTimeEastern, '%W') = 'Sunday' order by gameTimeEastern limit 1)) as expired ";
-	$sql .= "from " . $db_prefix . "schedule s ";
+	$sql .= " (select gameTimeEastern from " . DB_PREFIX . "schedule where weekNum = s.weekNum and DATE_FORMAT(gameTimeEastern, '%W') = 'Sunday' order by gameTimeEastern limit 1) as cutoffTime,";
+	$sql .= " (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > (select gameTimeEastern from " . DB_PREFIX . "schedule where weekNum = s.weekNum and DATE_FORMAT(gameTimeEastern, '%W') = 'Sunday' order by gameTimeEastern limit 1)) as expired ";
+	$sql .= "from " . DB_PREFIX . "schedule s ";
 	$sql .= "group by s.weekNum ";
 	$sql .= "order by s.weekNum;";
-	$query = mysql_query($sql);
+	$query = $mysqli->query($sql);
 	$i = 0;
 	$rowclass = '';
-	while ($result = mysql_fetch_array($query)) {
+	while ($row = $query->fetch_assoc()) {
 		$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 		echo '		<tr' . $rowclass . '>' . "\n";
-		echo '			<td>Week ' . $result['weekNum'] . '</td>' . "\n";
-		echo '			<td>' . date('n/j g:i a', strtotime($result['firstGameTime'])) . '</td>' . "\n";
-		echo '			<td>' . date('n/j g:i a', strtotime($result['cutoffTime'])) . '</td>' . "\n";
-		if ($result['expired']) {
+		echo '			<td>Week ' . $row['weekNum'] . '</td>' . "\n";
+		echo '			<td>' . date('n/j g:i a', strtotime($row['firstGameTime'])) . '</td>' . "\n";
+		echo '			<td>' . date('n/j g:i a', strtotime($row['cutoffTime'])) . '</td>' . "\n";
+		if ($row['expired']) {
 			//if week is expired, show score (if scores are entered)
-			if ($lastCompletedWeek >= (int)$result['weekNum']) {
+			if ($lastCompletedWeek >= (int)$row['weekNum']) {
 				//scores entered, show score
-				$weekTotal = getGameTotal($result['weekNum']);
+				$weekTotal = getGameTotal($row['weekNum']);
 				//get player score
-				$userScore = getUserScore($result['weekNum'], $user->userID);
+				$userScore = getUserScore($row['weekNum'], $user->userID);
 				echo '			<td class="lighter" style="color: #000;">Score: ' . $userScore . '/' . $weekTotal . ' (' . number_format(($userScore / $weekTotal) * 100, 2) . '%)</td>' . "\n";
 			} else {
 				//scores not entered, show ???
@@ -91,15 +87,15 @@ if (!$isAdmin) {
 			}
 		} else {
 			//week is not expired yet, check to see if all picks have been entered
-			$picks = getUserPicks($result['weekNum'], $user->userID);
-			if (sizeof($picks) < (int)$result['gamesTotal']) {
+			$picks = getUserPicks($row['weekNum'], $user->userID);
+			if (sizeof($picks) < (int)$row['gamesTotal']) {
 				//not all picks were entered
 				$tmpStyle = '';
-				if ((int)$currentWeek == (int)$result['weekNum']) {
+				if ((int)$currentWeek == (int)$row['weekNum']) {
 					//only show in red if this is the current week
 					$tmpStyle = ' style="color: red;"';
 				}
-				echo '			<td class="lighter"' . $tmpStyle . '>Missing ' . ((int)$result['gamesTotal'] - sizeof($picks)) . ' / ' . $result['gamesTotal'] . ' picks.  <a href="entry_form.php?week=' . $result['weekNum'] . '">enter now &gt;&gt;</a></td>' . "\n";
+				echo '			<td class="lighter"' . $tmpStyle . '>Missing ' . ((int)$row['gamesTotal'] - sizeof($picks)) . ' / ' . $row['gamesTotal'] . ' picks.  <a href="entry_form.php?week=' . $row['weekNum'] . '">enter now &gt;&gt;</a></td>' . "\n";
 			} else {
 				//all picks were entered
 				echo '			<td class="lighter" style="color: green;">All picks entered.</td>' . "\n";
@@ -107,6 +103,7 @@ if (!$isAdmin) {
 		}
 		$i++;
 	}
+	$query->free;
 	?>
 	</table>
 	<div style="clear: both;"></div>
@@ -126,5 +123,4 @@ if (!$isAdmin) {
 <?php
 }
 
-require('includes/footer.php'); 
-?>
+require('includes/footer.php');

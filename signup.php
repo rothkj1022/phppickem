@@ -10,58 +10,60 @@ if (!$allow_signup) {
 }
 
 if (isset($_POST['submit'])) {
-	
+
 	$my_form = new validator;
 	$mail = new PHPMailer();
 	$crypto = new phpFreaksCrypto;
-	
+
 	$firstname = $_POST['firstname'];
 	$lastname = $_POST['lastname'];
 	$email = $_POST['email'];
 	$username = $_POST['username'];
 	$password = $_POST['password'];
 	$password2 = $_POST['password2'];
-	
+
 	if($my_form->checkEmail($email)) { // check for good mail
 		if ($my_form->validate_fields('firstname,lastname,email,username,password')) { // comma delimited list of the required form fields
 			if ($password == $password2) {
 				//create new user, disabled
 				$username = mysql_real_escape_string(str_replace(' ', '_', $username));
-				$sql = "SELECT userName FROM " . $db_prefix . "users WHERE userName='".$username."';";
-				$result = mysql_query($sql);
-				if(mysql_numrows($result) > 0){
+				$sql = "SELECT userName FROM " . DB_PREFIX . "users WHERE userName='".$username."';";
+				$query = $mysqli->query($sql);
+				if ($query->num_rows > 0) {
 					$display = '<div class="responseError">User already exists, please try another username.</div><br/>';
 				} else {
-					$sql = "SELECT email FROM " . $db_prefix . "users WHERE email='".mysql_real_escape_string($email)."';";
-					$result = mysql_query($sql);
-					if(mysql_numrows($result) > 0){
+					$sql = "SELECT email FROM " . DB_PREFIX . "users WHERE email='".mysql_real_escape_string($email)."';";
+					$query = $mysqli->query($sql);
+					if ($query->num_rows > 0) {
 						$display = '<div class="responseError">Email address already exists.  If this is your email account, please log in or reset your password.</div><br/>';
 					} else {
 						$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
 						$secure_password = $crypto->encrypt($salt . $crypto->encrypt($password));
-						$sql = "INSERT INTO " . $db_prefix . "users (userName, password, salt, firstname, lastname, email, status) 
+						$sql = "INSERT INTO " . DB_PREFIX . "users (userName, password, salt, firstname, lastname, email, status)
 							VALUES ('".$username."', '".$secure_password."', '".$salt."', '".$firstname."', '".$lastname."', '".mysql_real_escape_string($email)."', 1);";
-						mysql_query($sql) or die(mysql_error());
-						
+						$mysqli->query($sql) or die($mysqli->error);
+
 						//send confirmation email
 						$mail->IsHTML(true);
-				
+
 						$mail->From = $user->email; // the email field of the form
 						$mail->FromName = 'NFL Pick \'Em Admin'; // the name field of the form
-				
+
 						$mail->AddAddress($_POST['email']); // the form will be sent to this address
 						$mail->Subject = 'NFL Pick \'Em Confirmation'; // the subject of email
-				
+
 						// html text block
-						$mail->Body = '<p>Thank you for signing up for the NFL Pick \'Em Pool.  Please click the below link to confirm your account:<br />' . "\n" . 
+						$mail->Body = '<p>Thank you for signing up for the NFL Pick \'Em Pool.  Please click the below link to confirm your account:<br />' . "\n" .
 						$siteUrl . 'signup.php?confirm=' . $crypto->encrypt($username) . '</p>';
-										
+
 						//$mail->Send();
-						
+
 						//header('Location: login.php');
+						//exit;
 						$_SESSION['logged'] = 'yes';
 						$_SESSION['loggedInUser'] = $username;
 						header('Location: index.php?login=success');
+						exit;
 					}
 				}
 			} else {
@@ -100,12 +102,12 @@ if (isset($_POST['submit'])) {
 			<td>&nbsp;</td>
 			<td>
 				<h1>NFL Pick 'Em Signup</h1>
-				<?php 
+				<?php
 					if(isset($display)) {
 						echo $display;
 					}
 				?>
-				<form action="signup.php" method="post" name="addnewuser">	
+				<form action="signup.php" method="post" name="addnewuser">
 					<fieldset>
 					<legend style="font-weight:bold;">Sign Up</legend>
 						<table cellpadding="3" cellspacing="0" border="0">
@@ -124,4 +126,3 @@ if (isset($_POST['submit'])) {
 	</table>
 <?php
 include('includes/footer.php');
-?>

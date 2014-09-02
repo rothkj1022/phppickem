@@ -11,20 +11,20 @@ if ($_GET['reset'] == 'true') {
 
 if (isset($_POST['submit'])) {
 	//create new user, disabled
-	$sql = "SELECT * FROM " . $db_prefix . "users WHERE firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
-	$query = mysql_query($sql);
-	if(mysql_numrows($query) == 0){
+	$sql = "SELECT * FROM " . DB_PREFIX . "users WHERE firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
 		$display = '<div class="responseError">No account matched, please try again.</div><br/>';
 	} else {
-		$result = mysql_fetch_array($query);
-		
+		$row = $query->fetch_assoc();
+
 		//generate random password and update the db
 		$password = randomString(10);
 		$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
 		$secure_password = $crypto->encrypt($salt . $crypto->encrypt($password));
-		$sql = "update " . $db_prefix . "users set salt = '".$salt."', password = '".$secure_password."' where firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
-		mysql_query($sql) or die(mysql_error());
-		
+		$sql = "update " . DB_PREFIX . "users set salt = '".$salt."', password = '".$secure_password."' where firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
+		$mysqli->query($sql) or die(mysql_error());
+
 		//send confirmation email
 		$mail = new PHPMailer();
 		$mail->IsHTML(true);
@@ -39,15 +39,17 @@ if (isset($_POST['submit'])) {
 		$msg = '<p>Your new password for NFL Pick \'Em has been generated.  Your username is: ' . $result['userName'] . '</p>' . "\n\n";
 		$msg .= '<p>Your new password is: ' . $password . '</p>' . "\n\n";
 		$msg .= '<a href="' . $siteUrl . 'login.php">Click here to sign in</a>.</p>';
-		
+
 		$mail->Body = $msg;
 		$mail->AltBody = strip_tags($msg);
-		
+
 		$mail->Send();
-		
-		
+
+
 		header('Location: password_reset.php?reset=true');
+		exit;
 	}
+	$query->free;
 }
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -76,7 +78,7 @@ if (isset($_POST['submit'])) {
 				<h1>Password Reset</h1>
 				<?php if(isset($display)) echo $display; ?>
 				<p>Enter your name and email address, and a new password will be generated and sent to you.</p>
-				<form action="password_reset.php" method="post" name="pwdreset">	
+				<form action="password_reset.php" method="post" name="pwdreset">
 					<fieldset>
 					<legend style="font-weight:bold;">Password Reset</legend>
 						<table cellpadding="3" cellspacing="0" border="0">

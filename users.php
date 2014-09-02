@@ -6,6 +6,7 @@ $crypto = new phpFreaksCrypto;
 
 if (!$isAdmin) {
 	header('Location: index.php');
+	exit;
 }
 
 $action = $_GET['action'];
@@ -18,23 +19,23 @@ switch ($action) {
 		$userID = (int)$_POST['userID'];
 		$password = $_POST['password'];
 		$password2 = $_POST['password2'];
-		
+
 		$my_form = new validator;
 		if($my_form->checkEmail($_POST['email'])) { // check for good mail
 			if ($my_form->validate_fields('firstname,lastname,email,userName,password')) { // comma delimited list of the required form fields
 				if ($password == $password2) {
 					//check that username does not already exist
 					$username = mysql_real_escape_string(str_replace(' ', '_', $_POST['username']));
-					$sql = "SELECT userName FROM " . $db_prefix . "users WHERE userName='".$userName."';";
-					$result = mysql_query($sql);
-					if(mysql_numrows($result) == 0){
+					$sql = "SELECT userName FROM " . DB_PREFIX . "users WHERE userName='".$userName."';";
+					$query = $mysqli->query($sql);
+					if ($query->num_rows > 0) {
 						//form is valid, perform insert
 						$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
 						$secure_password = $crypto->encrypt($salt . $crypto->encrypt($password));
-						$sql = "INSERT INTO " . $db_prefix . "users (userName, password, salt, firstname, lastname, email, status) 
+						$sql = "INSERT INTO " . DB_PREFIX . "users (userName, password, salt, firstname, lastname, email, status)
 							VALUES ('".$userName."', '".$secure_password."', '".$salt."', '".$firstname."', '".$lastname."', '".$email."', 1);";
-						mysql_query($sql) or die(mysql_error());
-						
+						$mysqli->query($sql) or die($mysqli->error);
+
 						$display = '<div class="responseOk">User ' . $userName . ' Updated</div><br/>';
 					} else {
 						$display = '<div class="responseError">User already exists, please try another username.</div><br/>';
@@ -56,16 +57,16 @@ switch ($action) {
 		$email = $_POST['email'];
 		$userName = $_POST['userName'];
 		$userID = (int)$_POST['userID'];
-		
+
 		$my_form = new validator;
 		if($my_form->checkEmail($_POST['email'])) { // check for good mail
 			if ($my_form->validate_fields('firstname,lastname,email,userName')) { // comma delimited list of the required form fields
 				//form is valid, perform update
-				$sql = "update " . $db_prefix . "users ";
+				$sql = "update " . DB_PREFIX . "users ";
 				$sql .= "set firstname = '" . $firstname . "', lastname = '" . $lastname . "', email = '" . $email . "', userName = '" . $userName . "' ";
 				$sql .= "where userID = " . $userID . ";";
-				mysql_query($sql) or die('error updating user');
-				
+				$mysqli->query($sql) or die('error updating user');
+
 				$display = '<div class="responseOk">User ' . $userName . ' Updated</div><br/>';
 				/*
 				if ($_POST['password'] == $_POST['password2']) {
@@ -81,13 +82,14 @@ switch ($action) {
 		$action = 'edit';
 		break;
 	case 'delete':
-		$sql = "delete from " . $db_prefix . "users where userID = " . (int)$_GET['id'];
-		mysql_query($sql) or die('error deleting user: ' . $sql);
-		$sql = "delete from " . $db_prefix . "picks where userID = " . (int)$_GET['id'];
-		mysql_query($sql) or die('error deleting user picks: ' . $sql);
-		$sql = "delete from " . $db_prefix . "picksummary where userID = " . (int)$_GET['id'];
-		mysql_query($sql) or die('error deleting user picks summary: ' . $sql);
+		$sql = "delete from " . DB_PREFIX . "users where userID = " . (int)$_GET['id'];
+		$mysqli->query($sql) or die('error deleting user: ' . $sql);
+		$sql = "delete from " . DB_PREFIX . "picks where userID = " . (int)$_GET['id'];
+		$mysqli->query($sql) or die('error deleting user picks: ' . $sql);
+		$sql = "delete from " . DB_PREFIX . "picksummary where userID = " . (int)$_GET['id'];
+		$mysqli->query($sql) or die('error deleting user picks summary: ' . $sql);
 		header('Location: ' . $_SERVER['PHP_SELF']);
+		exit;
 		break;
 	default:
 		$userID = $_GET['id'];
@@ -99,27 +101,28 @@ include('includes/header.php');
 if ($action == 'add' || $action == 'edit') {
 	//display add/edit screen
 	if ($action == 'edit' && sizeof($_POST) == 0) {
-		$sql = "select * from " . $db_prefix . "users where userID = " . $userID;
-		$query = mysql_query($sql);
-		if (mysql_num_rows($query) > 0) {
-			$result = mysql_fetch_array($query);
-			$firstname = $result['firstname'];
-			$lastname = $result['lastname'];
-			$email = $result['email'];
-			$userName = $result['userName'];
+		$sql = "select * from " . DB_PREFIX . "users where userID = " . $userID;
+		$query = $mysqli->query($sql);
+		if ($query->num_rows > 0) {
+			$row = $query->fetch_assoc();
+			$firstname = $row['firstname'];
+			$lastname = $row['lastname'];
+			$email = $row['email'];
+			$userName = $row['userName'];
 		} else {
 			header('Location: ' . $_SERVER['PHP_SELF']);
+			exit;
 		}
 	}
 ?>
 <h1><?php echo ucfirst($action); ?> User</h1>
-<?php 
+<?php
 	if(isset($display)) {
 		echo $display;
 	}
 ?>
 <form action="<?php $_SERVER['PHP_SELF']; ?>?action=<?php echo $action; ?>_action" method="post" name="addedituser">
-<input type="hidden" name="userID" value="<?php echo $userID; ?>" />	
+<input type="hidden" name="userID" value="<?php echo $userID; ?>" />
 <table cellpadding="3" cellspacing="0" border="0">
 	<tr><td>First Name:</td><td><input type="text" name="firstname" value="<?php echo $firstname; ?>"></td></tr>
 	<tr><td>Last Name:</td><td><input type="text" name="lastname" value="<?php echo $lastname; ?>"></td></tr>
@@ -139,20 +142,20 @@ if ($action == 'add' || $action == 'edit') {
 <h1>Update Users</h1>
 <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=add&week=<?php echo $week; ?>"><img src="images/icons/add_16x16.png" width="16" height="16" alt="Add Game" /></a>&nbsp;<a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=add">Add User</a></p>
 <?php
-	$sql = "select * from " . $db_prefix . "users order by lastname, firstname";
-	$query = mysql_query($sql);
-	if (mysql_num_rows($query) > 0) {
+	$sql = "select * from " . DB_PREFIX . "users order by lastname, firstname";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
 		echo '<table cellpadding="4" cellspacing="0" class="table1">' . "\n";
 		echo '	<tr><th align="left">Username</th><th align="left">Name</th><th align="left">Email</th><th>Status</th><th>&nbsp;</th></tr>' . "\n";
 		$i = 0;
-		while ($result = mysql_fetch_array($query)) {
+		while ($row = $query->fetch_assoc()) {
 			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 			echo '		<tr' . $rowclass . '>' . "\n";
-			echo '			<td>' . $result['userName'] . '</td>' . "\n";
-			echo '			<td>' . $result['lastname'] . ', ' . $result['firstname'] . '</td>' . "\n";
-			echo '			<td>' . $result['email'] . '</td>' . "\n";
-			echo '			<td align="center"><img src="images/icons/' . (($result['status']) ? 'check_16x16.png' : 'cross_16x16.png') . '" width="16" height="16" alt="status" /></td>' . "\n";
-			echo '			<td><a href="' . $_SERVER['PHP_SELF'] . '?action=edit&id=' . $result['userID'] . '"><img src="images/icons/edit_16x16.png" width="16" height="16" alt="edit" /></a>&nbsp;<a href="javascript:confirmDelete(\'' . $result['userID'] . '\');"><img src="images/icons/delete_16x16.png" width="16" height="16" alt="delete" /></a></td>' . "\n";
+			echo '			<td>' . $row['userName'] . '</td>' . "\n";
+			echo '			<td>' . $row['lastname'] . ', ' . $row['firstname'] . '</td>' . "\n";
+			echo '			<td>' . $row['email'] . '</td>' . "\n";
+			echo '			<td align="center"><img src="images/icons/' . (($row['status']) ? 'check_16x16.png' : 'cross_16x16.png') . '" width="16" height="16" alt="status" /></td>' . "\n";
+			echo '			<td><a href="' . $_SERVER['PHP_SELF'] . '?action=edit&id=' . $row['userID'] . '"><img src="images/icons/edit_16x16.png" width="16" height="16" alt="edit" /></a>&nbsp;<a href="javascript:confirmDelete(\'' . $row['userID'] . '\');"><img src="images/icons/delete_16x16.png" width="16" height="16" alt="delete" /></a></td>' . "\n";
 			echo '		</tr>' . "\n";
 			$i++;
 		}
@@ -161,15 +164,12 @@ if ($action == 'add' || $action == 'edit') {
 }
 ?>
 <script type="text/javascript">
-<!--
 function confirmDelete(id) {
 	//confirm delete
 	if (confirm('Are you sure you want to delete? This action cannot be undone.')) {
 		location.href = "<?php echo $_SERVER['PHP_SELF']; ?>?action=delete&id=" + id;
 	}
 }
-//-->
 </script>
 <?php
 include('includes/footer.php');
-?>

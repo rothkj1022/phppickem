@@ -10,31 +10,31 @@ class team {
 	var $city = '';
 	var $team = '';
 	var $teamName = '';
-	
+
 	// Class constructor
 	function team($teamID) {
 		return $this->getTeam($teamID);
 	}
-	
+
 	function getTeam($teamID) {
-		global $db_prefix;
-		$sql = "select * from " . $db_prefix . "teams where teamID = '" . $teamID . "';";
-		$qryTeam = mysql_query($sql) or die($sql);
-		if ($rstTeam = mysql_fetch_array($qryTeam)) {
+		global $mysqli;
+		$sql = "select * from " . DB_PREFIX . "teams where teamID = '" . $teamID . "';";
+		$query = $mysqli->query($sql) or die($sql);
+		if ($row = $mysqli->fetch_assoc($query)) {
 			$this->teamID = $teamID;
-			$this->divisionID = $rstTeam['divisionID'];
-			$this->city = $rstTeam['city'];
-			$this->team = $rstTeam['team'];
-			if (!empty($rstTeam['displayName'])) {
-				$this->teamName = $rstTeam['displayName'];
+			$this->divisionID = $row['divisionID'];
+			$this->city = $row['city'];
+			$this->team = $row['team'];
+			if (!empty($row['displayName'])) {
+				$this->teamName = $row['displayName'];
 			} else {
-				$this->teamName = $rstTeam['city'] . ' ' . $rstTeam['team'];
+				$this->teamName = $row['city'] . ' ' . $row['team'];
 			}
 			return true;
 		} else {
 			return false;
 		}
+		$query->free;
 	}
-	
+
 }
-?>

@@ -14,65 +14,68 @@ include('includes/header.php');
 //include('includes/column_right.php');
 
 //display week nav
-$sql = "select distinct weekNum from " . $db_prefix . "schedule order by weekNum;";
-$query = mysql_query($sql);
+$sql = "select distinct weekNum from " . DB_PREFIX . "schedule order by weekNum;";
+$query = $mysqli->query($sql);
 $weekNav = '<div class="navbar3"><b>Go to week:</b> ';
 $i = 0;
-while ($result = mysql_fetch_array($query)) {
+while ($row = $query->fetch_assoc()) {
 	if ($i > 0) $weekNav .= ' | ';
-	if ($week !== (int)$result['weekNum']) {
-		$weekNav .= '<a href="results.php?week=' . $result['weekNum'] . '">' . $result['weekNum'] . '</a>';
+	if ($week !== (int)$row['weekNum']) {
+		$weekNav .= '<a href="results.php?week=' . $row['weekNum'] . '">' . $row['weekNum'] . '</a>';
 	} else {
-		$weekNav .= $result['weekNum'];
+		$weekNav .= $row['weekNum'];
 	}
 	$i++;
 }
+$query->free;
 $weekNav .= '</div>' . "\n";
 echo $weekNav;
 
 //get array of games
 $allScoresIn = true;
 $games = array();
-$sql = "select * from " . $db_prefix . "schedule where weekNum = " . $week . " order by gameTimeEastern, gameID";
-$query = mysql_query($sql);
-while ($result = mysql_fetch_array($query)) {
-	$games[$result['gameID']]['gameID'] = $result['gameID'];
-	$games[$result['gameID']]['homeID'] = $result['homeID'];
-	$games[$result['gameID']]['visitorID'] = $result['visitorID'];
-	if (strlen($result['homeScore']) > 0 && strlen($result['visitorScore']) > 0) {
-		if ((int)$result['homeScore'] > (int)$result['visitorScore']) {
-			$games[$result['gameID']]['winnerID'] = $result['homeID'];
+$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $week . " order by gameTimeEastern, gameID";
+$query = $mysqli->query($sql);
+while ($row = $query->fetch_assoc()) {
+	$games[$row['gameID']]['gameID'] = $row['gameID'];
+	$games[$row['gameID']]['homeID'] = $row['homeID'];
+	$games[$row['gameID']]['visitorID'] = $row['visitorID'];
+	if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
+		if ((int)$row['homeScore'] > (int)$row['visitorScore']) {
+			$games[$row['gameID']]['winnerID'] = $row['homeID'];
 		}
-		if ((int)$result['visitorScore'] > (int)$result['homeScore']) {
-			$games[$result['gameID']]['winnerID'] = $result['visitorID'];
+		if ((int)$row['visitorScore'] > (int)$row['homeScore']) {
+			$games[$row['gameID']]['winnerID'] = $row['visitorID'];
 		}
 	} else {
-		$games[$result['gameID']]['winnerID'] = '';
+		$games[$row['gameID']]['winnerID'] = '';
 		$allScoresIn = false;
 	}
 }
+$query->free;
 
 //get array of player picks
 $playerPicks = array();
 $playerTotals = array();
 $sql = "select p.userID, p.gameID, p.pickID, p.points ";
-$sql .= "from " . $db_prefix . "picks p ";
-$sql .= "inner join " . $db_prefix . "users u on p.userID = u.userID ";
-$sql .= "inner join " . $db_prefix . "schedule s on p.gameID = s.gameID ";
+$sql .= "from " . DB_PREFIX . "picks p ";
+$sql .= "inner join " . DB_PREFIX . "users u on p.userID = u.userID ";
+$sql .= "inner join " . DB_PREFIX . "schedule s on p.gameID = s.gameID ";
 $sql .= "where s.weekNum = " . $week . " and u.userName <> 'admin' ";
 $sql .= "order by p.userID, s.gameTimeEastern, s.gameID";
-$query = mysql_query($sql);
+$query = $mysqli->query($sql);
 $i = 0;
-while ($result = mysql_fetch_array($query)) {
-	$playerPicks[$result['userID']][$result['gameID']] = $result['pickID'];
-	if (!empty($games[$result['gameID']]['winnerID']) && $result['pickID'] == $games[$result['gameID']]['winnerID']) {
+while ($row = $query->fetch_assoc()) {
+	$playerPicks[$row['userID']][$row['gameID']] = $row['pickID'];
+	if (!empty($games[$row['gameID']]['winnerID']) && $row['pickID'] == $games[$row['gameID']]['winnerID']) {
 		//player has picked the winning team
-		$playerTotals[$result['userID']] += 1;
+		$playerTotals[$row['userID']] += 1;
 	} else {
-		$playerTotals[$result['userID']] += 0;
+		$playerTotals[$row['userID']] += 0;
 	}
 	$i++;
 }
+$query->free;
 ?>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -177,31 +180,31 @@ if (sizeof($playerTotals) > 0) {
 </table>
 <?php
 	//display list of absent players
-	$sql = "select * from " . $db_prefix . "users where userID not in(" . implode(',', array_keys($playerTotals)) . ") and userName <> 'admin'";
-	$query = mysql_query($sql);
-	if (mysql_num_rows($query) > 0) {
+	$sql = "select * from " . DB_PREFIX . "users where userID not in(" . implode(',', array_keys($playerTotals)) . ") and userName <> 'admin'";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
 		$absentHtml = '<p><b>Absent Players:</b> ';
 		$i = 0;
-		while ($result = mysql_fetch_array($query)) {
+		while ($row = $query->fetch_assoc()) {
 			if ($i > 0) $absentHtml .= ', ';
 			switch ($user_names_display) {
 				case 1:
-					$absentHtml .= trim($result['firstname'] . ' ' . $result['lastname']);
+					$absentHtml .= trim($row['firstname'] . ' ' . $row['lastname']);
 					break;
 				case 2:
-					$absentHtml .= $result['userName'];
+					$absentHtml .= $row['userName'];
 					break;
 				default: //3
-					$absentHtml .= '<abbrev title="' . trim($result['firstname'] . ' ' . $result['lastname']) . '">' . $result['userName'] . '</abbrev>';
+					$absentHtml .= '<abbrev title="' . trim($row['firstname'] . ' ' . $row['lastname']) . '">' . $row['userName'] . '</abbrev>';
 					break;
 			}
 			$i++;
 		}
 		echo $absentHtml;
 	}
+	$query->free;
 }
 
 include('includes/comments.php');
 
 include('includes/footer.php');
-?>

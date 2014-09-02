@@ -4,6 +4,7 @@ include('includes/classes/class.phpmailer.php');
 
 if (!$isAdmin) {
 	header('Location: index.php');
+	exit;
 }
 
 //get vars
@@ -90,13 +91,13 @@ if (isset($playerTotals)) {
 
 if ($_POST['action'] == 'Select' && isset($_POST['cannedMsg'])) {
 	$cannedMsg = $_POST['cannedMsg'];
-	
-	$sql = "select * from " . $db_prefix . "email_templates where email_template_key = '" . $cannedMsg . "'";
-	$query = mysql_query($sql);
-	$result = mysql_fetch_array($query);
-	$subjectTemplate = $result['subject'];
-	$messageTemplate = $result['message'];
-	
+
+	$sql = "select * from " . DB_PREFIX . "email_templates where email_template_key = '" . $cannedMsg . "'";
+	$query = $mysqli->query($sql);
+	$row = $query->fetch_assoc();
+	$subjectTemplate = $row['subject'];
+	$messageTemplate = $row['message'];
+
 	//replace variables
 	$template_vars = array('{week}', '{first_game}', '{site_url}', '{rules_url}', '{winners}', '{previousWeek}', '{winningScore}', '{possibleScore}', '{currentLeaders}', '{bestPickRatios}');
 	$replacement_values = array($week, date('l F j, g:i a', strtotime($firstGameTime)), $siteUrl, $siteUrl . 'rules.php', $winners, $prevWeek, $weekStats[$prevWeek][highestScore], getGameTotal($prevWeek), $currentLeaders, $bestPickRatios);
@@ -111,39 +112,43 @@ if ($_POST['action'] == 'Send Message') {
 		//select only users missing picks for the current week
 		$sql = "select u.firstname, u.email,";
 		$sql .= "(select count(p.pickID) from nflp_picks p inner join nflp_schedule s on p.gameID = s.gameID where userID = u.userID and s.weekNum = " . $week . ") as userPicks ";
-		$sql .= "from " . $db_prefix . "users u ";
+		$sql .= "from " . DB_PREFIX . "users u ";
 		$sql .= "where u.userName <> 'admin' ";
 		$sql .= "group by u.firstname, u.email ";
 		$sql .= "having userPicks < " . $totalGames;
 	} else {
 		//select all users
-		$sql = "select firstname, email from " . $db_prefix . "users where userName <> 'admin'";
+		$sql = "select firstname, email from " . DB_PREFIX . "users where userName <> 'admin'";
 	}
-	$query = mysql_query($sql);
-	while ($result = mysql_fetch_array($query)) {
-		//fire it off!
-		$subject = stripslashes($_POST['subject']);
-		$message = stripslashes($_POST['message']);
-		$message = str_replace('{player}', $result['firstname'], $message);
-		
-		$mail = new PHPMailer();
-		$mail->IsHTML(true);
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		while ($row = $query->fetch_assoc()) {
+			//fire it off!
+			$subject = stripslashes($_POST['subject']);
+			$message = stripslashes($_POST['message']);
+			$message = str_replace('{player}', $row['firstname'], $message);
 
-		$mail->From = $adminUser->email; // the email field of the form
-		$mail->FromName = 'NFL Pick \'Em Admin'; // the name field of the form
-		
-		$addresses .= ((strlen($addresses) > 0) ? ', ' : '') . $result['email'];
-		$mail->AddAddress($result['email']); // the form will be sent to this address
-		$mail->Subject = $subject; // the subject of email
+			$mail = new PHPMailer();
+			$mail->IsHTML(true);
 
-		// html text block
-		$mail->Body = $message;
-		$mail->Send();
-		//echo $subject . '<br />';
-		//echo $message;
+			$mail->From = $adminUser->email; // the email field of the form
+			$mail->FromName = 'NFL Pick \'Em Admin'; // the name field of the form
+
+			$addresses .= ((strlen($addresses) > 0) ? ', ' : '') . $row['email'];
+			$mail->AddAddress($row['email']); // the form will be sent to this address
+			$mail->Subject = $subject; // the subject of email
+
+			// html text block
+			$mail->Body = $message;
+			$mail->Send();
+			//echo $subject . '<br />';
+			//echo $message;
+		}
+		$display = '<div class="responseOk">Message successfully sent to: ' . $addresses . '.</div><br/>';
+		//header('Location: send_email.php');
+		//exit;
 	}
-	$display = '<div class="responseOk">Message successfully sent to: ' . $addresses . '.</div><br/>';
-	//header('Location: send_email.php');
+	$query->free;
 }
 
 include('includes/header.php');
@@ -155,17 +160,15 @@ if(isset($display)) {
 <script language="JavaScript" type="text/javascript" src="js/cbrte/html2xhtml.js"></script>
 <script language="JavaScript" type="text/javascript" src="js/cbrte/richtext_compressed.js"></script>
 <script language="JavaScript" type="text/javascript">
-<!--
 function submitForm() {
 	//make sure hidden and iframe values are in sync for all rtes before submitting form
 	updateRTEs();
-	
+
 	return true;
 }
 
 //Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML, encHTML)
 initRTE("js/cbrte/images/", "js/cbrte/", "", true);
-//-->
 </script>
 <noscript><p><b>Javascript must be enabled to use this form.</b></p></noscript>
 <form name="cannedmsgform" action="send_email.php" method="post" onsubmit="return submitForm();">
@@ -176,10 +179,10 @@ initRTE("js/cbrte/images/", "js/cbrte/", "", true);
 			<select name="cannedMsg">
 				<option value=""></option>
 				<?php
-				$sql = "select * from " . $db_prefix . "email_templates";
+				$sql = "select * from " . DB_PREFIX . "email_templates";
 				$query = mysql_query($sql);
-				while ($result = mysql_fetch_array($query)) {
-					echo '<option value="' . $result['email_template_key'] . '"' . (($_POST['cannedMsg'] == $result['email_template_key']) ? ' selected="selected"' : '') . '>' . $result['email_template_title'] . '</option>' . "\n";
+				while ($row = mysql_fetch_array($query)) {
+					echo '<option value="' . $row['email_template_key'] . '"' . (($_POST['cannedMsg'] == $row['email_template_key']) ? ' selected="selected"' : '') . '>' . $row['email_template_title'] . '</option>' . "\n";
 				}
 				?>
 			</select>&nbsp;<input type="submit" name="action" value="Select" />
@@ -193,19 +196,17 @@ initRTE("js/cbrte/images/", "js/cbrte/", "", true);
 		<td>Message:</td>
 		<td>
 			<script language="JavaScript" type="text/javascript">
-			<!--
 			//build new richTextEditor
 			var message = new richTextEditor('message');
-			<?php
-			//format content for preloading
-			if (!empty($message)) {
-				$message = rteSafe($message);
-			}
-			?>
+<?php
+//format content for preloading
+if (!empty($message)) {
+	$message = rteSafe($message);
+}
+?>
 			message.html = '<?php echo $message; ?>';
 			//rte1.toggleSrc = false;
 			message.build();
-			//-->
 			</script>
 		</td>
 	</tr>
@@ -216,4 +217,3 @@ initRTE("js/cbrte/images/", "js/cbrte/", "", true);
 }
 
 include('includes/footer.php');
-?>

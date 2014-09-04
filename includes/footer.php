@@ -1,5 +1,7 @@
-			<div style="clear: both;"></div>
-			<div id="donate">
+			</div>
+		</div><!-- end pageContent row -->
+		<div id="footer" class="row">
+			<div id="donate" class="col-sm-12">
 				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_s-xclick">
 				<input type="hidden" name="hosted_button_id" value="7664369">
@@ -7,8 +9,7 @@
 				<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
 				</form>
 			</div>
-		</div>
-		<div style="clear: both;"></div>
+		</div><!-- end pageContent row -->
 	</div>
 </body>
 </html>

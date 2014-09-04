@@ -20,7 +20,7 @@ class team {
 		global $mysqli;
 		$sql = "select * from " . DB_PREFIX . "teams where teamID = '" . $teamID . "';";
 		$query = $mysqli->query($sql) or die($sql);
-		if ($row = $mysqli->fetch_assoc($query)) {
+		if ($row = $query->fetch_assoc()) {
 			$this->teamID = $teamID;
 			$this->divisionID = $row['divisionID'];
 			$this->city = $row['city'];

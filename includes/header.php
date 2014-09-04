@@ -12,33 +12,69 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 	<base href="<?php echo SITE_URL; ?>" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/all.css" />
-	<!--link rel="shortcut icon" type="image/x-icon" href="<?php echo $currentUri['protocol'] . '://' . WS_DOMAIN . WS_WWW_ROOT; ?>favicon.ico" /-->
+	<link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" />
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/modernizr-2.7.0.min.js"></script>
 	<script type="text/javascript" src="js/svgeezy.min.js"></script>
 	<script type="text/javascript" src="js/jquery.main.js"></script>
 
-
-	<link href="css/jquery.countdown.css" rel="stylesheet" type="text/css" media="screen" />
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-	<script type="text/javascript" src="js/common.js"></script>
-	<script type="text/javascript" src="js/jquery-1.2.6.pack.js"></script>
 	<script type="text/javascript" src="js/jquery.countdown.pack.js"></script>
 	<script type="text/javascript" src="js/jquery.jclock.js"></script>
 </head>
 
 <body>
-	<div id="bgextend">
-		<div id="pageContent">
+	<div class="container">
+		<header id="header" class="row">
+			<div id="top-nav" class="col-sm-12">
+				<!-- Static navbar -->
+				<div class="navbar navbar-default" role="navigation">
+					<div class="container-fluid">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+						</div>
+						<div class="navbar-collapse collapse">
+							<ul class="nav navbar-nav">
+								<li<?php echo (($activeTab == 'home') ? ' class="active"' : ''); ?>><a href="./">Home</a></li>
+								<?php if (!$isAdmin) { ?>
+								<li><a href="entry_form.php<?php echo ((!empty($_GET['week'])) ? '?week=' . (int)$_GET['week'] : ''); ?>">Entry Form</a></li>
+								<?php } ?>
+								<li><a href="results.php<?php echo ((!empty($_GET['week'])) ? '?week=' . (int)$_GET['week'] : ''); ?>">Results</a></li>
+								<li><a href="standings.php">Standings</a></li>
+								<!--li><a href="teams.php">Teams</a></li-->
+								<!--li><a href="schedules.php">Schedules</a></li-->
+								<li><a href="rules.php">Rules/Help</a></li>
+								<?php if ($_SESSION['logged'] === 'yes' && $isAdmin) { ?>
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a href="scores.php">Enter Scores</a></li>
+										<li><a href="send_email.php">Send Email</a></li>
+										<li><a href="users.php">Update Users</a></li>
+										<li><a href="schedule_edit.php">Edit Schedule</a></li>
+										<li><a href="email_templates.php">Email Templates</a></li>
+									</ul>
+								</li>
+								<?php } ?>
+							</ul>
+							<ul class="nav navbar-nav navbar-right">
+								<li><a href="user_edit.php">My Account</a></li>
+								<li><a href="logout.php">Logout <?php echo $_SESSION['loggedInUser']; ?></a></li>
+							</ul>
+						</div><!--/.nav-collapse -->
+					</div>
+				</div>
+			</div>
+		</header>
+		<div id="pageContent" class="row">
+			<div class="col-sm-12">
 		<?php
-		if ($_SESSION['logged'] === 'yes') {
-		?>
-			<div class="navbar"><a href="index.php">Home</a> | <?php if (!$isAdmin) { ?><a href="entry_form.php<?php echo ((!empty($_GET['week'])) ? '?week=' . (int)$_GET['week'] : ''); ?>">Entry Form</a> | <?php } ?><a href="results.php<?php echo ((!empty($_GET['week'])) ? '?week=' . (int)$_GET['week'] : ''); ?>">Results</a> | <a href="standings.php">Standings</a> | <a href="teams.php">Teams</a> | <a href="schedules.php">Schedules</a> | <!--Standings | --><a href="user_edit.php">My Account</a> | <a href="logout.php">Logout <?php echo $_SESSION['loggedInUser']; ?></a> | <a href="rules.php">Rules/Help</a></div>
-			<?php if ($isAdmin) { ?><div class="navbar2"><a href="scores.php">Enter Scores</a> | <a href="send_email.php">Send Email</a> | <a href="users.php">Update Users</a> | <a href="schedule_edit.php">Edit Schedule</a> | <a href="email_templates.php">Email Templates</a></div><?php } ?>
-		<?php
-		}
-
 		if ($isAdmin && is_array($warnings) && sizeof($warnings) > 0) {
 			echo '<div id="warnings">';
 			foreach ($warnings as $warning) {

@@ -2,6 +2,8 @@
 require_once('includes/application_top.php');
 require('includes/classes/team.php');
 
+$activeTab = 'home';
+
 include('includes/header.php');
 
 if (!$isAdmin) {

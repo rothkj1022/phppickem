@@ -97,7 +97,6 @@ echo $weekNav;
 					return false;
 				}
 				</script>
-	<div style="float: right; width: 270px; margin-right: 10px"><?php include('includes/comments.php'); ?></div>
 	<?php
 	//get existing picks
 	$picks = getUserPicks($week, $user->userID);
@@ -121,7 +120,7 @@ echo $weekNav;
 	$sql .= "where s.weekNum = " . $week . " ";
 	$sql .= "order by s.gameTimeEastern, s.gameID";
 	//echo $sql;
-	$query = $mysqli->query($sql);
+	$query = $mysqli->query($sql) or die($mysqli->error);
 	if ($query->num_rows > 0) {
 		echo '<form name="entryForm" action="entry_form.php" method="post" onsubmit="return checkform();">' . "\n";
 		echo '<input type="hidden" name="week" value="' . $week . '" />' . "\n";
@@ -135,20 +134,21 @@ echo $weekNav;
 			//$pickExpired = ((date("U") > strtotime($row['gameTimeEastern'])) ? true : false);
 			echo '		<tr' . $rowclass . '>' . "\n";
 			echo '			<td align="center">' . "\n";
-			echo '				<table width="100%" border="0" cellpadding="2" cellspacing="0" class="nostyle">' . "\n";
-			echo '					<tr valign="middle">' . "\n";
-			echo '						<td align="center"><label for="' . $row['gameID'] . $visitorTeam->teamID . '"><img src="images/helmets_big/' . strtolower($visitorTeam->teamID) . '1.gif" onclick="document.entryForm.game' . $row['gameID'] . '[0].checked=true;" /></label><br /><span style="font-size: 9px;"><b>' . $visitorTeam->city . ' ' . $visitorTeam->team . '</b><br />Record: ' . getTeamRecord($visitorTeam->teamID) . '<br />Streak: ' . getTeamStreak($visitorTeam->teamID) . '</span></td>' . "\n";
-			echo '						<td align="center">at</td>' . "\n";
-			echo '						<td align="center"><label for="' . $row['gameID'] . $homeTeam->teamID . '"><img src="images/helmets_big/' . strtolower($homeTeam->teamID) . '2.gif" onclick="document.entryForm.game' . $row['gameID'] . '[1].checked=true;" /></label><br /><span style="font-size: 9px;"><b>' . $homeTeam->city . ' ' . $homeTeam->team . '</b><br />Record: ' . getTeamRecord($homeTeam->teamID) . '<br />Streak: ' . getTeamStreak($homeTeam->teamID) . '</span></td>' . "\n";
-			echo '					</tr>' . "\n";
+			echo '				<div>' . "\n";
+			echo '					<div style="background: #fff; color: #555; text-align: center;">' . "\n";
+			echo '						<div class="team-logo" style="display: inline-block"><label for="' . $row['gameID'] . $visitorTeam->teamID . '"><img src="images/logos/'.$visitorTeam->teamID.'.svg" onclick="document.entryForm.game'.$row['gameID'].'[0].checked=true;" /></label></div>' . "\n";
+			echo '						<div style="display: inline-block">at</div>' . "\n";
+			echo '						<div class="team-logo" style="display: inline-block"><label for="' . $row['gameID'] . $homeTeam->teamID . '" class="team-logo"><img src="images/logos/'.$homeTeam->teamID.'.svg" onclick="document.entryForm.game' . $row['gameID'] . '[1].checked=true;" /></label><br /><b>' . $homeTeam->city . ' ' . $homeTeam->team . '</b><br />Record: ' . getTeamRecord($homeTeam->teamID) . '<br />Streak: ' . getTeamStreak($homeTeam->teamID) . '</div>' . "\n";
+			echo '					</div>' . "\n";
+			echo '					<br /><b>' . $visitorTeam->city . ' ' . $visitorTeam->team . '</b><br />Record: ' . getTeamRecord($visitorTeam->teamID) . '<br />Streak: ' . getTeamStreak($visitorTeam->teamID) . '';
 			if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
 				//if score is entered, show score
-				echo '					<tr><td colspan="3" align="center"><b>Final: ' . $row['visitorScore'] . ' - ' . $row['homeScore'] . '</b></td></tr>' . "\n";
+				echo '					<div><b>Final: ' . $row['visitorScore'] . ' - ' . $row['homeScore'] . '</b></div>' . "\n";
 			} else {
 				//else show time of game
-				echo '					<tr><td colspan="3" align="center">' . date('D n/j g:i a', strtotime($row['gameTimeEastern'])) . ' ET</td></tr>' . "\n";
+				echo '					<div>' . date('D n/j g:i a', strtotime($row['gameTimeEastern'])) . ' ET</div>' . "\n";
 			}
-			echo '				</table>' . "\n";
+			echo '				</div>' . "\n";
 			echo '			</td>' . "\n";
 			echo '			<td align="left"><b>Your Pick:</b><br />' . "\n";
 			if (!$row['expired']) {
@@ -186,6 +186,7 @@ echo $weekNav;
 		echo '</form>' . "\n";
 	}
 	?>
+	<div><?php include('includes/comments.php'); ?></div>
 <!--
 			</td>
 			<td width="40%">

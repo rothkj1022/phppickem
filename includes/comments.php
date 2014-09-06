@@ -1,10 +1,10 @@
 <?php
 if ($_POST['action'] == 'Add Comment') {
 	//if user has not submitted within the last minute
-	$sql = "select * from " . $db_prefix . "comments where userID = " . $user->userID . " and subject = '" . $_POST['subject'] . "' and postDateTime > date_add(now(), INTERVAL -1 MINUTE)";
+	$sql = "select * from " . $db_prefix . "comments where userID = " . $user->userID . " and subject = '" . mysql_escape_string($_POST['subject']) . "' and postDateTime > date_add(now(), INTERVAL -1 MINUTE)";
 	$query = mysql_query($sql);
 	if (mysql_num_rows($query) == 0) {
-		$sql = "insert into " . $db_prefix . "comments (userID, subject, comment, postDateTime) values (" . $user->userID . ", '" . $_POST['subject'] . "', '" . $_POST['comment'] . "', now());";
+		$sql = "insert into " . $db_prefix . "comments (userID, subject, comment, postDateTime) values (" . $user->userID . ", '" . mysql_escape_string($_POST['subject']) . "', '" . mysql_escape_string($_POST['comment']) . "', now());";
 		mysql_query($sql);
 	}
 }

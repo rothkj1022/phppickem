@@ -7,12 +7,12 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>NFL Pick 'Em</title>
+	<title>NFL Pick 'Em <?php echo SEASON_YEAR; ?></title>
 
 	<base href="<?php echo SITE_URL; ?>" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/all.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" />
+	<!--link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" /-->
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -38,6 +38,8 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 							</button>
+							<div id="logo" class="navbar-brand"><img src="images/logos/NFL.svg" alt="NFL Pick 'Em <?php echo SEASON_YEAR; ?>" class="img-responsive" /></div>
+							<div id="site-title" class="navbar-brand">NFL Pick 'Em <?php echo SEASON_YEAR; ?></div>
 						</div>
 						<div class="navbar-collapse collapse">
 							<ul class="nav navbar-nav">
@@ -49,7 +51,6 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 								<li><a href="standings.php">Standings</a></li>
 								<!--li><a href="teams.php">Teams</a></li-->
 								<!--li><a href="schedules.php">Schedules</a></li-->
-								<li><a href="rules.php">Rules/Help</a></li>
 								<?php if ($_SESSION['logged'] === 'yes' && $isAdmin) { ?>
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
@@ -64,16 +65,22 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 								<?php } ?>
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
-								<li><a href="user_edit.php">My Account</a></li>
-								<li><a href="logout.php">Logout <?php echo $_SESSION['loggedInUser']; ?></a></li>
+								<li><a href="rules.php" title="Rules/Help"><span class="glyphicon glyphicon-book"></span> <span class="text">Rules/Help</span></a></li>
+								<li class="dropdown">
+									<!--a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $_SESSION['loggedInUser']; ?> <b class="caret"></b></a-->
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <span class="text"><?php echo $_SESSION['loggedInUser']; ?></span> <b class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a href="user_edit.php">My Account</a></li>
+										<li><a href="logout.php">Logout <?php echo $_SESSION['loggedInUser']; ?></a></li>
+									</ul>
+								</li>
 							</ul>
 						</div><!--/.nav-collapse -->
 					</div>
 				</div>
 			</div>
 		</header>
-		<div id="pageContent" class="row">
-			<div class="col-sm-12">
+		<div id="pageContent">
 		<?php
 		if ($isAdmin && is_array($warnings) && sizeof($warnings) > 0) {
 			echo '<div id="warnings">';

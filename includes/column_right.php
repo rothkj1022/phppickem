@@ -1,9 +1,8 @@
-	<div id="columnRight">
+	<!--div id="columnRight"-->
 		<div class="boxRight">
 			<b>Current Time (Eastern):</b><br />
 			<span id="jclock1"></span>
 			<script type="text/javascript">
-			<!--
 			$(function($) {
 				var optionsEST = {
 			        timeNotation: '12h',
@@ -13,9 +12,38 @@
 				}
 				$('#jclock1').jclock(optionsEST);
 		    });
-			//-->
 			</script>
 		</div>
+
+		<!-- start countdown code - http://keith-wood.name/countdown.html -->
+		<?php
+		if ($firstGameTime !== $cutoffDateTime && !$firstGameExpired) {
+		?>
+		<div id="firstGame" class="countdown boxRight"></div>
+		<script type="text/javascript">
+		//set up countdown for first game
+		var firstGameTime = new Date("<?php echo date('F j, Y H:i:00', strtotime($firstGameTime)); ?>");
+		firstGameTime.setHours(firstGameTime.getHours() -1);
+		$('#firstGame').countdown({until: firstGameTime, description: 'until first game is locked'});
+		</script>
+		<?php
+		}
+		if (!$weekExpired) {
+		?>
+		<div id="picksLocked" class="countdown boxRight"></div>
+		<script type="text/javascript">
+		//set up countdown for picks lock time
+		var picksLockedTime = new Date("<?php echo date('F j, Y H:i:00', strtotime($cutoffDateTime)); ?>");
+		picksLockedTime.setHours(picksLockedTime.getHours() -1);
+		$('#picksLocked').countdown({until: picksLockedTime, description: 'until week <?php echo $currentWeek; ?> is locked'});
+		</script>
+		<?php
+		} else {
+			//current week is expired
+		}
+		?>
+		<!-- end countdown code -->
+
 <?php
 $weekStats = array();
 $playerTotals = array();
@@ -24,7 +52,7 @@ calculateStats();
 
 $tmpWins = 0;
 $i = 1;
-if (isset($playerTotals)) {
+if (is_array($playerTotals) && sizeof($playerTotals) > 0) {
 	//show top 3 winners
 	echo '		<div class="boxRight">' . "\n";
 	echo '			<b>Current Leaders (# wins):</b><br />' . "\n";
@@ -43,7 +71,7 @@ if (isset($playerTotals)) {
 
 $tmpScore = 0;
 $i = 1;
-if (isset($playerTotals)) {
+if (is_array($playerTotals) && sizeof($playerTotals) > 0) {
 	//show top 3 pick ratios
 	echo '		<div class="boxRight">' . "\n";
 	echo '			<b>Current Leaders (pick %):</b><br />' . "\n";
@@ -65,4 +93,4 @@ if (isset($playerTotals)) {
 		<!--
 		<div class="boxRight"><b>Latest Comments:</b></div>
 		//-->
-	</div>
+	<!--/div-->

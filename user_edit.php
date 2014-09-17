@@ -56,14 +56,22 @@ if (!empty($_POST['email'])) $email = $_POST['email'];
 	<form action="user_edit.php" method="post" name="edituser">
 		<fieldset>
 		<legend style="font-weight:bold;">Enter User Details:</legend>
-			<table cellpadding="3" cellspacing="0" border="0">
-				<tr><td>First Name:</td><td><input type="text" name="firstname" value="<?php echo $firstname; ?>"></td></tr>
-				<tr><td>Last Name:</td><td><input type="text" name="lastname" value="<?php echo $lastname; ?>"></td></tr>
-				<tr><td>Email:</td><td><input type="text" name="email" value="<?php echo $email; ?>" size="30"></td></tr>
-				<tr><td>New Password:</td><td><input type="password" name="password" value=""></td></tr>
-				<tr><td>Confirm Password:</td><td><input type="password" name="password2" value=""></td></tr>
-				<tr><td>&nbsp;</td><td><input type="submit" name="submit" value="Submit"></td></tr>
-			</table>
+			<p>First Name:<br />
+			<input type="text" name="firstname" value="<?php echo $firstname; ?>"></p>
+
+			<p>Last Name:<br />
+			<input type="text" name="lastname" value="<?php echo $lastname; ?>"></p>
+
+			<p>Email:<br />
+			<input type="text" name="email" value="<?php echo $email; ?>" size="30"></p>
+
+			<p>New Password:<br />
+			<input type="password" name="password" value=""></p>
+
+			<p>Confirm Password:<br />
+			<input type="password" name="password2" value=""></p>
+
+			<p><input type="submit" name="submit" value="Submit" class="btn btn-primary"></p>
 		</fieldset>
 	</form>
 <?php

@@ -166,7 +166,7 @@ function getGameTotal($week) {
 	$sql = "select count(gameID) as gameTotal from " . DB_PREFIX . "schedule where weekNum = " . $week;
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
-		$row = $query-fetch_assoc();
+		$row = $query->fetch_assoc();
 		return $row['gameTotal'];
 	}
 	$query->free;
@@ -179,11 +179,11 @@ function gameIsLocked($gameID) {
 	$sql = "select (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > gameTimeEastern or DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > '" . $cutoffDateTime . "')  as expired from " . DB_PREFIX . "schedule where gameID = " . $gameID;
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
-		$row = $query-fetch_assoc();
+		$row = $query->fetch_assoc();
 		return $row['expired'];
 	}
 	$query->free;
-	die('Error getting game locked status: ' . mysql_error());
+	die('Error getting game locked status: ' . $mysqli->error);
 }
 
 function hidePicks($userID, $week) {
@@ -192,7 +192,7 @@ function hidePicks($userID, $week) {
 	$sql = "select showPicks from " . DB_PREFIX . "picksummary where userID = " . $userID . " and weekNum = " . $week;
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
-		$row = $query-fetch_assoc();
+		$row = $query->fetch_assoc();
 		return (($row['showPicks']) ? 0 : 1);
 	}
 	$query->free;

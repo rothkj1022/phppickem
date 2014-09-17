@@ -41,11 +41,11 @@ class Login{
 			$_SESSION['logged'] = 'yes';
 			$_SESSION['loggedInUser'] = $user->userName;
 //			$_SESSION['level'] = md5($user->user_level);
-			header('Location: index.php?login=success');
+			header('Location: '.SITE_URL.'?login=success');
 			exit;
 		} else {
 			$_SESSION = array();
-			header('Location: login.php?login=failed');
+			header('Location: '.SITE_URL.'login.php?login=failed');
 			exit;
 		}
 	}
@@ -53,10 +53,13 @@ class Login{
 	function get_user($user_name) {
 		global $mysqli;
 		$sql = "SELECT * FROM " . DB_PREFIX . "users WHERE userName = '" . $user_name . "' and status = 1";
-		$query = $mysqli->query($sql) or die('Mysql error: '.$mysqli->error);
-		$user_info = $query->fetch_object() or die('Mysql error: '.$mysqli->error);
+		$query = $mysqli->query($sql);
+		if ($query->num_rows > 0) {
+			$user_info = $query->fetch_object() or die('Mysql error: '.$mysqli->error.', $sql: '.$sql);
+			return $user_info;
+		}
 		$query->free;
-		return $user_info;
+		return false;
 	}
 
 	function get_user_by_id($user_id) {

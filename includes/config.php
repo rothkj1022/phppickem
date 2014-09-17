@@ -15,7 +15,7 @@ define('USER_NAMES_DISPLAY', 3); // 1 = real names, 2 = usernames, 3 = usernames
 define('SEASON_YEAR', '2014');
 
 //set timezone offset, hours difference between your server's timezone and eastern
-define('SERVER_TIMEZONE_OFFSET', 1);
+define('SERVER_TIMEZONE_OFFSET', 0);
 
 // ***DO NOT EDIT ANYTHING BELOW THIS LINE***
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);

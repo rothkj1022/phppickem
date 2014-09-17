@@ -40,12 +40,60 @@ if ($_POST['action'] == 'Submit') {
 }
 
 include('includes/header.php');
-include('includes/column_right.php');
-
+?>
+	<script type="text/javascript">
+	function checkform() {
+		//make sure all picks have a checked value
+		var f = document.entryForm;
+		var allChecked = true;
+		var allR = document.getElementsByTagName('input');
+		for (var i=0; i < allR.length; i++) {
+			if(allR[i].type == 'radio') {
+				if (!radioIsChecked(allR[i].name)) {
+					allChecked = false;
+				}
+			}
+	    }
+	    if (!allChecked) {
+			return confirm('One or more picks are missing for the current week.  Do you wish to submit anyway?');
+		}
+		return true;
+	}
+	function radioIsChecked(elmName) {
+		var elements = document.getElementsByName(elmName);
+		for (var i = 0; i < elements.length; i++) {
+			if (elements[i].checked) {
+				return true;
+			}
+		}
+		return false;
+	}
+	function checkRadios() {
+	  $('input[type=radio]').each(function(){
+	   //alert($(this).attr('checked'));
+	    var targetLabel = $('label[for="'+$(this).attr('id')+'"]');
+	    console.log($(this).attr('id')+': '+$(this).is(':checked'));
+	    if ($(this).is(':checked')) {
+	      //console.log(targetLabel);
+	     targetLabel.addClass('highlight');
+	    } else {
+	      targetLabel.removeClass('highlight');
+	    }
+	  });
+	}
+	$(function() {
+		checkRadios();
+		$('input[type=radio]').click(function(){
+		  checkRadios();
+		});
+	});
+	</script>
+<?php
 //display week nav
 $sql = "select distinct weekNum from " . DB_PREFIX . "schedule order by weekNum;";
 $query = $mysqli->query($sql);
-$weekNav = '<div class="navbar3"><b>Go to week:</b> ';
+$weekNav = '<div id="weekNav" class="row">';
+$weekNav .= '	<div class="navbar3 col-xs-12"><b>Go to week:</b> ';
 $i = 0;
 if ($query->num_rows > 0) {
 	while ($row = $query->fetch_assoc()) {
@@ -59,44 +107,19 @@ if ($query->num_rows > 0) {
 	}
 }
 $query->free;
+$weekNav .= '	</div>' . "\n";
 $weekNav .= '</div>' . "\n";
 echo $weekNav;
 ?>
-<!--
-	<table cellpadding="0" cellspacing="0">
-		<tr valign="top">
-			<td width="60%">
-//-->
+		<div id="entry-form" class="row">
+			<div class="col-md-4 col-xs-12 col-right">
+<?php
+include('includes/column_right.php');
+?>
+			</div>
+			<div class="col-md-8 col-xs-12">
 				<h2>Week <?php echo $week; ?> - Make Your Picks:</h2>
-				<p>Make your picks below by clicking on the team helmet or checking the radio buttons to the right.</p>
-				<script type="text/javascript">
-				function checkform() {
-					//make sure all picks have a checked value
-					var f = document.entryForm;
-					var allChecked = true;
-					var allR = document.getElementsByTagName('input');
-					for (var i=0; i < allR.length; i++) {
-						if(allR[i].type == 'radio') {
-							if (!radioIsChecked(allR[i].name)) {
-								allChecked = false;
-							}
-						}
-				    }
-				    if (!allChecked) {
-    					return confirm('One or more picks are missing for the current week.  Do you wish to submit anyway?');
-					}
-					return true;
-				}
-				function radioIsChecked(elmName) {
-					var elements = document.getElementsByName(elmName);
-					for (var i = 0; i < elements.length; i++) {
-						if (elements[i].checked) {
-							return true;
-						}
-					}
-					return false;
-				}
-				</script>
+				<p>Please make your picks below for each game.</p>
 	<?php
 	//get existing picks
 	$picks = getUserPicks($week, $user->userID);
@@ -124,37 +147,50 @@ echo $weekNav;
 	if ($query->num_rows > 0) {
 		echo '<form name="entryForm" action="entry_form.php" method="post" onsubmit="return checkform();">' . "\n";
 		echo '<input type="hidden" name="week" value="' . $week . '" />' . "\n";
-		echo '<table cellpadding="4" cellspacing="0" class="table1">' . "\n";
+		//echo '<table cellpadding="4" cellspacing="0" class="table1">' . "\n";
 		//echo '	<tr><th>Home</th><th>Visitor</th><th align="left">Game</th><th>Time / Result</th><th>Your Pick</th></tr>' . "\n";
+		echo '		<div class="row">'."\n";
+		echo '			<div class="col-xs-12">'."\n";
 		$i = 0;
 		while ($row = $query->fetch_assoc()) {
+			$scoreEntered = false;
 			$homeTeam = new team($row['homeID']);
 			$visitorTeam = new team($row['visitorID']);
 			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
-			//$pickExpired = ((date("U") > strtotime($row['gameTimeEastern'])) ? true : false);
-			echo '		<tr' . $rowclass . '>' . "\n";
-			echo '			<td align="center">' . "\n";
-			echo '				<div>' . "\n";
-			echo '					<div style="background: #fff; color: #555; text-align: center;">' . "\n";
-			echo '						<div class="team-logo" style="display: inline-block"><label for="' . $row['gameID'] . $visitorTeam->teamID . '"><img src="images/logos/'.$visitorTeam->teamID.'.svg" onclick="document.entryForm.game'.$row['gameID'].'[0].checked=true;" /></label></div>' . "\n";
-			echo '						<div style="display: inline-block">at</div>' . "\n";
-			echo '						<div class="team-logo" style="display: inline-block"><label for="' . $row['gameID'] . $homeTeam->teamID . '" class="team-logo"><img src="images/logos/'.$homeTeam->teamID.'.svg" onclick="document.entryForm.game' . $row['gameID'] . '[1].checked=true;" /></label><br /><b>' . $homeTeam->city . ' ' . $homeTeam->team . '</b><br />Record: ' . getTeamRecord($homeTeam->teamID) . '<br />Streak: ' . getTeamStreak($homeTeam->teamID) . '</div>' . "\n";
-			echo '					</div>' . "\n";
-			echo '					<br /><b>' . $visitorTeam->city . ' ' . $visitorTeam->team . '</b><br />Record: ' . getTeamRecord($visitorTeam->teamID) . '<br />Streak: ' . getTeamStreak($visitorTeam->teamID) . '';
+			echo '				<div class="matchup">' . "\n";
+			echo '					<div class="row bg-row1">'."\n";
 			if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
 				//if score is entered, show score
-				echo '					<div><b>Final: ' . $row['visitorScore'] . ' - ' . $row['homeScore'] . '</b></div>' . "\n";
+				$scoreEntered = true;
+				echo '					<div class="col-xs-12 center"><b>Final: ' . $row['visitorScore'] . ' - ' . $row['homeScore'] . '</b></div>' . "\n";
 			} else {
 				//else show time of game
-				echo '					<div>' . date('D n/j g:i a', strtotime($row['gameTimeEastern'])) . ' ET</div>' . "\n";
+				echo '					<div class="col-xs-12 center">' . date('D n/j g:i a', strtotime($row['gameTimeEastern'])) . ' ET</div>' . "\n";
 			}
-			echo '				</div>' . "\n";
-			echo '			</td>' . "\n";
-			echo '			<td align="left"><b>Your Pick:</b><br />' . "\n";
+			echo '					</div>'."\n";
+			echo '					<div class="row versus">' . "\n";
+			echo '						<div class="col-xs-1"></div>' . "\n";
+			echo '						<div class="col-xs-4">'."\n";
+			echo '							<label for="' . $row['gameID'] . $visitorTeam->teamID . '" class="label-for-check"><div class="team-logo"><img src="images/logos/'.$visitorTeam->teamID.'.svg" onclick="document.entryForm.game'.$row['gameID'].'[0].checked=true;" /></div></label>' . "\n";
+			echo '						</div>'."\n";
+			echo '						<div class="col-xs-2">at</div>' . "\n";
+			echo '						<div class="col-xs-4">'."\n";
+			echo '							<label for="' . $row['gameID'] . $homeTeam->teamID . '" class="label-for-check"><div class="team-logo"><img src="images/logos/'.$homeTeam->teamID.'.svg" onclick="document.entryForm.game' . $row['gameID'] . '[1].checked=true;" /></div></label>'."\n";
+			echo '						</div>' . "\n";
+			echo '						<div class="col-xs-1"></div>' . "\n";
+			echo '					</div>' . "\n";
+			echo '					<div class="row bg-row2">'."\n";
 			if (!$row['expired']) {
-				//if game is not expired, show pick
-				echo '			<input type="radio" name="game' . $row['gameID'] . '" value="' . $visitorTeam->teamID . '" id="' . $row['gameID'] . $visitorTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $visitorTeam->teamID) ? ' checked="checked"' : '') . ' /> <label for="' . $row['gameID'] . $visitorTeam->teamID . '">' . $visitorTeam->teamName . '</label><br />' . "\n";
-				echo '			<input type="radio" name="game' . $row['gameID'] . '" value="' . $homeTeam->teamID . '" id="' . $row['gameID'] . $homeTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $homeTeam->teamID) ? ' checked="checked"' : '') . ' /> <label for="' . $row['gameID'] . $homeTeam->teamID . '">' . $homeTeam->teamName . '</label><br />' . "\n";
+				echo '						<div class="col-xs-1"></div>' . "\n";
+				echo '						<div class="col-xs-4 center">'."\n";
+				echo '							<input type="radio" class="check-with-label" name="game' . $row['gameID'] . '" value="' . $visitorTeam->teamID . '" id="' . $row['gameID'] . $visitorTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $visitorTeam->teamID) ? ' checked' : '') . ' />'."\n";
+				echo '						</div>'."\n";
+				//echo '						<div class="col-xs-2 center" style="font-size: 0.8em;">&#9664; Choose &#9654;</div>' . "\n";
+				echo '						<div class="col-xs-2"></div>' . "\n";
+				echo '						<div class="col-xs-4 center">'."\n";
+				echo '							<input type="radio" class="check-with-label" name="game' . $row['gameID'] . '" value="' . $homeTeam->teamID . '" id="' . $row['gameID'] . $homeTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $homeTeam->teamID) ? ' checked' : '') . ' />' . "\n";
+				echo '						</div>' . "\n";
+				echo '						<div class="col-xs-1"></div>' . "\n";
 			} else {
 				//else show locked pick
 				$pickID = getPickID($row['gameID'], $user->userID);
@@ -174,30 +210,34 @@ echo $weekNav;
 						$statusImg = '<img src="images/cross_16x16.png" width="16" height="16" alt="" />';
 					}
 				}
-				echo '			' . $statusImg . ' ' . $pickLabel . "\n";
+				echo '						<div class="col-xs-12 center"><b>Your Pick:</b></br />';
+				echo $statusImg . ' ' . $pickLabel;
+				echo '</div>' . "\n";
 			}
-			echo '			</td>' . "\n";
-			echo '		</tr>' . "\n";
+			echo '					</div>' . "\n";
+			echo '					<div class="row bg-row3">'."\n";
+			echo '						<div class="col-xs-6 center">'."\n";
+			echo '							<b>' . $visitorTeam->city . ' ' . $visitorTeam->team . '</b><br />Record: ' . getTeamRecord($visitorTeam->teamID) . '<br />Streak: ' . getTeamStreak($visitorTeam->teamID) . ''."\n";
+			echo '						</div>'."\n";
+			echo '						<div class="col-xs-6 center">' . "\n";
+			echo '							<b>' . $homeTeam->city . ' ' . $homeTeam->team . '</b><br />Record: ' . getTeamRecord($homeTeam->teamID) . '<br />Streak: ' . getTeamStreak($homeTeam->teamID) . '';
+			echo '						</div>' . "\n";
+			echo '					</div>'."\n";
+			echo '				</div>'."\n";
 			$i++;
 		}
-		echo '</table>' . "\n";
+		echo '		</div>' . "\n";
+		echo '		</div>' . "\n";
 		echo '<p><input type="checkbox" name="showPicks" id="showPicks" value="1"' . (($showPicks) ? ' checked="checked"' : '') . ' /> <label for="showPicks">Allow others to see my picks</label></p>' . "\n";
 		echo '<p><input type="submit" name="action" value="Submit" /></p>' . "\n";
 		echo '</form>' . "\n";
 	}
-	?>
-	<div><?php include('includes/comments.php'); ?></div>
-<!--
-			</td>
-			<td width="40%">
-				<h2>Latest Comments:</h2>
-				<p>comment</p>
-				<div>
 
-				</div>
-			</td>
-		</tr>
-	</table>
-//-->
-<?php
+echo '	</div>'."\n"; // end col
+echo '	</div>'."\n"; // end entry-form row
+
+//echo '<div id="comments" class="row">';
+include('includes/comments.php');
+//echo '</div>';
+
 include('includes/footer.php');

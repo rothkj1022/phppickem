@@ -2,7 +2,7 @@
 require_once('includes/application_top.php');
 require_once('includes/header.php');
 ?>
-<h1>Rules</h1>
+<h1>Rules / Help</h1>
 
 <h2>Basics</h2>
 <p>The concept of NFL Pick 'Em is simple: pick the winners of each game each week.</p>
@@ -75,5 +75,5 @@ Help
 You can always come to this page for help with finding your way around or entering and updating your picks. If you need further assistance, email the Administrator.
 //-->
 <?php
-require('includes/footer.php'); 
+require('includes/footer.php');
 ?>

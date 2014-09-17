@@ -1,0 +1,99 @@
+# COMPRESSION
+<IfModule mod_deflate.c>
+    # Force compression for mangled headers.
+    # http://developer.yahoo.com/blogs/ydn/posts/2010/12/pushing-beyond-gzipping
+    <IfModule mod_setenvif.c>
+        <IfModule mod_headers.c>
+            SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding
+            RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
+        </IfModule>
+    </IfModule>
+
+    # Compress all output labeled with one of the following MIME-types
+    # (for Apache versions below 2.3.7, you don't need to enable `mod_filter`
+    #  and can remove the `<IfModule mod_filter.c>` and `</IfModule>` lines
+    #  as `AddOutputFilterByType` is still in the core directives).
+    <IfModule mod_filter.c>
+        AddOutputFilterByType DEFLATE application/atom+xml \
+                                      application/javascript \
+                                      application/json \
+                                      application/ld+json \
+                                      application/rss+xml \
+                                      application/vnd.ms-fontobject \
+                                      application/x-font-ttf \
+                                      application/x-web-app-manifest+json \
+                                      application/xhtml+xml \
+                                      application/xml \
+                                      font/opentype \
+                                      image/svg+xml \
+                                      image/x-icon \
+                                      text/css \
+                                      text/html \
+                                      text/plain \
+                                      text/x-component \
+                                      text/xml
+    </IfModule>
+</IfModule>
+
+# MAIN OPTIONS
+Options +FollowSymLinks -Indexes -Multiviews
+DefaultLanguage en-US
+AddDefaultCharset UTF-8
+
+# PHP OPTIONS
+php_flag display_errors on
+php_value error_reporting 'E_ALL & ~E_NOTICE'
+php_flag register_globals off
+# php_value memory_limit 128M
+# php_value post_max_size 2000M
+# php_value upload_max_filesize 2000M
+
+# MIME TYPES
+AddType video/ogg .ogv
+AddType video/webm .webm
+AddType video/mp4 MPEG-4 media mp4
+AddType video/x-m4v MPEG-4 media m4v
+AddType application/x-font-ttf .ttf
+AddType application/vnd.ms-fontobject .eot
+AddType application/x-font-otf .otf
+AddType application/x-font-woff .woff
+AddType application/vnd.ms-fontobject .svg
+AddType image/svg+xml svg svgz
+AddEncoding gzip svgz
+
+RewriteEngine On
+RewriteBase /personal/applications/phppickem/
+
+# 301 REDIRECTS
+# redirect 301 /links.php http://www.domain.com/api-companies.php
+# RewriteRule ^links.php$ api-companies.php [L,R=301]
+
+# rewrite all index files to folder root
+RewriteCond %{THE_REQUEST} /index\.html [NC]
+RewriteRule ^(.*/)?index\.html$ $1 [R=301,L]
+RewriteCond %{THE_REQUEST} /index\.php [NC]
+RewriteRule ^(.*/)?index\.php$ $1 [R=301,L]
+
+# strip php file extensions
+# RewriteRule ^admin - [L,NC]
+# RewriteRule ^os2 - [L,NC]
+# RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^.]+\.)+php?\ HTTP
+# RewriteRule ^(.*)\.php$ $1 [R=301,L]
+
+# redirect all traffic to the www domain (if applicable)
+# RewriteCond %{HTTP_HOST} !^www\.
+# RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
+# redirect all traffic to the primary domain (if applicable)
+# RewriteCond %{HTTP_HOST} !^www\.domain\.com
+# RewriteRule ^(.*)$ http://www\.domain\.com/$1 [R=301,L]
+
+# display php files without file extensions
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php
+
+# ERROR DOCUMENTS
+# ErrorDocument 404 /404.php
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^(.*)$ 404.php [L]

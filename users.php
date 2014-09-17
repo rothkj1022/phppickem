@@ -5,7 +5,7 @@ require('includes/classes/crypto.php');
 $crypto = new phpFreaksCrypto;
 
 if (!$isAdmin) {
-	header('Location: index.php');
+	header('Location: ./');
 	exit;
 }
 
@@ -25,7 +25,7 @@ switch ($action) {
 			if ($my_form->validate_fields('firstname,lastname,email,userName,password')) { // comma delimited list of the required form fields
 				if ($password == $password2) {
 					//check that username does not already exist
-					$username = mysql_real_escape_string(str_replace(' ', '_', $_POST['username']));
+					$username = $mysqli->real_escape_string(str_replace(' ', '_', $_POST['username']));
 					$sql = "SELECT userName FROM " . DB_PREFIX . "users WHERE userName='".$userName."';";
 					$query = $mysqli->query($sql);
 					if ($query->num_rows > 0) {
@@ -123,17 +123,27 @@ if ($action == 'add' || $action == 'edit') {
 ?>
 <form action="<?php $_SERVER['PHP_SELF']; ?>?action=<?php echo $action; ?>_action" method="post" name="addedituser">
 <input type="hidden" name="userID" value="<?php echo $userID; ?>" />
-<table cellpadding="3" cellspacing="0" border="0">
-	<tr><td>First Name:</td><td><input type="text" name="firstname" value="<?php echo $firstname; ?>"></td></tr>
-	<tr><td>Last Name:</td><td><input type="text" name="lastname" value="<?php echo $lastname; ?>"></td></tr>
-	<tr><td>Email:</td><td><input type="text" name="email" value="<?php echo $email; ?>" size="30"></td></tr>
-	<tr><td>User Name:</td><td><input type="text" name="userName" value="<?php echo $userName; ?>"></td></tr>
-	<?php if ($action == 'add') { ?>
-	<tr><td>Password:</td><td><input type="password" name="password" value=""></td></tr>
-	<tr><td>Confirm Password:</td><td><input type="password" name="password2" value=""></td></tr>
-	<?php } ?>
-	<tr><td>&nbsp;</td><td><input type="submit" name="action" value="Submit"></td></tr>
-</table>
+<p>First Name:<br />
+<input type="text" name="firstname" value="<?php echo $firstname; ?>"></p>
+
+<p>Last Name:<br />
+<input type="text" name="lastname" value="<?php echo $lastname; ?>"></p>
+
+<p>Email:<br />
+<input type="text" name="email" value="<?php echo $email; ?>" size="30"></p>
+
+<p>User Name:<br />
+<input type="text" name="userName" value="<?php echo $userName; ?>"></p>
+
+<?php if ($action == 'add') { ?>
+<p>Password:<br />
+<input type="password" name="password" value=""></p>
+
+<p>Confirm Password:<br />
+<input type="password" name="password2" value=""></p>
+<?php } ?>
+
+<p><input type="submit" name="action" value="Submit" class="btn btn-info" /></p>
 </form>
 <?php
 } else {
@@ -141,11 +151,12 @@ if ($action == 'add' || $action == 'edit') {
 ?>
 <h1>Update Users</h1>
 <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=add&week=<?php echo $week; ?>"><img src="images/icons/add_16x16.png" width="16" height="16" alt="Add Game" /></a>&nbsp;<a href="<?php echo $_SERVER['PHP_SELF']; ?>?action=add">Add User</a></p>
+<div class="table-responsive">
 <?php
 	$sql = "select * from " . DB_PREFIX . "users order by lastname, firstname";
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
-		echo '<table cellpadding="4" cellspacing="0" class="table1">' . "\n";
+		echo '<table class="table table-striped">' . "\n";
 		echo '	<tr><th align="left">Username</th><th align="left">Name</th><th align="left">Email</th><th>Status</th><th>&nbsp;</th></tr>' . "\n";
 		$i = 0;
 		while ($row = $query->fetch_assoc()) {
@@ -163,6 +174,7 @@ if ($action == 'add' || $action == 'edit') {
 	}
 }
 ?>
+</div>
 <script type="text/javascript">
 function confirmDelete(id) {
 	//confirm delete

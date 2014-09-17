@@ -3,7 +3,7 @@ require('includes/application_top.php');
 require('includes/classes/team.php');
 
 if (!$isAdmin) {
-	header('Location: index.php');
+	header('Location: ./');
 	exit;
 }
 
@@ -17,7 +17,7 @@ if ($_POST['action'] == 'Update') {
 		$sql .= "where gameID = " . $game['gameID'];
 		$mysqli->query($sql) or die('Error updating score: ' . $mysqli->error);
 	}
-	header('Location: index.php');
+	header('Location: ./');
 	exit;
 }
 
@@ -71,9 +71,10 @@ function getScores(weekNum) {
 	},'json');
 }
 </script>
-<p><input type="button" value="Load Scores" onclick="return getScores(<?php echo $week; ?>);" /></p>
+<p><input type="button" value="Load Scores" onclick="return getScores(<?php echo $week; ?>);" class="btn btn-info" /></p>
 <form id="scoresForm" name="scoresForm" action="scores.php" method="post">
 <input type="hidden" name="week" value="<?php echo $week; ?>" />
+<div class="table-responsive">
 <?php
 $sql = "select s.*, ht.city, ht.team, ht.displayName, vt.city, vt.team, vt.displayName ";
 $sql .= "from " . DB_PREFIX . "schedule s ";
@@ -83,7 +84,7 @@ $sql .= "where weekNum = " . $week . " ";
 $sql .= "order by gameTimeEastern";
 $query = $mysqli->query($sql);
 if ($query->num_rows > 0) {
-	echo '<table cellpadding="4" cellspacing="0" class="table1">' . "\n";
+	echo '<table class="table table-striped">' . "\n";
 	echo '	<tr><th colspan="6" align="left">Week ' . $week . '</th></tr>' . "\n";
 	$i = 0;
 	while ($row = $query->fetch_assoc()) {
@@ -104,7 +105,8 @@ if ($query->num_rows > 0) {
 }
 $query->free;
 ?>
-<input type="submit" name="action" value="Update" />
+</div>
+<input type="submit" name="action" value="Update" class="btn btn-info" />
 </form>
 <?php
 include('includes/footer.php');

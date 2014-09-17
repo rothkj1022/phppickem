@@ -3,7 +3,7 @@ require('includes/application_top.php');
 include('includes/classes/class.phpmailer.php');
 
 if (!$isAdmin) {
-	header('Location: index.php');
+	header('Location: ./');
 	exit;
 }
 
@@ -172,46 +172,40 @@ initRTE("js/cbrte/images/", "js/cbrte/", "", true);
 </script>
 <noscript><p><b>Javascript must be enabled to use this form.</b></p></noscript>
 <form name="cannedmsgform" action="send_email.php" method="post" onsubmit="return submitForm();">
-<table cellpadding="4" cellspacing="0">
-	<tr valign="top">
-		<td>Select Email Template:</td>
-		<td>
-			<select name="cannedMsg">
-				<option value=""></option>
-				<?php
-				$sql = "select * from " . DB_PREFIX . "email_templates";
-				$query = mysql_query($sql);
-				while ($row = mysql_fetch_array($query)) {
-					echo '<option value="' . $row['email_template_key'] . '"' . (($_POST['cannedMsg'] == $row['email_template_key']) ? ' selected="selected"' : '') . '>' . $row['email_template_title'] . '</option>' . "\n";
-				}
-				?>
-			</select>&nbsp;<input type="submit" name="action" value="Select" />
-		</td>
-	</tr>
-	<tr valign="top">
-		<td>Subject:</td>
-		<td><input type="text" name="subject" value="<?php echo $subject; ?>" size="40"></td>
-	</tr>
-	<tr valign="top">
-		<td>Message:</td>
-		<td>
-			<script language="JavaScript" type="text/javascript">
-			//build new richTextEditor
-			var message = new richTextEditor('message');
+
+<p>Select Email Template:<br />
+<select name="cannedMsg">
+	<option value=""></option>
+	<?php
+	$sql = "select * from " . DB_PREFIX . "email_templates";
+	$query = $mysqli->query($sql);
+	while ($row = $query->fetch_assoc()) {
+		echo '<option value="' . $row['email_template_key'] . '"' . (($_POST['cannedMsg'] == $row['email_template_key']) ? ' selected="selected"' : '') . '>' . $row['email_template_title'] . '</option>' . "\n";
+	}
+	$query->free;
+	?>
+</select>&nbsp;<input type="submit" name="action" value="Select" class="btn btn-info" /></p>
+
+<p>Subject:<br />
+<input type="text" name="subject" value="<?php echo $subject; ?>" size="40"></p>
+
+<p>Message:<br />
+<script language="JavaScript" type="text/javascript">
+//build new richTextEditor
+var message = new richTextEditor('message');
 <?php
 //format content for preloading
 if (!empty($message)) {
 	$message = rteSafe($message);
 }
 ?>
-			message.html = '<?php echo $message; ?>';
-			//rte1.toggleSrc = false;
-			message.build();
-			</script>
-		</td>
-	</tr>
-	<tr><td>&nbsp;</td><td><input name="action" type="submit" value="Send Message" /></td></tr>
-</table>
+message.html = '<?php echo $message; ?>';
+//rte1.toggleSrc = false;
+message.build();
+</script>
+</p>
+
+<p><input name="action" type="submit" value="Send Message" class="btn btn-info" /></p>
 </form>
 <?php
 }

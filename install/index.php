@@ -49,7 +49,7 @@ switch ($step) {
 					// Perform the query
 					$templine = str_replace('nflp_', DB_PREFIX, $templine);
 					if (!$mysqli->query($templine)) {
-						$errors[] = '<p>Error performing query \'<b>' . $templine . '</b>\': ' . mysql_error() . '</p>';
+						$errors[] = '<p>Error performing query \'<b>' . $templine . '</b>\': ' . $mysqli->error . '</p>';
 					}
 					// Reset temp variable to empty
 					$templine = '';

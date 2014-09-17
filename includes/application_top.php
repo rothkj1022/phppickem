@@ -19,8 +19,6 @@ foreach($_GET as $key=>$value){
 }
 
 $mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE) or die('error connecting to db');
-//echo DB_HOSTNAME.' '.DB_USERNAME.' '.DB_PASSWORD.' '.DB_DATABASE;
-//echo 'kjr';
 $mysqli->set_charset('utf8');
 //if (!$mysqli) {
 	//check for presence of install folder
@@ -56,7 +54,17 @@ if (!in_array(basename($_SERVER['PHP_SELF']), $okFiles) && (empty($_SESSION['log
 	$adminUser = $login->get_user('admin');
 }
 
-$isAdmin = 0;
 if ($_SESSION['loggedInUser'] === 'admin' && $_SESSION['logged'] === 'yes') {
 	$isAdmin = 1;
+} else {
+	$isAdmin = 0;
+	//get current week
+	$currentWeek = getCurrentWeek();
+
+	$cutoffDateTime = getCutoffDateTime($currentWeek);
+	$firstGameTime = getFirstGameTime($currentWeek);
+
+	$firstGameExpired = ((date("U", time()+(SERVER_TIMEZONE_OFFSET * 3600)) > strtotime($firstGameTime)) ? true : false);
+	$weekExpired = ((date("U", time()+(SERVER_TIMEZONE_OFFSET * 3600)) > strtotime($cutoffDateTime)) ? true : false);
 }
+//$isAdmin = 1;

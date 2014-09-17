@@ -79,16 +79,17 @@ $query->free;
 ?>
 <script type="text/javascript">
 $(document).ready(function(){
-$(".table1 tr").mouseover(function() {
-	$(this).addClass("over");}).mouseout(function() {$(this).removeClass("over");
-});
-$(".table1 tr").click(function() {
-	if ($(this).attr('class').indexOf('overPerm') > -1) {
-		$(this).removeClass("overPerm");
-	} else {
-		$(this).addClass("overPerm");
-	}
-});
+	$(".table tr").mouseover(function() {
+		$(this).addClass("over");}).mouseout(function() {$(this).removeClass("over");
+	});
+	$(".table tr").click(function() {
+		if ($(this).attr('class').indexOf('overPerm') > -1) {
+			$(this).removeClass("overPerm");
+		} else {
+			$(this).addClass("overPerm");
+		}
+	});
+	//$( "#table1" ).draggable({ containment: "#table1-container", scroll: false })
 });
 </script>
 <style type="text/css">
@@ -107,8 +108,12 @@ if ($hideMyPicks && !$weekExpired) {
 
 if (sizeof($playerTotals) > 0) {
 ?>
-<table cellpadding="4" cellspacing="0" class="table1">
-	<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games); ?>">Week <?php echo $week; ?></th><th align="left">Score</th></tr>
+<div class="table-responsive">
+<table class="table table-striped">
+	<thead>
+		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games); ?>">Week <?php echo $week; ?></th><th align="left">Score</th></tr>
+	</thead>
+	<tbody>
 <?php
 	$i = 0;
 	arsort($playerTotals);
@@ -122,7 +127,8 @@ if (sizeof($playerTotals) > 0) {
 		}
 		$tmpUser = $login->get_user_by_id($userID);
 		$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
-		echo '	<tr' . $rowclass . '>' . "\n";
+		//echo '	<tr' . $rowclass . '>' . "\n";
+		echo '	<tr>' . "\n";
 		switch ($user_names_display) {
 			case 1:
 				echo '		<td>' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '</td>' . "\n";
@@ -131,7 +137,7 @@ if (sizeof($playerTotals) > 0) {
 				echo '		<td>' . trim($tmpUser->userName) . '</td>' . "\n";
 				break;
 			default: //3
-				echo '		<td><abbrev title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . trim($tmpUser->userName) . '</abbrev></td>' . "\n";
+				echo '		<td><abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . trim($tmpUser->userName) . '</abbr></td>' . "\n";
 				break;
 		}
 		//loop through all games
@@ -152,8 +158,8 @@ if (sizeof($playerTotals) > 0) {
 			}
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";
 		}
-		echo '		<td>' . $totalCorrect . '/' . sizeof($games) . ' (' . number_format(($totalCorrect / sizeof($games)) * 100, 2) . '%)</td>' . "\n";
-		echo '	<tr>' . "\n";
+		echo '		<td nowrap><b>' . $totalCorrect . '/' . sizeof($games) . ' (' . number_format(($totalCorrect / sizeof($games)) * 100, 2) . '%)</b></td>' . "\n";
+		echo '	</tr>' . "\n";
 		$i++;
 	}
 
@@ -170,14 +176,16 @@ if (sizeof($playerTotals) > 0) {
 					$winnersHtml .= trim($winner->userName);
 					break;
 				default: //3
-					$winnersHtml .= '<abbrev title="' . trim($winner->firstname . ' ' . $winner->lastname) . '">' . $winner->userName . '</abbrev>';
+					$winnersHtml .= '<abbr title="' . trim($winner->firstname . ' ' . $winner->lastname) . '">' . $winner->userName . '</abbr>';
 					break;
 			}
 		}
 		echo '	<tr><th colspan="' . (sizeof($games) + 2) . '" align="left">Winner: ' . $winnersHtml . '</th></tr>' . "\n";
 	}
 ?>
+	</tbody>
 </table>
+</div>
 <?php
 	//display list of absent players
 	$sql = "select * from " . DB_PREFIX . "users where userID not in(" . implode(',', array_keys($playerTotals)) . ") and userName <> 'admin'";
@@ -195,7 +203,7 @@ if (sizeof($playerTotals) > 0) {
 					$absentHtml .= $row['userName'];
 					break;
 				default: //3
-					$absentHtml .= '<abbrev title="' . trim($row['firstname'] . ' ' . $row['lastname']) . '">' . $row['userName'] . '</abbrev>';
+					$absentHtml .= '<abbr title="' . trim($row['firstname'] . ' ' . $row['lastname']) . '">' . $row['userName'] . '</abbr>';
 					break;
 			}
 			$i++;

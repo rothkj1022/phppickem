@@ -10,7 +10,8 @@ include('includes/header.php');
 ?>
 <h1>Standings</h1>
 <h2>Weekly Stats</h2>
-<table cellpadding="4" cellspacing="0" class="table1">
+<div class="table-responsive">
+<table class="table table-striped">
 	<tr><th align="left">Week</th><th align="left">Winner(s)</th><th>Score</th></tr>
 <?php
 if (isset($weekStats)) {
@@ -27,7 +28,7 @@ if (isset($weekStats)) {
 					$winners .= ((strlen($winners) > 0) ? ', ' : '') . $tmpUser->userName;
 					break;
 				default: //3
-					$winners .= ((strlen($winners) > 0) ? ', ' : '') . '<abbrev title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . $tmpUser->userName . '</abbrev>';
+					$winners .= ((strlen($winners) > 0) ? ', ' : '') . '<abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . $tmpUser->userName . '</abbr>';
 					break;
 			}
 		}
@@ -40,14 +41,14 @@ if (isset($weekStats)) {
 }
 ?>
 </table>
-<p>&nbsp;</p>
+</div>
 
 <h2>User Stats</h2>
-<table cellpadding="0" cellspacing="0">
-	<tr valign="top">
-		<td>
-			<b>By Name</b><br />
-			<table cellpadding="4" cellspacing="0" class="table1">
+<div class="row">
+	<div class="col-md-4 col-xs-12">
+		<b>By Name</b><br />
+		<div class="table-responsive">
+			<table class="table table-striped">
 				<tr><th align="left">Player</th><th align="left">Wins</th><th>Pick Ratio</th></tr>
 			<?php
 			if (isset($playerTotals)) {
@@ -65,7 +66,7 @@ if (isset($weekStats)) {
 							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;
 						default: //3
-							echo '	<tr' . $rowclass . '><td class="tiny"><abbrev title="' . $stats[name] . '">' . $stats[userName] . '<abbrev></td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '<abbr></td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;
 					}
 					$i++;
@@ -75,11 +76,12 @@ if (isset($weekStats)) {
 			}
 			?>
 			</table>
-		</td>
-		<td>&nbsp;</td>
-		<td>
-			<b>By Wins</b><br />
-			<table cellpadding="4" cellspacing="0" class="table1">
+		</div>
+	</div>
+	<div class="col-md-4 col-xs-12">
+		<b>By Wins</b><br />
+		<div class="table-responsive">
+			<table class="table table-striped">
 				<tr><th align="left">Player</th><th align="left">Wins</th><th>Pick Ratio</th></tr>
 			<?php
 			if (isset($playerTotals)) {
@@ -97,7 +99,7 @@ if (isset($weekStats)) {
 							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;
 						default: //3
-							echo '	<tr' . $rowclass . '><td class="tiny"><abbrev title="' . $stats[name] . '">' . $stats[userName] . '</abbrev></td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '</abbr></td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;
 					}
 					$i++;
@@ -107,11 +109,12 @@ if (isset($weekStats)) {
 			}
 			?>
 			</table>
-		</td>
-		<td>&nbsp;</td>
-		<td>
-			<b>By Pick Ratio</b><br />
-			<table cellpadding="4" cellspacing="0" class="table1">
+		</div>
+	</div>
+	<div class="col-md-4 col-xs-12">
+		<b>By Pick Ratio</b><br />
+		<div class="table-responsive">
+			<table class="table table-striped">
 				<tr><th align="left">Player</th><th align="left">Wins</th><th>Pick Ratio</th></tr>
 			<?php
 			if (isset($playerTotals)) {
@@ -129,7 +132,7 @@ if (isset($weekStats)) {
 							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;
 						default: //3
-							echo '	<tr' . $rowclass . '><td class="tiny"><abbrev title="' . $stats[name] . '">' . $stats[userName] . '</abbrev></td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '</abbr></td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;
 					}
 					$i++;
@@ -139,10 +142,12 @@ if (isset($weekStats)) {
 			}
 			?>
 			</table>
-		</td>
-	</tr>
-</table>
-<p>&nbsp;</p>
+		</div>
+	</div>
+</div>
+
 <?php
+include('includes/comments.php');
+
 include('includes/footer.php');
 ?>

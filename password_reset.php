@@ -23,7 +23,7 @@ if (isset($_POST['submit'])) {
 		$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
 		$secure_password = $crypto->encrypt($salt . $crypto->encrypt($password));
 		$sql = "update " . DB_PREFIX . "users set salt = '".$salt."', password = '".$secure_password."' where firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
-		$mysqli->query($sql) or die(mysql_error());
+		$mysqli->query($sql) or die($mysqli->error);
 
 		//send confirmation email
 		$mail = new PHPMailer();
@@ -55,45 +55,48 @@ if (isset($_POST['submit'])) {
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>Password Reset</title>
-	<link href="css/main.css" rel="stylesheet" type="text/css" media="screen" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>NFL Pick 'Em</title>
+
+	<base href="<?php echo SITE_URL; ?>" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
+	<!--link rel="stylesheet" type="text/css" media="all" href="css/all.css" /-->
+	<!--link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" /-->
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/modernizr-2.7.0.min.js"></script>
+	<script type="text/javascript" src="js/svgeezy.min.js"></script>
+	<script type="text/javascript" src="js/jquery.main.js"></script>
+	<style type="text/css">
+	body { background-color: #eee; }
+	.form-password-reset {
+		max-width: 330px;
+		padding: 15px;
+		margin: 0 auto;
+	}
+	</style>
 </head>
 
 <body>
-	<style>
-	body {
-		width: 550px;
-	}
-	#login {
-		margin: 20px auto;
-	}
-	</style>
-	<div id="login">
-	<table>
-		<tr valign="top">
-			<td><img src="images/logos/nfl-logo.png" /></td>
-			<td>&nbsp;</td>
-			<td>
-				<h1>Password Reset</h1>
-				<?php if(isset($display)) echo $display; ?>
-				<p>Enter your name and email address, and a new password will be generated and sent to you.</p>
-				<form action="password_reset.php" method="post" name="pwdreset">
-					<fieldset>
-					<legend style="font-weight:bold;">Password Reset</legend>
-						<table cellpadding="3" cellspacing="0" border="0">
-							<tr><td>First Name:</td><td><input type="text" name="firstname" value="<?php echo $_POST['firstname']; ?>"></td></tr>
-							<tr><td>Email:</td><td><input type="text" name="email" value="<?php echo $_POST['email']; ?>"></td></tr>
-							<tr><td>&nbsp;</td><td><input type="submit" name="submit" value="Submit"></td></tr>
-						</table>
-					</fieldset>
-				</form>
-				<p><a href="login.php">Log In</a></p>
-			</td>
-		</tr>
-	</table>
+	<div class="container">
+		<form class="form-password-reset" role="form" action="password_reset.php" method="post">
+			<h2 class="form-password-reset-heading">Password Reset</h2>
+			<?php if(isset($display)) echo $display; ?>
+			<p>Enter your name and email address, and a new password will be generated and sent to you.</p>
+			<p><input type="text" name="firstname" class="form-control" placeholder="First Name" required autofocus />
+			<input type="email" name="email" class="form-control" placeholder="Email Address" required /></p>
+			<!--label class="checkbox"><input type="checkbox" value="remember-me"> Remember me</label-->
+			<p><button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button></p>
+			<p><a href="login.php">Log In</a></p>
+		</form>
+
+    </div> <!-- /container -->
+</body>
+</html>
 <?php
-include('includes/footer.php');
+//include('includes/footer.php');
 
 function randomString($length) {
 	// Generate random 32 charecter string

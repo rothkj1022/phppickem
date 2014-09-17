@@ -26,13 +26,13 @@ if (isset($_POST['submit'])) {
 		if ($my_form->validate_fields('firstname,lastname,email,username,password')) { // comma delimited list of the required form fields
 			if ($password == $password2) {
 				//create new user, disabled
-				$username = mysql_real_escape_string(str_replace(' ', '_', $username));
+				$username = $mysqli->real_escape_string(str_replace(' ', '_', $username));
 				$sql = "SELECT userName FROM " . DB_PREFIX . "users WHERE userName='".$username."';";
 				$query = $mysqli->query($sql);
 				if ($query->num_rows > 0) {
 					$display = '<div class="responseError">User already exists, please try another username.</div><br/>';
 				} else {
-					$sql = "SELECT email FROM " . DB_PREFIX . "users WHERE email='".mysql_real_escape_string($email)."';";
+					$sql = "SELECT email FROM " . DB_PREFIX . "users WHERE email='".$mysqli->real_escape_string($email)."';";
 					$query = $mysqli->query($sql);
 					if ($query->num_rows > 0) {
 						$display = '<div class="responseError">Email address already exists.  If this is your email account, please log in or reset your password.</div><br/>';
@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
 						$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
 						$secure_password = $crypto->encrypt($salt . $crypto->encrypt($password));
 						$sql = "INSERT INTO " . DB_PREFIX . "users (userName, password, salt, firstname, lastname, email, status)
-							VALUES ('".$username."', '".$secure_password."', '".$salt."', '".$firstname."', '".$lastname."', '".mysql_real_escape_string($email)."', 1);";
+							VALUES ('".$username."', '".$secure_password."', '".$salt."', '".$firstname."', '".$lastname."', '".$mysqli->real_escape_string($email)."', 1);";
 						$mysqli->query($sql) or die($mysqli->error);
 
 						//send confirmation email
@@ -62,7 +62,7 @@ if (isset($_POST['submit'])) {
 						//exit;
 						$_SESSION['logged'] = 'yes';
 						$_SESSION['loggedInUser'] = $username;
-						header('Location: index.php?login=success');
+						header('Location: ./?login=success');
 						exit;
 					}
 				}

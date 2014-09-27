@@ -121,7 +121,7 @@ if ($action == 'add' || $action == 'edit') {
 		echo $display;
 	}
 ?>
-<form action="<?php $_SERVER['PHP_SELF']; ?>?action=<?php echo $action; ?>_action" method="post" name="addedituser">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>?action=<?php echo $action; ?>_action" method="post" name="addedituser">
 <input type="hidden" name="userID" value="<?php echo $userID; ?>" />
 <p>First Name:<br />
 <input type="text" name="firstname" value="<?php echo $firstname; ?>"></p>
@@ -174,7 +174,6 @@ if ($action == 'add' || $action == 'edit') {
 	}
 }
 ?>
-</div>
 <script type="text/javascript">
 function confirmDelete(id) {
 	//confirm delete

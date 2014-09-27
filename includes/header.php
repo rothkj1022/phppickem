@@ -12,7 +12,7 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 	<base href="<?php echo SITE_URL; ?>" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/all.css" />
-	<!--link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" /-->
+	<link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" />
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -20,8 +20,9 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 	<script type="text/javascript" src="js/svgeezy.min.js"></script>
 	<script type="text/javascript" src="js/jquery.main.js"></script>
 
-	<script type="text/javascript" src="js/jquery.countdown.pack.js"></script>
 	<script type="text/javascript" src="js/jquery.jclock.js"></script>
+	<script type="text/javascript" src="js/jquery.plugin.min.js"></script>
+	<script type="text/javascript" src="js/jquery.countdown.min.js"></script>
 </head>
 
 <body>

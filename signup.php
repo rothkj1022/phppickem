@@ -1,10 +1,10 @@
 <?php
-require('includes/application_top.php');
+require_once('includes/application_top.php');
 require('includes/classes/crypto.php');
 include('includes/classes/class.formvalidation.php');
 include('includes/classes/class.phpmailer.php');
 
-if (!$allow_signup) {
+if (!ALLOW_SIGNUP) {
 	header('location: login.php?signup=no');
 	exit;
 }
@@ -77,52 +77,59 @@ if (isset($_POST['submit'])) {
 		$display = '<div class="responseError">There seems to be a problem with your email address, please check.</div><br/>';
 	}
 }
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+?>
+<!DOCTYPE html>
+<html xml:lang="en" lang="en">
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>NFL Pick 'Em Signup</title>
-	<link href="css/main.css" rel="stylesheet" type="text/css" media="screen" />
+
+	<base href="<?php echo SITE_URL; ?>" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
+	<!--link rel="stylesheet" type="text/css" media="all" href="css/all.css" /-->
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/modernizr-2.7.0.min.js"></script>
+	<script type="text/javascript" src="js/svgeezy.min.js"></script>
+	<script type="text/javascript" src="js/jquery.main.js"></script>
+	<style type="text/css">
+	body { background-color: #eee; }
+	.form-signin {
+		max-width: 330px;
+		padding: 15px;
+		margin: 0 auto;
+	}
+	</style>
 </head>
 
 <body>
-	<style>
-	body {
-		width: 550px;
-	}
-	#login {
-		margin: 20px auto;
-	}
-	</style>
-	<div id="login">
-	<table>
-		<tr valign="top">
-			<td><img src="images/logos/nfl-logo.png" /></td>
-			<td>&nbsp;</td>
-			<td>
-				<h1>NFL Pick 'Em Signup</h1>
-				<?php
-					if(isset($display)) {
-						echo $display;
-					}
-				?>
-				<form action="signup.php" method="post" name="addnewuser">
-					<fieldset>
-					<legend style="font-weight:bold;">Sign Up</legend>
-						<table cellpadding="3" cellspacing="0" border="0">
-							<tr><td>First Name:</td><td><input type="text" name="firstname" value="<?php echo $_POST['firstname']; ?>"></td></tr>
-							<tr><td>Last Name:</td><td><input type="text" name="lastname" value="<?php echo $_POST['lastname']; ?>"></td></tr>
-							<tr><td>Email:</td><td><input type="text" name="email" value="<?php echo $_POST['email']; ?>" size="30"></td></tr>
-							<tr><td>User Name:</td><td><input type="text" name="username" value="<?php echo $_POST['username']; ?>"></td></tr>
-							<tr><td>Password:</td><td><input type="password" name="password" value=""></td></tr>
-							<tr><td>Confirm Password:</td><td><input type="password" name="password2" value=""></td></tr>
-							<tr><td>&nbsp;</td><td><input type="submit" name="submit" value="Submit"></td></tr>
-						</table>
-					</fieldset>
-				</form>
-			</td>
-		</tr>
-	</table>
+	<div class="container">
+		<form class="form-signin" role="form" action="signup.php" method="POST">
+			<h1>NFL Pick 'Em Signup</h1>
 <?php
-include('includes/footer.php');
+if(isset($display)) {
+	echo $display;
+}
+?>
+			<p><label for="firstname">First Name:</label>
+			<input type="text" name="firstname" value="<?php echo $_POST['firstname']; ?>" class="form-control" placeholder="First Name" required autofocus /></p>
+			<p><label for="lastname">Last Name:</label>
+			<input type="text" name="lastname" value="<?php echo $_POST['lastname']; ?>" class="form-control" placeholder="Last Name" required /></p>
+			<p><label for="email">Email:</label>
+			<input type="email" name="email" value="<?php echo $_POST['email']; ?>" class="form-control" placeholder="Email" required /></p>
+			<p><label for="username">User Name:</label>
+			<input type="text" name="username" value="<?php echo $_POST['username']; ?>" class="form-control" placeholder="User Name" /></p>
+			<p><label for="password">Password:</label>
+			<input type="password" name="password" value="" class="form-control" placeholder="Password" required /></p>
+			<p>Confirm Password:</label>
+			<input type="password" name="password2" value="" class="form-control" placeholder="Password (again)" required /></p>
+			<p><input type="submit" name="submit" value="Submit" class="btn btn-lg btn-primary btn-block" /></p>
+		</form>
+
+    </div> <!-- /container -->
+</body>
+</html>
+<?php
+//include('includes/footer.php');

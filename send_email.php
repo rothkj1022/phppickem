@@ -113,12 +113,12 @@ if ($_POST['action'] == 'Send Message') {
 		$sql = "select u.firstname, u.email,";
 		$sql .= "(select count(p.pickID) from nflp_picks p inner join nflp_schedule s on p.gameID = s.gameID where userID = u.userID and s.weekNum = " . $week . ") as userPicks ";
 		$sql .= "from " . DB_PREFIX . "users u ";
-		$sql .= "where u.userName <> 'admin' ";
+		$sql .= "where u.`status` = 1 and u.userName <> 'admin' ";
 		$sql .= "group by u.firstname, u.email ";
 		$sql .= "having userPicks < " . $totalGames;
 	} else {
 		//select all users
-		$sql = "select firstname, email from " . DB_PREFIX . "users where userName <> 'admin'";
+		$sql = "select firstname, email from " . DB_PREFIX . "users where `status` = 1 and userName <> 'admin'";
 	}
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {

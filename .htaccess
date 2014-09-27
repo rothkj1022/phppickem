@@ -94,6 +94,6 @@ RewriteRule ^(.*)$ $1.php
 
 # ERROR DOCUMENTS
 # ErrorDocument 404 /404.php
-# RewriteCond %{REQUEST_FILENAME} !-f
-# RewriteCond %{REQUEST_FILENAME} !-d
-# RewriteRule ^(.*)$ 404.php [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ 404.php [L]

@@ -111,13 +111,13 @@ $weekNav .= '	</div>' . "\n";
 $weekNav .= '</div>' . "\n";
 echo $weekNav;
 ?>
-		<div id="entry-form" class="row">
+		<div class="row">
 			<div class="col-md-4 col-xs-12 col-right">
 <?php
 include('includes/column_right.php');
 ?>
 			</div>
-			<div class="col-md-8 col-xs-12">
+			<div id="content" class="col-md-8 col-xs-12">
 				<h2>Week <?php echo $week; ?> - Make Your Picks:</h2>
 				<p>Please make your picks below for each game.</p>
 	<?php

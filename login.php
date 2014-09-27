@@ -27,7 +27,6 @@ if(empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
 	<base href="<?php echo SITE_URL; ?>" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
 	<!--link rel="stylesheet" type="text/css" media="all" href="css/all.css" /-->
-	<!--link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" /-->
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -51,9 +50,9 @@ if(empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
 			<?php
 			//print_r($_POST);
 			if ($_GET['login'] == 'failed') {
-			echo '<div class="responseError">Oops!  Login failed, please try again.</div><br />';
+				echo '<div class="responseError">Oops!  Login failed, please try again.</div><br />';
 			} else if ($_GET['signup'] == 'no') {
-			echo '<div class="responseError">Sorry, signup is disabled.  Please contact your administrator.</div><br />';
+				echo '<div class="responseError">Sorry, signup is disabled.  Please contact your administrator.</div><br />';
 			}
 			?>
 			<p><input type="text" name="username" class="form-control" placeholder="Username" required autofocus />
@@ -61,7 +60,7 @@ if(empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
 			<!--label class="checkbox"><input type="checkbox" value="remember-me"> Remember me</label-->
 			<p><button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button></p>
 			<?php
-			if ($allow_signup && $show_signup_link) {
+			if (ALLOW_SIGNUP && SHOW_SIGNUP_LINK) {
 				echo '<p><a href="signup.php">Click here to sign up for an account</a></p>';
 			}
 			?>

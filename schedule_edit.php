@@ -229,7 +229,6 @@ $query->free;
 	}
 }
 ?>
-</div>
 <script type="text/javascript">
 function confirmDelete(id) {
 	//confirm delete

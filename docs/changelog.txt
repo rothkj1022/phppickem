@@ -1,5 +1,6 @@
 PHP Pick 'Em change log
 
+2.0.0 - 9/27/2014 - Updated code to use mysqli instead of mysql, and implemented responsive design
 1.0.11 - 9/1/2014 - updated installer with 2014 schedule
 1.0.10 - 8/26/2013 - updated installer with 2013 schedule
 1.0.9 - 9/2/2012 - updated installer with 2012 schedule

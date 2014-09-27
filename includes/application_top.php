@@ -67,4 +67,3 @@ if ($_SESSION['loggedInUser'] === 'admin' && $_SESSION['logged'] === 'yes') {
 	$firstGameExpired = ((date("U", time()+(SERVER_TIMEZONE_OFFSET * 3600)) > strtotime($firstGameTime)) ? true : false);
 	$weekExpired = ((date("U", time()+(SERVER_TIMEZONE_OFFSET * 3600)) > strtotime($cutoffDateTime)) ? true : false);
 }
-//$isAdmin = 1;

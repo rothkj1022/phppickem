@@ -188,7 +188,7 @@ if (sizeof($playerTotals) > 0) {
 </div>
 <?php
 	//display list of absent players
-	$sql = "select * from " . DB_PREFIX . "users where userID not in(" . implode(',', array_keys($playerTotals)) . ") and userName <> 'admin'";
+	$sql = "select * from " . DB_PREFIX . "users where `status` = 1 and userID not in(" . implode(',', array_keys($playerTotals)) . ") and userName <> 'admin'";
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
 		$absentHtml = '<p><b>Absent Players:</b> ';

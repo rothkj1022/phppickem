@@ -1,5 +1,6 @@
-	<!--div id="columnRight"-->
-		<div class="boxRight">
+		<p class="skip2content"><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#content">Skip to content &raquo;</a></p>
+
+		<div class="bg-primary">
 			<b>Current Time (Eastern):</b><br />
 			<span id="jclock1"></span>
 			<script type="text/javascript">
@@ -19,7 +20,7 @@
 		<?php
 		if ($firstGameTime !== $cutoffDateTime && !$firstGameExpired) {
 		?>
-		<div id="firstGame" class="countdown boxRight"></div>
+		<div id="firstGame" class="countdown bg-success"></div>
 		<script type="text/javascript">
 		//set up countdown for first game
 		var firstGameTime = new Date("<?php echo date('F j, Y H:i:00', strtotime($firstGameTime)); ?>");
@@ -30,7 +31,7 @@
 		}
 		if (!$weekExpired) {
 		?>
-		<div id="picksLocked" class="countdown boxRight"></div>
+		<div id="picksLocked" class="countdown bg-danger"></div>
 		<script type="text/javascript">
 		//set up countdown for picks lock time
 		var picksLockedTime = new Date("<?php echo date('F j, Y H:i:00', strtotime($cutoffDateTime)); ?>");
@@ -54,7 +55,7 @@ $tmpWins = 0;
 $i = 1;
 if (is_array($playerTotals) && sizeof($playerTotals) > 0) {
 	//show top 3 winners
-	echo '		<div class="boxRight">' . "\n";
+	echo '		<div class="bg-success">' . "\n";
 	echo '			<b>Current Leaders (# wins):</b><br />' . "\n";
 	arsort($playerTotals);
 	foreach($playerTotals as $playerID => $stats) {
@@ -73,7 +74,7 @@ $tmpScore = 0;
 $i = 1;
 if (is_array($playerTotals) && sizeof($playerTotals) > 0) {
 	//show top 3 pick ratios
-	echo '		<div class="boxRight">' . "\n";
+	echo '		<div class="bg-success">' . "\n";
 	echo '			<b>Current Leaders (pick %):</b><br />' . "\n";
 	$playerTotals = sort2d($playerTotals, 'score', 'desc');
 	foreach($playerTotals as $playerID => $stats) {
@@ -89,8 +90,9 @@ if (is_array($playerTotals) && sizeof($playerTotals) > 0) {
 	}
 	echo '		</div>' . "\n";
 }
-?>
-		<!--
-		<div class="boxRight"><b>Latest Comments:</b></div>
-		//-->
-	<!--/div-->
+
+if (COMMENTS_SYSTEM !== 'disabled') {
+	echo '		<p class="bg-info"><b>Taunt your friends!</b><br /><a href="'.$_SERVER['REQUEST_URI'].'#comments">Post a comment</a> now!</p>'."\n";
+}
+
+//include('includes/comments.php');

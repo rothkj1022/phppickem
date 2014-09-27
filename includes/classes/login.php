@@ -41,7 +41,7 @@ class Login{
 			$_SESSION['logged'] = 'yes';
 			$_SESSION['loggedInUser'] = $user->userName;
 //			$_SESSION['level'] = md5($user->user_level);
-			header('Location: '.SITE_URL.'?login=success');
+			header('Location: '.SITE_URL);
 			exit;
 		} else {
 			$_SESSION = array();

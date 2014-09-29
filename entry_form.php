@@ -162,6 +162,14 @@ include('includes/column_right.php');
 			if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
 				//if score is entered, show score
 				$scoreEntered = true;
+				$homeScore = (int)$row['homeScore'];
+				$visitorScore = (int)$row['visitorScore'];
+				if ($homeScore > $visitorScore) {
+					$winnerID = $row['homeID'];
+				} else if ($visitorScore > $homeScore) {
+					$winnerID = $row['visitorID'];
+				};
+				//$winnerID will be null if tie, which is ok
 				echo '					<div class="col-xs-12 center"><b>Final: ' . $row['visitorScore'] . ' - ' . $row['homeScore'] . '</b></div>' . "\n";
 			} else {
 				//else show time of game
@@ -204,7 +212,7 @@ include('includes/column_right.php');
 				}
 				if ($scoreEntered) {
 					//set status of pick (correct, incorrect)
-					if ($pickID == $row['winnerID']) {
+					if ($pickID == $winnerID) {
 						$statusImg = '<img src="images/check_16x16.png" width="16" height="16" alt="" />';
 					} else {
 						$statusImg = '<img src="images/cross_16x16.png" width="16" height="16" alt="" />';

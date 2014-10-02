@@ -89,7 +89,7 @@ if (isset($_POST['submit'])) {
 	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
 	<!--link rel="stylesheet" type="text/css" media="all" href="css/all.css" /-->
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-	<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/modernizr-2.7.0.min.js"></script>
 	<script type="text/javascript" src="js/svgeezy.min.js"></script>

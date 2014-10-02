@@ -4,8 +4,8 @@
 	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
 ]>
-<svg  version="1.1" id="Layer_1" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="173.933" height="199.999"
-	 viewBox="0 0 173.933 199.999" overflow="visible" enable-background="new 0 0 173.933 199.999" xml:space="preserve">
+<svg  version="1.1" id="Layer_1" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;"
+	 viewBox="0 0 173.933 199.999" preserveAspectRatio="xMidYMid meet" overflow="visible" enable-background="new 0 0 173.933 199.999" xml:space="preserve">
 <g>
 	<path fill-rule="evenodd" clip-rule="evenodd" fill="#FFFFFF" d="M157.069,76.773c-6.94-1.455-8.997-9.253-9.082-9.596
 		c0-0.084,0-0.084,0-0.084c-2.144-7.797,4.712-13.538,5.055-13.795c1.028-0.857,1.371-2.313,0.772-3.511

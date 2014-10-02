@@ -4,8 +4,8 @@
 	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
 ]>
-<svg  version="1.1" id="NEW_ENGLAND_PATRIOTS" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="250.305" height="116.848"
-	 viewBox="0 0 250.305 116.848" overflow="visible" enable-background="new 0 0 250.305 116.848" xml:space="preserve">
+<svg  version="1.1" id="NEW_ENGLAND_PATRIOTS" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;"
+	 viewBox="0 0 250.305 116.848" preserveAspectRatio="xMidYMid meet" overflow="visible" enable-background="new 0 0 250.305 116.848" xml:space="preserve">
 <g>
 	<g>
 		<path fill="#FFFFFF" d="M243.575,8.86c-23.285,6.748-42.468-9.324-71.37-8.835l-0.045-0.002c0,0-39.721-1.171-77.909,13.173

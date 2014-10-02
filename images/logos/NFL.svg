@@ -4,8 +4,8 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    version="1.0"
-   width="195.51469"
-   height="258.3688"
+   viewBox="0 0 195.51469 258.3688" 
+   preserveAspectRatio="xMidYMid meet"
    id="svg2532">
   <defs
      id="defs2534" />

@@ -4,8 +4,8 @@
 	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
 ]>
-<svg  version="1.1" id="DENVER_BRONCOS" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="343.573" height="200"
-	 viewBox="0 0 343.573 200" overflow="visible" enable-background="new 0 0 343.573 200" xml:space="preserve">
+<svg  version="1.1" id="DENVER_BRONCOS" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" 
+	 viewBox="0 0 343.573 200" preserveAspectRatio="xMidYMid meet" overflow="visible" enable-background="new 0 0 343.573 200" xml:space="preserve">
 <g>
 	<g>
 		<path fill="#13264B" d="M0.013,53.873c0,0-1.803,33.656,37.487,55.053c0,0,15.819,8.43,53.049,15.278

@@ -4,8 +4,8 @@
 	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
 ]>
-<svg  version="1.1" id="CAROLINA_PANTHERS" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="367.938" height="200"
-	 viewBox="0 0 367.938 200" overflow="visible" enable-background="new 0 0 367.938 200" xml:space="preserve">
+<svg  version="1.1" id="CAROLINA_PANTHERS" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" 
+	 viewBox="0 0 367.938 200" preserveAspectRatio="xMidYMid meet" overflow="visible" enable-background="new 0 0 367.938 200" xml:space="preserve">
 <g>
 	<path fill="#FFFFFF" d="M354.832,52.161c-5.396-2.391-11.161-5.195-26.565-7.47c-0.251-1.226-0.654-2.546-1.214-3.981
 		c0,0,8.278-7.576,9.542-17.314c0.255-1.956-1.853-8.087-7.055-7.912c-4.969,0.167-9.986-0.523-14.218-2.079

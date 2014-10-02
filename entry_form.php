@@ -86,6 +86,9 @@ include('includes/header.php');
 		$('input[type=radio]').click(function(){
 		  checkRadios();
 		});
+		$('label').click(function(){
+		  checkRadios();
+		});
 	});
 	</script>
 <?php

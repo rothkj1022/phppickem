@@ -4,8 +4,8 @@
 	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
 ]>
-<svg  version="1.1" id="TENNESSEE_TITANS" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="282.324" height="200"
-	 viewBox="0 0 282.324 200" overflow="visible" enable-background="new 0 0 282.324 200" xml:space="preserve">
+<svg  version="1.1" id="TENNESSEE_TITANS" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;"
+	 viewBox="0 0 282.324 200" preserveAspectRatio="xMidYMid meet" overflow="visible" enable-background="new 0 0 282.324 200" xml:space="preserve">
 <g>
 	<path fill="#FFFFFF" d="M91.155,116.677c0.277,3.31,1.455,9.909,5.277,17.265c4.704,9.094,14.583,21.209,34.941,28.067
 		c3.233,5.082,7.036,9.818,11.339,14.104c15.479,15.436,36.042,23.912,57.901,23.886c21.853-0.032,42.391-8.575,57.83-24.051

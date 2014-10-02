@@ -6,7 +6,7 @@ require('../includes/config.php');
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>Installer - PHP Pick 'Em</title>
-	<link href="css/main.css" rel="stylesheet" type="text/css" media="screen" />
+	<link href="css/all.css" rel="stylesheet" type="text/css" media="screen" />
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 </head>
 

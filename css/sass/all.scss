@@ -2,13 +2,30 @@
 //@import 'reset';
 
 @import url('http://fonts.googleapis.com/css?family=Ubuntu');
-//@import url('http://fonts.googleapis.com/css?family=Carrois+Gothic');
-@import url('http://fonts.googleapis.com/css?family=Fira+Sans:400,500,400italic,500italic');
+//@import url('http://fonts.googleapis.com/css?family=Marvel:400,400italic,700,700italic');
+@import url('http://fonts.googleapis.com/css?family=Titillium+Web:400,400italic,700,700italic');
+
+$font-ubuntu: 'Ubuntu', sans-serif;
+$font-fira-sans: 'Fira Sans', sans-serif;
+$font-marvel: 'Marvel', sans-serif;
+$font-titillium-web: 'Titillium Web', sans-serif;
+
+* {
+	/* optimize text for legibility */
+	text-rendering: optimizeLegibility;
+
+	/* prevents google voice plugin from overwriting color */
+	span.gc-cs-link {
+		color: inherit;
+	}
+}
+/* optimize text for speed on mobile devices */
+html.touch * { text-rendering: optimizeSpeed; }
 
 body {
 	background-color: #777;
 	color: #333;
-	font-family: 'Fira Sans', sans-serif;
+	font-family: $font-titillium-web;
 	font-size: 1.8em;
 }
 
@@ -22,7 +39,7 @@ h4 {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-smooth: always;
-	font-family: 'Ubuntu', sans-serif;
+	font-family: $font-ubuntu;
 }
 h1 {
 	font-size: 2em;
@@ -100,7 +117,10 @@ abbr {
 }
 
 #logo {
-	padding: 5px 1em;
+	margin: 5px 1em;
+	padding: 0;
+	width: 37px;
+	height: 49px;
 }
 .icon {
 	padding: 5px 1em;

@@ -37,7 +37,7 @@ if (COMMENTS_SYSTEM == 'basic') {
 	$query = $mysqli->query($sql);
 	while ($row = $query->fetch_assoc()) {
 		$postUser = $login->get_user_by_id($row['userID']);
-		switch ($user_names_display) {
+		switch (USER_NAMES_DISPLAY) {
 			case 1:
 				echo '<div style="margin: 10px 0px; border-bottom: 1px solid #ccc;"><b>' . $row['subject'] . '</b> <em>by ' . trim($postUser->firstname . ' ' . $postUser->lastname) . ' on ' . date('n/j @ g:i a', strtotime($row['postDateTime'])) . '</em></div>';
 				break;

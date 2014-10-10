@@ -4,7 +4,7 @@ include('includes/classes/class.formvalidation.php');
 require('includes/classes/crypto.php');
 $crypto = new phpFreaksCrypto;
 
-if (!$isAdmin) {
+if (!$user->is_admin) {
 	header('Location: ./');
 	exit;
 }

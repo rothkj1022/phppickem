@@ -31,7 +31,7 @@ switch ($step) {
 		*/
 
 		// Name of the file
-		$filename = 'phppickem1.0.11.sql';
+		$filename = 'phppickem2.0.1.sql';
 		//////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Temporary variable, used to store current query

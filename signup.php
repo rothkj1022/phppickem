@@ -54,7 +54,7 @@ if (isset($_POST['submit'])) {
 
 						// html text block
 						$mail->Body = '<p>Thank you for signing up for the NFL Pick \'Em Pool.  Please click the below link to confirm your account:<br />' . "\n" .
-						$siteUrl . 'signup.php?confirm=' . $crypto->encrypt($username) . '</p>';
+							SITE_URL . 'signup.php?confirm=' . $crypto->encrypt($username) . '</p>';
 
 						//$mail->Send();
 

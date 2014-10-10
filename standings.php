@@ -20,7 +20,7 @@ if (isset($weekStats)) {
 		$winners = '';
 		foreach($stats[winners] as $winner => $winnerID) {
 			$tmpUser = $login->get_user_by_id($winnerID);
-			switch ($user_names_display) {
+			switch (USER_NAMES_DISPLAY) {
 				case 1:
 					$winners .= ((strlen($winners) > 0) ? ', ' : '') . trim($tmpUser->firstname . ' ' . $tmpUser->lastname);
 					break;
@@ -58,7 +58,7 @@ if (isset($weekStats)) {
 					$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 					$pickRatio = $stats[score] . '/' . $possibleScoreTotal;
 					$pickPercentage = number_format((($stats[score] / $possibleScoreTotal) * 100), 2) . '%';
-					switch ($user_names_display) {
+					switch (USER_NAMES_DISPLAY) {
 						case 1:
 							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;
@@ -91,7 +91,7 @@ if (isset($weekStats)) {
 					$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 					$pickRatio = $stats[score] . '/' . $possibleScoreTotal;
 					$pickPercentage = number_format((($stats[score] / $possibleScoreTotal) * 100), 2) . '%';
-					switch ($user_names_display) {
+					switch (USER_NAMES_DISPLAY) {
 						case 1:
 							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;
@@ -124,7 +124,7 @@ if (isset($weekStats)) {
 					$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 					$pickRatio = $stats[score] . '/' . $possibleScoreTotal;
 					$pickPercentage = number_format((($stats[score] / $possibleScoreTotal) * 100), 2) . '%';
-					switch ($user_names_display) {
+					switch (USER_NAMES_DISPLAY) {
 						case 1:
 							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $pickRatio . ' (' . $pickPercentage . ')</td></tr>';
 							break;

@@ -45,14 +45,14 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 						<div class="navbar-collapse collapse">
 							<ul class="nav navbar-nav">
 								<li<?php echo (($activeTab == 'home') ? ' class="active"' : ''); ?>><a href="./">Home</a></li>
-								<?php if (!$isAdmin) { ?>
+								<?php if ($user->userName !== 'admin') { ?>
 								<li><a href="entry_form.php<?php echo ((!empty($_GET['week'])) ? '?week=' . (int)$_GET['week'] : ''); ?>">Entry Form</a></li>
 								<?php } ?>
 								<li><a href="results.php<?php echo ((!empty($_GET['week'])) ? '?week=' . (int)$_GET['week'] : ''); ?>">Results</a></li>
 								<li><a href="standings.php">Standings</a></li>
 								<!--li><a href="teams.php">Teams</a></li-->
 								<!--li><a href="schedules.php">Schedules</a></li-->
-								<?php if ($_SESSION['logged'] === 'yes' && $isAdmin) { ?>
+								<?php if ($_SESSION['logged'] === 'yes' && $user->is_admin) { ?>
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
 									<ul class="dropdown-menu">
@@ -72,7 +72,7 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <span class="text"><?php echo $_SESSION['loggedInUser']; ?></span> <b class="caret"></b></a>
 									<ul class="dropdown-menu">
 										<li><a href="user_edit.php">My Account</a></li>
-										<li><a href="logout.php">Logout <?php echo $_SESSION['loggedInUser']; ?></a></li>
+										<li><a href="logout.php">Logout <?php echo $user->userName; ?></a></li>
 									</ul>
 								</li>
 							</ul>
@@ -83,7 +83,7 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 		</header>
 		<div id="pageContent">
 		<?php
-		if ($isAdmin && is_array($warnings) && sizeof($warnings) > 0) {
+		if ($user->is_admin && is_array($warnings) && sizeof($warnings) > 0) {
 			echo '<div id="warnings">';
 			foreach ($warnings as $warning) {
 				echo $warning;

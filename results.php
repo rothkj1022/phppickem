@@ -129,7 +129,7 @@ if (sizeof($playerTotals) > 0) {
 		$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 		//echo '	<tr' . $rowclass . '>' . "\n";
 		echo '	<tr>' . "\n";
-		switch ($user_names_display) {
+		switch (USER_NAMES_DISPLAY) {
 			case 1:
 				echo '		<td>' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '</td>' . "\n";
 				break;
@@ -168,7 +168,7 @@ if (sizeof($playerTotals) > 0) {
 		foreach($winners as $winnerID) {
 			$winner = $login->get_user_by_id($winnerID);
 			if (strlen($winnersHtml) > 0) $winnersHtml .= ', ';
-			switch ($user_names_display) {
+			switch (USER_NAMES_DISPLAY) {
 				case 1:
 					$winnersHtml .= trim($winner->firstname . ' ' . $winner->lastname);
 					break;
@@ -195,7 +195,7 @@ if (sizeof($playerTotals) > 0) {
 		$i = 0;
 		while ($row = $query->fetch_assoc()) {
 			if ($i > 0) $absentHtml .= ', ';
-			switch ($user_names_display) {
+			switch (USER_NAMES_DISPLAY) {
 				case 1:
 					$absentHtml .= trim($row['firstname'] . ' ' . $row['lastname']);
 					break;

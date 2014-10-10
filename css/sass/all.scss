@@ -419,6 +419,7 @@ div.fieldLoaded {
 }
 @media only print {
 	.navbar3,
+	.col-right,
 	#comments,
 	#footer,
 	.noprint {
@@ -427,10 +428,32 @@ div.fieldLoaded {
 	a[href]:after {
 		content: '';
 	}
+	.container,
 	#pageContent {
 		border: none;
+		padding: 0;
 	}
-	.table tr {
-		border: 1px solid #ccc;
+	.table {
+		tr {
+			border: 1px solid #ccc;
+		}
+		th, td {
+			font-size: 7pt;
+		}
+	}
+	.matchup {
+		margin: 1em;
+		width: 42%;
+		display: inline-block;
+	}
+	.versus {
+		.team-logo {
+			width: 50px;
+			height: 50px;
+		}
+		div {
+			height: 50px;
+			line-height: 50px;
+		}
 	}
 }

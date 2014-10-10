@@ -40,7 +40,7 @@ class Login{
 		if (!empty($user) && !empty($password) && $user->password == $passwordEncrypted) {
 			$_SESSION['logged'] = 'yes';
 			$_SESSION['loggedInUser'] = $user->userName;
-//			$_SESSION['level'] = md5($user->user_level);
+			$_SESSION['is_admin'] = $user->is_admin;
 			header('Location: '.SITE_URL);
 			exit;
 		} else {

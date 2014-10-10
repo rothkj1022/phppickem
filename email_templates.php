@@ -1,7 +1,7 @@
 <?php
 require('includes/application_top.php');
 
-if (!$isAdmin) {
+if (!$user->is_admin) {
 	header('Location: ./');
 	exit;
 }

@@ -2,7 +2,7 @@
 require('includes/application_top.php');
 require('includes/classes/team.php');
 
-if (!$isAdmin) {
+if (!$user->is_admin) {
 	header('Location: ./');
 	exit;
 }

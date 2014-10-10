@@ -2,7 +2,7 @@
 require('includes/application_top.php');
 include('includes/classes/class.phpmailer.php');
 
-if (!$isAdmin) {
+if (!$user->is_admin) {
 	header('Location: ./');
 	exit;
 }
@@ -21,7 +21,7 @@ $winners = '';
 if (sizeof($weekStats) > 0) {
 	foreach($weekStats[$prevWeek][winners] as $winner => $winnerID) {
 		$tmpUser = $login->get_user_by_id($winnerID);
-		switch ($user_names_display) {
+		switch (USER_NAMES_DISPLAY) {
 			case 1:
 				$winners .= ((strlen($winners) > 0) ? ', ' : '') . trim($tmpUser->firstname . ' ' . $tmpUser->lastname);
 				break;
@@ -46,7 +46,7 @@ if (isset($playerTotals)) {
 		if ($stats[wins] < $tmpWins ) $i++;
 		//if wins is zero or counter is 3 or higher, break
 		if ($stats[wins] == 0 || $i > 3) break;
-		switch ($user_names_display) {
+		switch (USER_NAMES_DISPLAY) {
 			case 1:
 				$currentLeaders .= $i . '. ' . $stats[name] . ' - ' . $stats[wins] . (($stats[wins] > 1) ? ' wins' : ' win') . '<br />';
 				break;
@@ -74,7 +74,7 @@ if (isset($playerTotals)) {
 		if ($stats[score] == 0 || $i > 3) break;
 		$pickRatio = $stats[score] . '/' . $possibleScoreTotal;
 		$pickPercentage = number_format((($stats[score] / $possibleScoreTotal) * 100), 2) . '%';
-		switch ($user_names_display) {
+		switch (USER_NAMES_DISPLAY) {
 			case 1:
 				$bestPickRatios .= $i . '. ' . $stats[name] . ' - ' . $pickRatio . ' (' . $pickPercentage . ')<br />';
 				break;
@@ -100,7 +100,7 @@ if ($_POST['action'] == 'Select' && isset($_POST['cannedMsg'])) {
 
 	//replace variables
 	$template_vars = array('{week}', '{first_game}', '{site_url}', '{rules_url}', '{winners}', '{previousWeek}', '{winningScore}', '{possibleScore}', '{currentLeaders}', '{bestPickRatios}');
-	$replacement_values = array($week, date('l F j, g:i a', strtotime($firstGameTime)), $siteUrl, $siteUrl . 'rules.php', $winners, $prevWeek, $weekStats[$prevWeek][highestScore], getGameTotal($prevWeek), $currentLeaders, $bestPickRatios);
+	$replacement_values = array($week, date('l F j, g:i a', strtotime($firstGameTime)), SITE_URL, SITE_URL . 'rules.php', $winners, $prevWeek, $weekStats[$prevWeek][highestScore], getGameTotal($prevWeek), $currentLeaders, $bestPickRatios);
 	$subject = stripslashes(str_replace($template_vars, $replacement_values, $subjectTemplate));
 	$message = stripslashes(str_replace($template_vars, $replacement_values, $messageTemplate));
 }

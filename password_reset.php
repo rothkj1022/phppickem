@@ -38,7 +38,7 @@ if (isset($_POST['submit'])) {
 		// html text block
 		$msg = '<p>Your new password for NFL Pick \'Em has been generated.  Your username is: ' . $result['userName'] . '</p>' . "\n\n";
 		$msg .= '<p>Your new password is: ' . $password . '</p>' . "\n\n";
-		$msg .= '<a href="' . $siteUrl . 'login.php">Click here to sign in</a>.</p>';
+		$msg .= '<a href="' . SITE_URL . 'login.php">Click here to sign in</a>.</p>';
 
 		$mail->Body = $msg;
 		$mail->AltBody = strip_tags($msg);

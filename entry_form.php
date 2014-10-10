@@ -226,7 +226,7 @@ include('includes/column_right.php');
 				echo '</div>' . "\n";
 			}
 			echo '					</div>' . "\n";
-			echo '					<div class="row bg-row3">'."\n";
+			echo '					<div class="row bg-row3 noprint">'."\n";
 			echo '						<div class="col-xs-6 center">'."\n";
 			echo '							<b>' . $visitorTeam->city . ' ' . $visitorTeam->team . '</b><br />Record: ' . getTeamRecord($visitorTeam->teamID) . '<br />Streak: ' . getTeamStreak($visitorTeam->teamID) . ''."\n";
 			echo '						</div>'."\n";
@@ -239,8 +239,8 @@ include('includes/column_right.php');
 		}
 		echo '		</div>' . "\n";
 		echo '		</div>' . "\n";
-		echo '<p><input type="checkbox" name="showPicks" id="showPicks" value="1"' . (($showPicks) ? ' checked="checked"' : '') . ' /> <label for="showPicks">Allow others to see my picks</label></p>' . "\n";
-		echo '<p><input type="submit" name="action" value="Submit" /></p>' . "\n";
+		echo '<p class="noprint"><input type="checkbox" name="showPicks" id="showPicks" value="1"' . (($showPicks) ? ' checked="checked"' : '') . ' /> <label for="showPicks">Allow others to see my picks</label></p>' . "\n";
+		echo '<p class="noprint"><input type="submit" name="action" value="Submit" /></p>' . "\n";
 		echo '</form>' . "\n";
 	}
 

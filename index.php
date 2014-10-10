@@ -6,7 +6,7 @@ $activeTab = 'home';
 
 include('includes/header.php');
 
-if ($isAdmin) {
+if ($user->userName == 'admin') {
 ?>
 	<img src="images/art_holst_nfl.jpg" width="192" height="295" alt="ref" style="float: right; padding-left: 10px;" />
 	<h1>Welcome, Admin!</h1>

@@ -169,21 +169,31 @@ td.fieldLabel {
 	}
 	.bg-row2 {
 		background-color: #eee;
-		color: #555;
+		color: #000;
+		padding: 0 0 1em 0;
+		div { padding: 0; }
 	}
 	.bg-row3 {
 		background-color: #ccc;
 		color: #000;
 	}
 	div {
-		padding: 0.25em;
+		//padding: 0.25em;
+	}
+	.team {
+		font-weight: bold;
+	}
+	.your-pick {
+		background-color: #369;
+		color: #fff;
+		padding: 0.5em;
 	}
 }
 .versus {
 	background: #eee;
 	color: #555;
 	text-align: center;
-	padding: 1em;
+	padding: 0 0 1em;
 	div {
 		display: inline-block;
 		height: 150px;
@@ -442,9 +452,23 @@ div.fieldLoaded {
 		}
 	}
 	.matchup {
-		margin: 1em;
+		page-break-inside: avoid;
+		margin: 0.25em;
 		width: 42%;
 		display: inline-block;
+		.bg-row1,
+		.bg-row2 {
+			padding: 0;
+			//div { padding: 0; }
+		}
+		.team,
+		.your-pick {
+			font-size: 0.6em;
+		}
+		.record,
+		.streak {
+			display: none;
+		}
 	}
 	.versus {
 		.team-logo {
@@ -452,8 +476,8 @@ div.fieldLoaded {
 			height: 50px;
 		}
 		div {
-			height: 50px;
-			line-height: 50px;
+			height: 44px;
+			line-height: 64px;
 		}
 	}
 }

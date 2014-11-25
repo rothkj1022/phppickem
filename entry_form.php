@@ -184,14 +184,14 @@ include('includes/column_right.php');
 			echo '						<div class="col-xs-4">'."\n";
 			echo '							<label for="' . $row['gameID'] . $visitorTeam->teamID . '" class="label-for-check"><div class="team-logo"><img src="images/logos/'.$visitorTeam->teamID.'.svg" onclick="document.entryForm.game'.$row['gameID'].'[0].checked=true;" /></div></label>' . "\n";
 			echo '						</div>'."\n";
-			echo '						<div class="col-xs-2">at</div>' . "\n";
+			echo '						<div class="col-xs-2">@</div>' . "\n";
 			echo '						<div class="col-xs-4">'."\n";
 			echo '							<label for="' . $row['gameID'] . $homeTeam->teamID . '" class="label-for-check"><div class="team-logo"><img src="images/logos/'.$homeTeam->teamID.'.svg" onclick="document.entryForm.game' . $row['gameID'] . '[1].checked=true;" /></div></label>'."\n";
 			echo '						</div>' . "\n";
 			echo '						<div class="col-xs-1"></div>' . "\n";
 			echo '					</div>' . "\n";
-			echo '					<div class="row bg-row2">'."\n";
 			if (!$row['expired']) {
+				echo '					<div class="row bg-row2">'."\n";
 				echo '						<div class="col-xs-1"></div>' . "\n";
 				echo '						<div class="col-xs-4 center">'."\n";
 				echo '							<input type="radio" class="check-with-label" name="game' . $row['gameID'] . '" value="' . $visitorTeam->teamID . '" id="' . $row['gameID'] . $visitorTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $visitorTeam->teamID) ? ' checked' : '') . ' />'."\n";
@@ -202,8 +202,23 @@ include('includes/column_right.php');
 				echo '							<input type="radio" class="check-with-label" name="game' . $row['gameID'] . '" value="' . $homeTeam->teamID . '" id="' . $row['gameID'] . $homeTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $homeTeam->teamID) ? ' checked' : '') . ' />' . "\n";
 				echo '						</div>' . "\n";
 				echo '						<div class="col-xs-1"></div>' . "\n";
-			} else {
+				echo '					</div>' . "\n";
+			}
+			echo '					<div class="row bg-row3">'."\n";
+			echo '						<div class="col-xs-6 center">'."\n";
+			echo '							<div class="team">' . $visitorTeam->city . ' ' . $visitorTeam->team . '</div>'."\n";
+			echo '							<div class="record">Record: ' . getTeamRecord($visitorTeam->teamID) . '</div>'."\n";
+			echo '							<div class="streak">Streak: ' . getTeamStreak($visitorTeam->teamID) . '</div>'."\n";
+			echo '						</div>'."\n";
+			echo '						<div class="col-xs-6 center">' . "\n";
+			echo '							<div class="team">' . $homeTeam->city . ' ' . $homeTeam->team . '</div>'."\n";
+			echo '							<div class="record">Record: ' . getTeamRecord($homeTeam->teamID) . '</div>'."\n";
+			echo '							<div class="streak">Streak: ' . getTeamStreak($homeTeam->teamID) . '</div>'."\n";
+			echo '						</div>' . "\n";
+			echo '					</div>'."\n";
+			if ($row['expired']) {
 				//else show locked pick
+				echo '					<div class="row bg-row4">'."\n";
 				$pickID = getPickID($row['gameID'], $user->userID);
 				if (!empty($pickID)) {
 					$statusImg = '';
@@ -221,19 +236,11 @@ include('includes/column_right.php');
 						$statusImg = '<img src="images/cross_16x16.png" width="16" height="16" alt="" />';
 					}
 				}
-				echo '						<div class="col-xs-12 center"><b>Your Pick:</b></br />';
+				echo '						<div class="col-xs-12 center your-pick"><b>Your Pick:</b></br />';
 				echo $statusImg . ' ' . $pickLabel;
 				echo '</div>' . "\n";
+				echo '					</div>' . "\n";
 			}
-			echo '					</div>' . "\n";
-			echo '					<div class="row bg-row3 noprint">'."\n";
-			echo '						<div class="col-xs-6 center">'."\n";
-			echo '							<b>' . $visitorTeam->city . ' ' . $visitorTeam->team . '</b><br />Record: ' . getTeamRecord($visitorTeam->teamID) . '<br />Streak: ' . getTeamStreak($visitorTeam->teamID) . ''."\n";
-			echo '						</div>'."\n";
-			echo '						<div class="col-xs-6 center">' . "\n";
-			echo '							<b>' . $homeTeam->city . ' ' . $homeTeam->team . '</b><br />Record: ' . getTeamRecord($homeTeam->teamID) . '<br />Streak: ' . getTeamStreak($homeTeam->teamID) . '';
-			echo '						</div>' . "\n";
-			echo '					</div>'."\n";
 			echo '				</div>'."\n";
 			$i++;
 		}

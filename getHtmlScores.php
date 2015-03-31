@@ -11,7 +11,7 @@ if ($xmlData = file_get_contents($url)) {
 	$games = json_decode($json, true);
 }
 
-/*$teamCodes = array(
+$teamCodes = array(
 	'GNB' => 'GB',
 	'JAC' => 'JAX',
 	'KAN' => 'KC',
@@ -20,7 +20,7 @@ if ($xmlData = file_get_contents($url)) {
 	'SDG' => 'SD',
 	'SFO' => 'SF',
 	'TAM' => 'TB'
-);*/
+);
 
 //build scores array, to group teams and scores together in games
 $scores = array();
@@ -30,10 +30,10 @@ foreach ($games['gms']['g'] as $gameArray) {
 		$overtime = (($game['q'] == 'FO') ? 1 : 0);
 		$away_team = $game['v'];
 		$home_team = $game['h'];
-		/*foreach ($teamCodes as $espnCode => $nflpCode) {
+		foreach ($teamCodes as $espnCode => $nflpCode) {
 			if ($away_team == $espnCode) $away_team = $nflpCode;
 			if ($home_team == $espnCode) $home_team = $nflpCode;
-		}*/
+		}
 		$away_score = (int)$game['vs'];
 		$home_score = (int)$game['hs'];
 

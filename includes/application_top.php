@@ -20,7 +20,7 @@ foreach($_GET as $key=>$value){
 
 $mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE) or die('error connecting to db');
 $mysqli->set_charset('utf8');
-//if (!$mysqli) {
+if (!$mysqli) {
 	//check for presence of install folder
 	if (is_dir('install')) {
 		//do a query to see if db installed
@@ -37,9 +37,9 @@ $mysqli->set_charset('utf8');
 			exit;
 		}
 	}
-//} else {
-//	die('Database not connected.  Please check your config file for proper installation.');
-//}
+} else {
+	die('Database not connected.  Please check your config file for proper installation.');
+}
 
 session_start();
 require('includes/classes/login.php');

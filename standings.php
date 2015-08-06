@@ -18,18 +18,20 @@ if (isset($weekStats)) {
 	$i = 0;
 	foreach($weekStats as $week => $stats) {
 		$winners = '';
-		foreach($stats[winners] as $winner => $winnerID) {
-			$tmpUser = $login->get_user_by_id($winnerID);
-			switch (USER_NAMES_DISPLAY) {
-				case 1:
-					$winners .= ((strlen($winners) > 0) ? ', ' : '') . trim($tmpUser->firstname . ' ' . $tmpUser->lastname);
-					break;
-				case 2:
-					$winners .= ((strlen($winners) > 0) ? ', ' : '') . $tmpUser->userName;
-					break;
-				default: //3
-					$winners .= ((strlen($winners) > 0) ? ', ' : '') . '<abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . $tmpUser->userName . '</abbr>';
-					break;
+		if (is_array($stats[winners])) {
+			foreach($stats[winners] as $winner => $winnerID) {
+				$tmpUser = $login->get_user_by_id($winnerID);
+				switch (USER_NAMES_DISPLAY) {
+					case 1:
+						$winners .= ((strlen($winners) > 0) ? ', ' : '') . trim($tmpUser->firstname . ' ' . $tmpUser->lastname);
+						break;
+					case 2:
+						$winners .= ((strlen($winners) > 0) ? ', ' : '') . $tmpUser->userName;
+						break;
+					default: //3
+						$winners .= ((strlen($winners) > 0) ? ', ' : '') . '<abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . $tmpUser->userName . '</abbr>';
+						break;
+				}
 			}
 		}
 		$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');

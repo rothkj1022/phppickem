@@ -1,5 +1,11 @@
 <?php
 require('../includes/config.php');
+error_reporting(0);
+
+$mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE); // or die('error connecting to db');
+if ($mysqli) {
+	$mysqli->set_charset('utf8');
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -31,7 +37,7 @@ switch ($step) {
 		*/
 
 		// Name of the file
-		$filename = 'phppickem2.0.1.sql';
+		$filename = 'phppickem2.0.2.sql';
 		//////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Temporary variable, used to store current query
@@ -78,7 +84,7 @@ switch ($step) {
 		}
 		break;
 	case 2:
-		if (!$dbConnected) {
+		if (!$mysqli->ping()) {
 ?>
 <h2><img src="cross.png" /> Step 1 - Edit Config File</h2>
 <h3>Step 2 - Install Database</h3>

@@ -20,7 +20,7 @@ foreach($_GET as $key=>$value){
 
 $mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE) or die('error connecting to db');
 $mysqli->set_charset('utf8');
-if (!$mysqli) {
+if ($mysqli) {
 	//check for presence of install folder
 	if (is_dir('install')) {
 		//do a query to see if db installed
@@ -30,12 +30,12 @@ if (!$mysqli) {
 		if ($query = $mysqli->query($sql)) {
 			//query is ok, display warning
 			$warnings[] = 'For security, please delete or rename the install folder.';
-			$query->free();
 		} else {
 			//tables not not present, redirect to installer
 			header('location: ./install/');
 			exit;
 		}
+		$query->free();
 	}
 } else {
 	die('Database not connected.  Please check your config file for proper installation.');

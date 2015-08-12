@@ -27,8 +27,9 @@ class phpFreaksCrypto
 
     if(extension_loaded('mcrypt') === FALSE)
     {
-      $prefix = (PHP_SHLIB_SUFFIX == 'dll') ? 'php_' : '';
-      dl($prefix . 'mcrypt.' . PHP_SHLIB_SUFFIX) or die('The Mcrypt module could not be loaded.');
+      //$prefix = (PHP_SHLIB_SUFFIX == 'dll') ? 'php_' : '';
+      //dl($prefix . 'mcrypt.' . PHP_SHLIB_SUFFIX) or die('The Mcrypt module could not be loaded.');
+      die('The Mcrypt module is not loaded and is required.');
     }
 
     if($mode != 'ecb' && $iv === false)
@@ -89,4 +90,3 @@ class phpFreaksCrypto
   }
 
 }
-?>

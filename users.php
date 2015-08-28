@@ -28,7 +28,7 @@ switch ($action) {
 					$username = $mysqli->real_escape_string(str_replace(' ', '_', $_POST['username']));
 					$sql = "SELECT userName FROM " . DB_PREFIX . "users WHERE userName='".$userName."';";
 					$query = $mysqli->query($sql);
-					if ($query->num_rows > 0) {
+					if ($query->num_rows == 0) {
 						//form is valid, perform insert
 						$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
 						$secure_password = $crypto->encrypt($salt . $crypto->encrypt($password));

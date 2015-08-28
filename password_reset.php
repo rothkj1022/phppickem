@@ -14,8 +14,6 @@ if (isset($_POST['submit'])) {
 	$sql = "SELECT * FROM " . DB_PREFIX . "users WHERE firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
-		$display = '<div class="responseError">No account matched, please try again.</div><br/>';
-	} else {
 		$row = $query->fetch_assoc();
 
 		//generate random password and update the db
@@ -45,9 +43,10 @@ if (isset($_POST['submit'])) {
 
 		$mail->Send();
 
-
 		header('Location: password_reset.php?reset=true');
 		exit;
+	} else {
+		$display = '<div class="responseError">No account matched, please try again.</div><br/>';
 	}
 	$query->free;
 }

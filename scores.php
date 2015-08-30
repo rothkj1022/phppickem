@@ -12,8 +12,9 @@ if ($_POST['action'] == 'Update') {
 		$homeScore = ((strlen($game['homeScore']) > 0) ? $game['homeScore'] : 'NULL');
 		$visitorScore = ((strlen($game['visitorScore']) > 0) ? $game['visitorScore'] : 'NULL');
 		$overtime = ((!empty($game['OT'])) ? '1' : '0');
+		$spread = ((ENABLE_SPREAD && (strlen($game['spread']) > 0)) ? $game['spread'] : 'NULL');
 		$sql = "update " . DB_PREFIX . "schedule ";
-		$sql .= "set homeScore = " . $homeScore . ", visitorScore = " . $visitorScore . ", overtime = " . $overtime . " ";
+		$sql .= "set homeScore = " . $homeScore . ", visitorScore = " . $visitorScore . ", overtime = " . $overtime . ", spread = " . $spread . " ";
 		$sql .= "where gameID = " . $game['gameID'];
 		$mysqli->query($sql) or die('Error updating score: ' . $mysqli->error);
 	}
@@ -81,11 +82,14 @@ $sql .= "from " . DB_PREFIX . "schedule s ";
 $sql .= "inner join " . DB_PREFIX . "teams ht on s.homeID = ht.teamID ";
 $sql .= "inner join " . DB_PREFIX . "teams vt on s.visitorID = vt.teamID ";
 $sql .= "where weekNum = " . $week . " ";
-$sql .= "order by gameTimeEastern";
+$sql .= "order by gameTimeEastern, gameID";
 $query = $mysqli->query($sql);
 if ($query->num_rows > 0) {
 	echo '<table class="table table-striped">' . "\n";
-	echo '	<tr><th colspan="6" align="left">Week ' . $week . '</th></tr>' . "\n";
+	echo '	<tr><th colspan="6" align="left">Week ' . $week . '</th>';
+	if (ENABLE_SPREAD)
+		echo '<th>Spread</th>';	
+	echo '</tr>' . "\n";
 	$i = 0;
 	while ($row = $query->fetch_assoc()) {
 		$homeTeam = new team($row['homeID']);
@@ -98,6 +102,8 @@ if ($query->num_rows > 0) {
 		echo '			<td align="right"><input type="hidden" name="gameID[' . strtolower($homeTeam->team) . ']" value="' . $row['gameID'] . '" />at ' . $homeTeam->teamName . '</td>' . "\n";
 		echo '			<td><input type="text" name="game[' . $row['gameID'] . '][homeScore]" id="game[' . $row['gameID'] . '][homeScore]" value="' . $row['homeScore'] . '" size="3" /></td>' . "\n";
 		echo '			<td>OT <input type="checkbox" name="game[' . $row['gameID'] . '][OT]" id="game[' . $row['gameID'] . '][OT]" value="1"' . (($row['overtime']) ? ' checked="checked"' : '') . '" /></td>' . "\n";
+		if (ENABLE_SPREAD)
+			echo '			<td><input type="text" name="game[' . $row['gameID'] . '][spread]" id="game[' . $row['gameID'] . '][spread]" value="' . $row['spread'] . '" size="3" /></td>' . "\n";
 		echo '		</tr>' . "\n";
 		$i++;
 	}

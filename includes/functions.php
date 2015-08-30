@@ -200,6 +200,7 @@ function hidePicks($userID, $week) {
 }
 
 function getLastCompletedWeek() {
+	return 1;
 	global $mysqli;
 	$lastCompletedWeek = 0;
 	$sql = "select s.weekNum, max(s.gameTimeEastern) as lastGameTime,";
@@ -234,11 +235,12 @@ function calculateStats() {
 			$games[$row['gameID']]['gameID'] = $row['gameID'];
 			$games[$row['gameID']]['homeID'] = $row['homeID'];
 			$games[$row['gameID']]['visitorID'] = $row['visitorID'];
-			if ((int)$row['homeScore'] > (int)$row['visitorScore']) {
+			if (((int)$row['homeScore'] + (float)$row['spread']) > (int)$row['visitorScore']) {
 				$games[$row['gameID']]['winnerID'] = $row['homeID'];
-			}
-			if ((int)$row['visitorScore'] > (int)$row['homeScore']) {
+			} else if (((int)$row['visitorScore'] - (float)$row['spread']) > (int)$row['homeScore']) {
 				$games[$row['gameID']]['winnerID'] = $row['visitorID'];
+			} else {
+				$games[$row['gameID']]['winnerID'] = 'Push';
 			}
 		}
 		$query->free;

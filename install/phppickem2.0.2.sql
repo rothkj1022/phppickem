@@ -106,6 +106,7 @@ CREATE TABLE `nflp_schedule` (
   `visitorID` varchar(10) NOT NULL,
   `visitorScore` int(11) DEFAULT NULL,
   `overtime` tinyint(1) NOT NULL DEFAULT '0',
+  `spread` decimal(3,1) DEFAULT NULL,
   PRIMARY KEY (`gameID`),
   KEY `GameID` (`gameID`),
   KEY `HomeID` (`homeID`),

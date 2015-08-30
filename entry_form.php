@@ -204,14 +204,24 @@ include('includes/column_right.php');
 				echo '						<div class="col-xs-1"></div>' . "\n";
 				echo '					</div>' . "\n";
 			}
+			if (ENABLE_SPREAD) {
+				$homeSpread = (($row['spread'] == "") ? 0 : $row['spread']);
+				$awaySpread = $homeSpread * -1;
+				$homeSpreadStr = " (" . sprintf("%+.1f", $homeSpread) . ")";
+				$awaySpreadStr = " (" . sprintf("%+.1f", $awaySpread) . ")";
+			} else {
+				$homeSpreadStr = "";
+				$awaySpreadStr = "";
+			}
+
 			echo '					<div class="row bg-row3">'."\n";
 			echo '						<div class="col-xs-6 center">'."\n";
-			echo '							<div class="team">' . $visitorTeam->city . ' ' . $visitorTeam->team . '</div>'."\n";
+			echo '							<div class="team">' . $visitorTeam->city . ' ' . $visitorTeam->team . $awaySpreadStr . '</div>'."\n";
 			echo '							<div class="record">Record: ' . getTeamRecord($visitorTeam->teamID) . '</div>'."\n";
 			echo '							<div class="streak">Streak: ' . getTeamStreak($visitorTeam->teamID) . '</div>'."\n";
 			echo '						</div>'."\n";
 			echo '						<div class="col-xs-6 center">' . "\n";
-			echo '							<div class="team">' . $homeTeam->city . ' ' . $homeTeam->team . '</div>'."\n";
+			echo '							<div class="team">' . $homeTeam->city . ' ' . $homeTeam->team . $homeSpreadStr . '</div>'."\n";
 			echo '							<div class="record">Record: ' . getTeamRecord($homeTeam->teamID) . '</div>'."\n";
 			echo '							<div class="streak">Streak: ' . getTeamStreak($homeTeam->teamID) . '</div>'."\n";
 			echo '						</div>' . "\n";

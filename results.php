@@ -164,11 +164,10 @@ if (sizeof($playerTotals) > 0) {
 					$classes .= "bestBet ";
 				if (ENABLE_MNF && (date('D', strtotime($game['gameTimeEastern'])) == 'Mon'))
 					$classes .= "mnf ";
-				if ($playerPicks[$userID][$game['gameID']] == $game['winnerID']) {
+				if ($playerPicks[$userID][$game['gameID']] == $game['winnerID'])
 					$classes .= "winner ";
 				$classes = trim($classes);
 				$pick = '<span class="' . $classes . '">' . $pick . '</span>';
-				}
 			}
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";
 		}

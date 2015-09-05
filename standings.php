@@ -9,37 +9,43 @@ calculateStats();
 include('includes/header.php');
 ?>
 <h1>Standings</h1>
+<?php if (ENABLE_WEEK_STATS) { ?>
 <h2>Weekly Stats</h2>
 <div class="table-responsive">
 <table class="table table-striped">
 	<tr><th align="left">Week</th><th align="left">Winner(s)</th><th>Score</th></tr>
 <?php
-if (isset($weekStats)) {
-	$i = 0;
-	foreach($weekStats as $week => $stats) {
-		$winners = '';
-		if (is_array($stats[winners])) {
-			foreach($stats[winners] as $winner => $winnerID) {
-				$tmpUser = $login->get_user_by_id($winnerID);
-				switch (USER_NAMES_DISPLAY) {
-					case 1:
-						$winners .= ((strlen($winners) > 0) ? ', ' : '') . trim($tmpUser->firstname . ' ' . $tmpUser->lastname);
-						break;
-					case 2:
-						$winners .= ((strlen($winners) > 0) ? ', ' : '') . $tmpUser->userName;
-						break;
-					default: //3
-						$winners .= ((strlen($winners) > 0) ? ', ' : '') . '<abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . $tmpUser->userName . '</abbr>';
-						break;
+	if (isset($weekStats)) {
+		$i = 0;
+		foreach($weekStats as $week => $stats) {
+			$winners = '';
+			if (is_array($stats[winners])) {
+				foreach($stats[winners] as $winner => $winnerID) {
+					$tmpUser = $login->get_user_by_id($winnerID);
+					switch (USER_NAMES_DISPLAY) {
+						case 1:
+							$winners .= ((strlen($winners) > 0) ? ', ' : '') . trim($tmpUser->firstname . ' ' . $tmpUser->lastname);
+							break;
+						case 2:
+							$winners .= ((strlen($winners) > 0) ? ', ' : '') . $tmpUser->userName;
+							break;
+						default: //3
+							$winners .= ((strlen($winners) > 0) ? ', ' : '') . '<abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . $tmpUser->userName . '</abbr>';
+							break;
+					}
 				}
 			}
+			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
+			echo '	<tr' . $rowclass . '><td>' . $week . '</td><td>' . $winners . '</td><td align="center">' . $stats[highestScore] . '/' . $stats[possibleScore] . '</td></tr>';
+			$i++;
 		}
-		$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
-		echo '	<tr' . $rowclass . '><td>' . $week . '</td><td>' . $winners . '</td><td align="center">' . $stats[highestScore] . '/' . $stats[possibleScore] . '</td></tr>';
-		$i++;
+	} else {
+		echo '	<tr><td colspan="3">No weeks have been completed yet.</td></tr>' . "\n";
 	}
-} else {
-	echo '	<tr><td colspan="3">No weeks have been completed yet.</td></tr>' . "\n";
+?>
+</table>
+</div>
+<?php
 }
 
 //echo "<pre>\n";
@@ -71,10 +77,8 @@ if (ENABLE_BEST_BET) {
 	}
 }
 ?>
-</table>
-</div>
 
-<h2>User Stats</h2>
+<h2>Player Stats</h2>
 <div class="row">
 <?php if (!ENABLE_MNF) { ?>
 	<div class="col-md-4 col-xs-12">
@@ -111,26 +115,26 @@ if (ENABLE_BEST_BET) {
 	</div>
 <?php } ?>
 	<div class="col-md-4 col-xs-12">
-		<b>By Wins</b><br />
+		<b>Overall</b><br />
 		<div class="table-responsive">
 			<table class="table table-striped">
-				<tr><th align="left">Player</th><th align="center">Wins</th></tr>
+				<tr><th align="left">Player</th><th align="center">Score</th></tr>
 			<?php
 			if (isset($playerTotals)) {
 				//arsort($playerTotals);
-				uasort($playerTotals, function($a, $b){return $b['wins'] - $a['wins'];});
+				uasort($playerTotals, cmp_overall);
 				$i = 0;
 				foreach($playerTotals as $playerID => $stats) {
 					$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 					switch (USER_NAMES_DISPLAY) {
 						case 1:
-							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats['score'] . '</td></tr>';
 							break;
 						case 2:
-							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats['score'] . '</td></tr>';
 							break;
 						default: //3
-							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '</abbr></td><td class="tiny" align="center">' . $stats[wins] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '</abbr></td><td class="tiny" align="center">' . $stats['score'] . '</td></tr>';
 							break;
 					}
 					$i++;

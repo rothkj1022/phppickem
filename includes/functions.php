@@ -436,3 +436,19 @@ function getTeamStreak($teamID) {
 	}
 	$query->free;
 }
+
+function cmp_overall($a, $b) {
+	if ($a['score'] == $b['score']) {
+		if ($a['bestBets'] == $b['bestBets']) {
+			if ($a['mnf'] == $b['mnf']) {
+				return 0;
+			}
+
+			return $a['mnf'] < $b['mnf'] ? 1 : -1;
+		}
+
+		return $a['bestBets'] < $b['bestBets'] ? 1 : -1;
+	}
+
+	return $a['score'] < $b['score'] ? 1 : -1;
+}

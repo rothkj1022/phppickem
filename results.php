@@ -56,8 +56,13 @@ while ($row = $query->fetch_assoc()) {
 		$games[$row['gameID']]['winnerID'] = '';
 		$allScoresIn = false;
 	}
+	$games[$row['gameID']]['gameTimeEastern'] = $row['gameTimeEastern'];
 }
 $query->free;
+
+//echo "<pre>\n";
+//print_r($games);
+//echo "</pre>\n";
 
 //get array of player picks
 $playerPicks = array();
@@ -148,20 +153,21 @@ if (sizeof($playerTotals) > 0) {
 		}
 		//loop through all games
 		foreach($games as $game) {
-			$pick = '';
-			$pick = $playerPicks[$userID][$game['gameID']];
-			if (ENABLE_BEST_BET && ($pickSummary['bestBet'] == $game['gameID']))
-				$pick .= "*";
-			if (!empty($game['winnerID'])) {
-				//score has been entered
-				if ($playerPicks[$userID][$game['gameID']] == $game['winnerID']) {
-					$pick = '<span class="winner">' . $pick . '</span>';
-				}
-			} else {
+			$classes = '';
+			$gameIsLocked = gameIsLocked($game['gameID']);
+			if (empty($game['winnerID']) && !$gameIsLocked && !$weekExpired && $hidePicks && (int)$userID !== (int)$user->userID) {
 				//mask pick if pick and week is not locked and user has opted to hide their picks
-				$gameIsLocked = gameIsLocked($game['gameID']);
-				if (!$gameIsLocked && !$weekExpired && $hidePicks && (int)$userID !== (int)$user->userID) {
-					$pick = '***';
+				$pick = '***';
+			} else {
+				$pick = $playerPicks[$userID][$game['gameID']];
+				if (ENABLE_BEST_BET && ($pickSummary['bestBet'] == $game['gameID']))
+					$classes .= "bestBet ";
+				if (ENABLE_MNF && (date('D', strtotime($game['gameTimeEastern'])) == 'Mon'))
+					$classes .= "mnf ";
+				if ($playerPicks[$userID][$game['gameID']] == $game['winnerID']) {
+					$classes .= "winner ";
+				$classes = trim($classes);
+				$pick = '<span class="' . $classes . '">' . $pick . '</span>';
 				}
 			}
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";

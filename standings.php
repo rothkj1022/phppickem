@@ -42,12 +42,23 @@ if (isset($weekStats)) {
 	echo '	<tr><td colspan="3">No weeks have been completed yet.</td></tr>' . "\n";
 }
 
+//echo "<pre>\n";
+//print_r($playerTotals);
+//echo "</pre>\n";
+
 if (ENABLE_BEST_BET) {
 	$tieBreakText = "Best Bets";
 	$tieBreakKey = "bestBets";
 
 	foreach($playerTotals as $playerID => $stats) {
 		$tieBreakValue[$playerID] = $stats['bestBets'];
+	}
+} else if (ENABLE_MNF) {
+	$tieBreakText = "MNF";
+	$tieBreakKey = "mnf";
+
+	foreach($playerTotals as $playerID => $stats) {
+		$tieBreakValue[$playerID] = $stats['mnf'];
 	}
 } else {
 	$tieBreakText = "Pick Ratio";
@@ -65,6 +76,7 @@ if (ENABLE_BEST_BET) {
 
 <h2>User Stats</h2>
 <div class="row">
+<?php if (!ENABLE_MNF) { ?>
 	<div class="col-md-4 col-xs-12">
 		<b>By Name</b><br />
 		<div class="table-responsive">
@@ -97,11 +109,12 @@ if (ENABLE_BEST_BET) {
 			</table>
 		</div>
 	</div>
+<?php } ?>
 	<div class="col-md-4 col-xs-12">
 		<b>By Wins</b><br />
 		<div class="table-responsive">
 			<table class="table table-striped">
-				<tr><th align="left">Player</th><th align="left">Wins</th><th><?= $tieBreakText ?></th></tr>
+				<tr><th align="left">Player</th><th align="center">Wins</th></tr>
 			<?php
 			if (isset($playerTotals)) {
 				//arsort($playerTotals);
@@ -111,19 +124,19 @@ if (ENABLE_BEST_BET) {
 					$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 					switch (USER_NAMES_DISPLAY) {
 						case 1:
-							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td></tr>';
 							break;
 						case 2:
-							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td></tr>';
 							break;
 						default: //3
-							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '</abbr></td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '</abbr></td><td class="tiny" align="center">' . $stats[wins] . '</td></tr>';
 							break;
 					}
 					$i++;
 				}
 			} else {
-				echo '	<tr><td colspan="3">No weeks have been completed yet.</td></tr>' . "\n";
+				echo '	<tr><td colspan="2">No weeks have been completed yet.</td></tr>' . "\n";
 			}
 			?>
 			</table>
@@ -133,7 +146,7 @@ if (ENABLE_BEST_BET) {
 		<b>By <?= $tieBreakText ?></b><br />
 		<div class="table-responsive">
 			<table class="table table-striped">
-				<tr><th align="left">Player</th><th align="left">Wins</th><th><?= $tieBreakText ?></th></tr>
+				<tr><th align="left">Player</th><th align="center"><?= $tieBreakText ?></th></tr>
 			<?php
 			if (isset($playerTotals)) {
 				uasort($playerTotals, function($a, $b){global $tieBreakKey; return $b[$tieBreakKey] - $a[$tieBreakKey];});
@@ -142,13 +155,13 @@ if (ENABLE_BEST_BET) {
 					$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 					switch (USER_NAMES_DISPLAY) {
 						case 1:
-							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
 							break;
 						case 2:
-							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
 							break;
 						default: //3
-							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '</abbr></td><td class="tiny" align="center">' . $stats[wins] . '</td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
+							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '</abbr></td><td class="tiny" align="center">' . $tieBreakValue[$playerID] . '</td></tr>';
 							break;
 					}
 					$i++;
@@ -160,6 +173,40 @@ if (ENABLE_BEST_BET) {
 			</table>
 		</div>
 	</div>
+<?php if (ENABLE_MNF) { ?>
+	<div class="col-md-4 col-xs-12">
+		<b>By MNF</b><br />
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<tr><th align="left">Player</th><th>MNF</th></tr>
+			<?php
+			if (isset($playerTotals)) {
+				uasort($playerTotals, function($a, $b){return $b['mnf'] - $a['mnf'];});
+				//arsort($playerTotals);
+				$i = 0;
+				foreach($playerTotals as $playerID => $stats) {
+					$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
+					switch (USER_NAMES_DISPLAY) {
+						case 1:
+							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[name] . '</td><td class="tiny" align="center">' . $stats['mnf'] . '</td></tr>';
+							break;
+						case 2:
+							echo '	<tr' . $rowclass . '><td class="tiny">' . $stats[userName] . '</td><td class="tiny" align="center">' . $stats['mnf'] . '</td></tr>';
+							break;
+						default: //3
+							echo '	<tr' . $rowclass . '><td class="tiny"><abbr title="' . $stats[name] . '">' . $stats[userName] . '<abbr></td><td class="tiny" align="center">' . $stats['mnf'] . '</td></tr>';
+							break;
+					}
+					$i++;
+				}
+			} else {
+				echo '	<tr><td colspan="3">No weeks have been completed yet.</td></tr>' . "\n";
+			}
+			?>
+			</table>
+		</div>
+	</div>
+<?php } ?>
 </div>
 
 <?php

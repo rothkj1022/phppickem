@@ -274,7 +274,7 @@ function calculateStats() {
 		//get array of player picks
 		$playerPicks = array();
 		$playerWeeklyTotals = array();
-		$sql = "select p.userID, p.gameID, p.pickID, p.points, u.firstname, u.lastname, u.userName ";
+		$sql = "select p.userID, p.gameID, p.pickID, p.points, u.firstname, u.lastname, u.userName, s.gameTimeEastern ";
 		$sql .= "from " . DB_PREFIX . "picks p ";
 		$sql .= "inner join " . DB_PREFIX . "users u on p.userID = u.userID ";
 		$sql .= "inner join " . DB_PREFIX . "schedule s on p.gameID = s.gameID ";
@@ -288,12 +288,15 @@ function calculateStats() {
 			$playerTotals[$row['userID']][name] = $row['firstname'] . ' ' . $row['lastname'];
 			$playerTotals[$row['userID']][userName] = $row['userName'];
 			$playerTotals[$row['userID']]['bestBets'] += 0;
+			$playerTotals[$row['userID']]['mnf'] += 0;
 			if (!empty($games[$row['gameID']]['winnerID']) && $row['pickID'] == $games[$row['gameID']]['winnerID']) {
 				//player has picked the winning team
 				$playerWeeklyTotals[$row['userID']][score] += 1;
 				$playerTotals[$row['userID']][score] += 1;
 				if ($playerBBs[$row['userID']] == $row['gameID'])
 					$playerTotals[$row['userID']]['bestBets'] += 1;
+				if (date('D', strtotime($row['gameTimeEastern'])) == 'Mon')
+					$playerTotals[$row['userID']]['mnf'] += 1;
 			} else {
 				$playerWeeklyTotals[$row['userID']][score] += 0;
 				$playerTotals[$row['userID']][score] += 0;

@@ -21,6 +21,7 @@ define('SERVER_TIMEZONE_OFFSET', 0);
 
 define('ENABLE_SPREAD', false);
 define('ENABLE_BEST_BET', false);
+define('ENABLE_MNF', false);
 
 // ***DO NOT EDIT ANYTHING BELOW THIS LINE***
 error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);

@@ -1,5 +1,6 @@
 <?php
 require('includes/application_top.php');
+require_once('includes/functions.php');
 
 $week = (int)$_GET['week'];
 if (empty($week)) {
@@ -122,6 +123,7 @@ if (sizeof($playerTotals) > 0) {
 	$i = 0;
 	arsort($playerTotals);
 	foreach($playerTotals as $userID => $totalCorrect) {
+		$pickSummary = get_pick_summary($userID, $week);
 		$hidePicks = hidePicks($userID, $week);
 		if ($i == 0) {
 			$topScore = $totalCorrect;
@@ -148,6 +150,8 @@ if (sizeof($playerTotals) > 0) {
 		foreach($games as $game) {
 			$pick = '';
 			$pick = $playerPicks[$userID][$game['gameID']];
+			if (ENABLE_BEST_BET && ($pickSummary['bestBet'] == $game['gameID']))
+				$pick .= "*";
 			if (!empty($game['winnerID'])) {
 				//score has been entered
 				if ($playerPicks[$userID][$game['gameID']] == $game['winnerID']) {

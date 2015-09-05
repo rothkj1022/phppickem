@@ -5,11 +5,12 @@ require('includes/classes/team.php');
 if ($_POST['action'] == 'Submit') {
 	$week = $_POST['week'];
 	$cutoffDateTime = getCutoffDateTime($week);
+	$bestBet = (isset($_POST['bestBet']) ? (int)($_POST['bestBet']) : 0);
 
 	//update summary table
 	$sql = "delete from " . DB_PREFIX . "picksummary where weekNum = " . $_POST['week'] . " and userID = " . $user->userID . ";";
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
-	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ");";
+	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks, bestBet) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ", $bestBet);";
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
 
 	//loop through non-expire weeks and update picks
@@ -127,16 +128,10 @@ include('includes/column_right.php');
 	//get existing picks
 	$picks = getUserPicks($week, $user->userID);
 
+	$pickSummary = get_pick_summary($user->userID, $week);
+
 	//get show picks status
-	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user->userID . ";";
-	$query = $mysqli->query($sql);
-	if ($query->num_rows > 0) {
-		$row = $query->fetch_assoc();
-		$showPicks = (int)$row['showPicks'];
-	} else {
-		$showPicks = 1;
-	}
-	$query->free;
+	$showPicks = (int)($pickSummary['showPicks']);
 
 	//display schedule for week
 	$sql = "select s.*, (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > gameTimeEastern or DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) > '" . $cutoffDateTime . "')  as expired ";
@@ -180,7 +175,13 @@ include('includes/column_right.php');
 			}
 			echo '					</div>'."\n";
 			echo '					<div class="row versus">' . "\n";
-			echo '						<div class="col-xs-1"></div>' . "\n";
+
+			echo '						<div class="col-xs-1 center">' . "\n";
+			if (ENABLE_BEST_BET) {
+				echo '							<label for="bb' . $row['gameID'] . '" class="label-for-check"><div class="bbLabel" onclick="document.entryForm.bb'.$row['gameID'].'[0].checked=true;"><p>BB</p></div>'. "\n"; 
+			}
+			echo '						</div>' . "\n";
+
 			echo '						<div class="col-xs-4">'."\n";
 			echo '							<label for="' . $row['gameID'] . $visitorTeam->teamID . '" class="label-for-check"><div class="team-logo"><img src="images/logos/'.$visitorTeam->teamID.'.svg" onclick="document.entryForm.game'.$row['gameID'].'[0].checked=true;" /></div></label>' . "\n";
 			echo '						</div>'."\n";
@@ -192,7 +193,14 @@ include('includes/column_right.php');
 			echo '					</div>' . "\n";
 			if (!$row['expired']) {
 				echo '					<div class="row bg-row2">'."\n";
-				echo '						<div class="col-xs-1"></div>' . "\n";
+
+				echo '						<div class="col-xs-1 center">' . "\n";
+				if (ENABLE_BEST_BET) {
+					$checkedText = (($pickSummary['bestBet'] == $row['gameID']) ? ' checked="checked"' : '');
+					echo '							<input type="radio" name="bestBet" value="' . $row['gameID'] . '" id="bb' . $row['gameID'] . '"' . $checkedText . '/>' . "\n";
+				}
+				echo '						</div>' . "\n";
+
 				echo '						<div class="col-xs-4 center">'."\n";
 				echo '							<input type="radio" class="check-with-label" name="game' . $row['gameID'] . '" value="' . $visitorTeam->teamID . '" id="' . $row['gameID'] . $visitorTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $visitorTeam->teamID) ? ' checked' : '') . ' />'."\n";
 				echo '						</div>'."\n";
@@ -248,6 +256,8 @@ include('includes/column_right.php');
 				}
 				echo '						<div class="col-xs-12 center your-pick"><b>Your Pick:</b></br />';
 				echo $statusImg . ' ' . $pickLabel;
+				if (ENABLE_BEST_BET && ($pickSummary['bestBet'] == $result['gameID']))
+					echo "<p>Best Bet</p>\n";
 				echo '</div>' . "\n";
 				echo '					</div>' . "\n";
 			}

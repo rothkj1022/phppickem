@@ -119,6 +119,23 @@ function getUserPicks($week, $userID) {
 	return $picks;
 }
 
+function get_pick_summary($user, $week) {
+	global $mysqli;
+
+	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user . ";";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$pickSummary = $query->fetch_assoc();
+	} else {
+		$pickSummary['weekNum'] = $week;
+		$pickSummary['userID'] = $user;
+		$pickSummary['showPicks'] = 1;
+		$pickSummary['bestBet'] = 0;
+	}
+
+	return $pickSummary;
+}
+
 function getUserScore($week, $userID) {
 	global $mysqli, $user;
 
@@ -245,6 +262,15 @@ function calculateStats() {
 		}
 		$query->free;
 
+		//get array of player best bets
+		$playerBBs = array();
+		$sql = "select userID, bestBet from " . DB_PREFIX . "picksummary where weekNum = " . $week;
+		$query = $mysqli->query($sql);
+		while ($row = $query->fetch_assoc()) {
+			$playerBBs[$row['userID']] = $row['bestBet'];
+		}
+		$query->free;
+
 		//get array of player picks
 		$playerPicks = array();
 		$playerWeeklyTotals = array();
@@ -261,10 +287,13 @@ function calculateStats() {
 			$playerTotals[$row['userID']][wins] += 0;
 			$playerTotals[$row['userID']][name] = $row['firstname'] . ' ' . $row['lastname'];
 			$playerTotals[$row['userID']][userName] = $row['userName'];
+			$playerTotals[$row['userID']]['bestBets'] += 0;
 			if (!empty($games[$row['gameID']]['winnerID']) && $row['pickID'] == $games[$row['gameID']]['winnerID']) {
 				//player has picked the winning team
 				$playerWeeklyTotals[$row['userID']][score] += 1;
 				$playerTotals[$row['userID']][score] += 1;
+				if ($playerBBs[$row['userID']] == $row['gameID'])
+					$playerTotals[$row['userID']]['bestBets'] += 1;
 			} else {
 				$playerWeeklyTotals[$row['userID']][score] += 0;
 				$playerTotals[$row['userID']][score] += 0;

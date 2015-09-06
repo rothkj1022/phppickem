@@ -1,6 +1,7 @@
 <?php
 require_once('includes/application_top.php');
 require('includes/classes/team.php');
+require_once('includes/classes/class.phpmailer.php');
 
 if ($_POST['action'] == 'Submit') {
 	$week = $_POST['week'];
@@ -14,6 +15,8 @@ if ($_POST['action'] == 'Submit') {
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
 
 	//loop through non-expire weeks and update picks
+	$pickText = "";
+	$bbTeam = "";
 	$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $_POST['week'] . " and (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern and DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < '" . $cutoffDateTime . "');";
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
@@ -25,9 +28,32 @@ if ($_POST['action'] == 'Submit') {
 				$sql = "insert into " . DB_PREFIX . "picks (userID, gameID, pickID) values (" . $user->userID . ", " . $row['gameID'] . ", '" . $_POST['game' . $row['gameID']] . "')";
 				$mysqli->query($sql) or die('Error inserting picks: ' . $mysqli->error);
 			}
+
+			$pickText .= $_POST['game' . $result['gameID']] . " ";
+			if ($result['gameID'] == $bestBet)
+				$bbTeam = $_POST['game' . $result['gameID']];
 		}
 	}
 	$query->free;
+
+	if (ENABLE_PICK_EMAIL) {
+		// Send notification email
+		$mail = new PHPMailer();
+		$mail->IsHTML(true);
+
+		$mail->From = "admin@barrynfl.omicrondev.com";
+		$mail->FromName = "Barry NFL";
+
+		$addresses .= ((strlen($addresses) > 0) ? ', ' : '') . $result['email'];
+		//$mail->AddAddress("team-barry@googlegroups.com");
+		$mail->AddAddress("gammadean@gmail.com");
+		$mail->Subject = $user->userName . " has entered picks";
+
+		// html text block
+		$mail->Body = "Picks: $pickText, Best Bet = $bbTeam";
+		$mail->Send();
+	}
+
 	header('Location: results.php?week=' . $_POST['week']);
 	exit;
 } else {

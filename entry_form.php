@@ -27,11 +27,11 @@ if ($_POST['action'] == 'Submit') {
 			if (!empty($_POST['game' . $row['gameID']])) {
 				$sql = "insert into " . DB_PREFIX . "picks (userID, gameID, pickID) values (" . $user->userID . ", " . $row['gameID'] . ", '" . $_POST['game' . $row['gameID']] . "')";
 				$mysqli->query($sql) or die('Error inserting picks: ' . $mysqli->error);
-			}
 
-			$pickText .= $_POST['game' . $result['gameID']] . " ";
-			if ($result['gameID'] == $bestBet)
-				$bbTeam = $_POST['game' . $result['gameID']];
+				$pickText .= $_POST['game' . $row['gameID']] . " ";
+				if ($row['gameID'] == $bestBet)
+					$bbTeam = $_POST['game' . $row['gameID']];
+			}
 		}
 	}
 	$query->free;

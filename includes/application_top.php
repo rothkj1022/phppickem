@@ -2,7 +2,11 @@
 // application_top.php -- included first on all pages
 require('includes/config.php');
 require('includes/functions.php');
+require('includes/classes/crypto.php');
+require('includes/classes/class.phpmailer.php');
 require('includes/htmlpurifier/HTMLPurifier.auto.php');
+
+$crypto = new phpFreaksCrypto;
 $purifier_config = HTMLPurifier_Config::createDefault();
 $purifier_config->set('Cache.DefinitionImpl', null); //turns off caching
 
@@ -45,13 +49,15 @@ session_start();
 require('includes/classes/login.php');
 $login = new Login;
 
+$adminUser = $login->get_user('admin');
+//print_r($adminUser);
+
 $okFiles = array('login.php', 'signup.php', 'password_reset.php');
 if (!in_array(basename($_SERVER['PHP_SELF']), $okFiles) && (empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes')) {
 	header( 'Location: login.php' );
 	exit;
 } else if (!empty($_SESSION['loggedInUser'])) {
 	$user = $login->get_user($_SESSION['loggedInUser']);
-	$adminUser = $login->get_user('admin');
 }
 
 if ($_SESSION['loggedInUser'] === 'admin' && $_SESSION['logged'] === 'yes') {

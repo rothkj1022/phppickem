@@ -26,7 +26,7 @@ define('SERVER_TIMEZONE_OFFSET', 0);
 //example:
 // curl -O 'http://www.yourdomain.com/getHtmlScores.php?BATCH_SCORE_UPDATE_KEY=yourRandomDefinedValueHere'
 // wget 'http://www.yourdomain.com/getHtmlScores.php?BATCH_SCORE_UPDATE_KEY=yourRandomDefinedValueHere'
-define('BATCH_SCORE_UPDATE_KEY', 'f5fe57a1950f903a420e6c43cc266f62');
+define('BATCH_SCORE_UPDATE_KEY', '1234567890abcdefghijklmnopqrstuvwxyz');
 //enable or disable batch updates here
 define('BATCH_SCORE_UPDATE_ENABLED', true);
 

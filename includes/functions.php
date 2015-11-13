@@ -217,7 +217,6 @@ function hidePicks($userID, $week) {
 }
 
 function getLastCompletedWeek() {
-	return 1;
 	global $mysqli;
 	$lastCompletedWeek = 0;
 	$sql = "select s.weekNum, max(s.gameTimeEastern) as lastGameTime,";

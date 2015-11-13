@@ -53,7 +53,7 @@ include('includes/header.php');
 //echo "</pre>\n";
 
 if (ENABLE_BEST_BET) {
-	$tieBreakText = "Best Bets";
+	$tieBreakText = "Best Bet";
 	$tieBreakKey = "bestBets";
 
 	foreach($playerTotals as $playerID => $stats) {
@@ -147,7 +147,7 @@ if (ENABLE_BEST_BET) {
 		</div>
 	</div>
 	<div class="col-md-4 col-xs-12">
-		<b>By <?= $tieBreakText ?></b><br />
+		<b><?= $tieBreakText ?></b><br />
 		<div class="table-responsive">
 			<table class="table table-striped">
 				<tr><th align="left">Player</th><th align="center"><?= $tieBreakText ?></th></tr>
@@ -179,7 +179,7 @@ if (ENABLE_BEST_BET) {
 	</div>
 <?php if (ENABLE_MNF) { ?>
 	<div class="col-md-4 col-xs-12">
-		<b>By MNF</b><br />
+		<b>MNF</b><br />
 		<div class="table-responsive">
 			<table class="table table-striped">
 				<tr><th align="left">Player</th><th>MNF</th></tr>

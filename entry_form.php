@@ -17,7 +17,10 @@ if ($_POST['action'] == 'Submit') {
 	//loop through non-expire weeks and update picks
 	$pickText = "";
 	$bbTeam = "";
-	$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $_POST['week'] . " and (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern and DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < '" . $cutoffDateTime . "');";
+	if (ENABLE_LATE_PICKS)	
+		$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $_POST['week'] . ";";
+	else
+		$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $_POST['week'] . " and (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern and DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < '" . $cutoffDateTime . "');";
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
 		while ($row = $query->fetch_assoc()) {
@@ -41,12 +44,11 @@ if ($_POST['action'] == 'Submit') {
 		$mail = new PHPMailer();
 		$mail->IsHTML(true);
 
-		$mail->From = "admin@barrynfl.omicrondev.com";
-		$mail->FromName = "Barry NFL";
+		$mail->From = $adminUser->email;
+		$mail->FromName = SITE_NAME;
 
 		$addresses .= ((strlen($addresses) > 0) ? ', ' : '') . $result['email'];
-		//$mail->AddAddress("team-barry@googlegroups.com");
-		$mail->AddAddress("gammadean@gmail.com");
+		$mail->AddAddress(MAILING_LIST);
 		$mail->Subject = $user->userName . " has entered picks";
 
 		// html text block
@@ -217,7 +219,7 @@ include('includes/column_right.php');
 			echo '						</div>' . "\n";
 			echo '						<div class="col-xs-1"></div>' . "\n";
 			echo '					</div>' . "\n";
-			if (!$row['expired']) {
+			if (!$row['expired'] || ENABLE_LATE_PICKS) {
 				echo '					<div class="row bg-row2">'."\n";
 
 				echo '						<div class="col-xs-1 center">' . "\n";
@@ -260,7 +262,7 @@ include('includes/column_right.php');
 			echo '							<div class="streak">Streak: ' . getTeamStreak($homeTeam->teamID) . '</div>'."\n";
 			echo '						</div>' . "\n";
 			echo '					</div>'."\n";
-			if ($row['expired']) {
+			if ($row['expired'] && !ENABLE_LATE_PICKS) {
 				//else show locked pick
 				echo '					<div class="row bg-row4">'."\n";
 				$pickID = getPickID($row['gameID'], $user->userID);

@@ -118,7 +118,10 @@ if ($_POST['action'] == 'Send Message') {
 		$sql .= "having userPicks < " . $totalGames;
 	} else {
 		//select all users
-		$sql = "select firstname, email from " . DB_PREFIX . "users where `status` = 1 and userName <> 'admin'";
+		if (ENABLE_MAILING_LIST)
+			$sql = "select 'everyone' as firstname, '" . MAILING_LIST . "' as email";
+		else
+			$sql = "select firstname, email from " . DB_PREFIX . "users where `status` = 1 and userName <> 'admin'";
 	}
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
@@ -132,7 +135,7 @@ if ($_POST['action'] == 'Send Message') {
 			$mail->IsHTML(true);
 
 			$mail->From = $adminUser->email; // the email field of the form
-			$mail->FromName = 'NFL Pick \'Em Admin'; // the name field of the form
+			$mail->FromName = SITE_NAME; // the name field of the form
 
 			$addresses .= ((strlen($addresses) > 0) ? ', ' : '') . $row['email'];
 			$mail->AddAddress($row['email']); // the form will be sent to this address

@@ -52,7 +52,7 @@ $login = new Login;
 $adminUser = $login->get_user('admin');
 //print_r($adminUser);
 
-$okFiles = array('login.php', 'signup.php', 'password_reset.php');
+$okFiles = array('login.php', 'signup.php', 'password_reset.php', 'getHtmlScores.php');
 if (!in_array(basename($_SERVER['PHP_SELF']), $okFiles) && (empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes')) {
 	header( 'Location: login.php' );
 	exit;

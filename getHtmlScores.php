@@ -2,6 +2,10 @@
 require('includes/application_top.php');
 
 $week = (int)$_GET['week'];
+if (empty($week)) {
+	//get current week
+	$week = (int)getCurrentWeek();
+}
 
 //load source code, depending on the current week, of the website into a variable as a string
 $url = "http://www.nfl.com/ajax/scorestrip?season=".SEASON_YEAR."&seasonType=REG&week=".$week;
@@ -61,3 +65,18 @@ echo json_encode($scores);
 
 //game results and winning teams can now be accessed from the scores array
 //e.g. $scores[0]['awayteam'] contains the name of the away team (['awayteam'] part) from the first game on the page ([0] part)
+
+
+//automatically update DB with scores if page is called by cronjob,etc
+if(BATCH_SCORE_UPDATE_ENABLED && !empty($_GET['BATCH_SCORE_UPDATE_KEY']) && $_GET['BATCH_SCORE_UPDATE_KEY'] == BATCH_SCORE_UPDATE_KEY ){
+	foreach($scores as $game) {
+		$homeScore = ((strlen($game['homeScore']) > 0) ? $game['homeScore'] : 'NULL');
+		$visitorScore = ((strlen($game['visitorScore']) > 0) ? $game['visitorScore'] : 'NULL');
+		$overtime = ((!empty($game['OT'])) ? '1' : '0');
+		$sql = "update " . DB_PREFIX . "schedule ";
+		$sql .= "set homeScore = " . $homeScore . ", visitorScore = " . $visitorScore . ", overtime = " . $overtime . " ";
+		$sql .= "where gameID = " . $game['gameID'];
+		$mysqli->query($sql) or die('Error updating score: ' . $mysqli->error);
+		//echo $sql . '<BR>';
+	}
+}

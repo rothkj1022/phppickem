@@ -3,18 +3,18 @@
 
  Source Server         : _localhost
  Source Server Type    : MySQL
- Source Server Version : 50534
+ Source Server Version : 50542
  Source Host           : localhost
  Source Database       : nflpickem
 
  Target Server Type    : MySQL
- Target Server Version : 50534
+ Target Server Version : 50542
  File Encoding         : utf-8
 
- Date: 08/05/2015 23:35:16 PM
+ Date: 07/07/2016 19:37:35 PM
 */
 
-SET NAMES utf8;
+SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
@@ -137,7 +137,7 @@ CREATE TABLE `nflp_teams` (
 --  Records of `nflp_teams`
 -- ----------------------------
 BEGIN;
-INSERT INTO `nflp_teams` VALUES ('ARI', '8', 'Arizona', 'Cardinals', null), ('ATL', '6', 'Atlanta', 'Falcons', null), ('BAL', '1', 'Baltimore', 'Ravens', null), ('BUF', '3', 'Buffalo', 'Bills', null), ('CAR', '6', 'Carolina', 'Panthers', null), ('CHI', '5', 'Chicago', 'Bears', null), ('CIN', '1', 'Cincinnati', 'Bengals', null), ('CLE', '1', 'Cleveland', 'Browns', null), ('DAL', '7', 'Dallas', 'Cowboys', null), ('DEN', '4', 'Denver', 'Broncos', null), ('DET', '5', 'Detroit', 'Lions', null), ('GB', '5', 'Green Bay', 'Packers', null), ('HOU', '2', 'Houston', 'Texans', null), ('IND', '2', 'Indianapolis', 'Colts', null), ('JAX', '2', 'Jacksonville', 'Jaguars', null), ('KC', '4', 'Kansas City', 'Chiefs', null), ('MIA', '3', 'Miami', 'Dolphins', null), ('MIN', '5', 'Minnesota', 'Vikings', null), ('NE', '3', 'New England', 'Patriots', null), ('NO', '6', 'New Orleans', 'Saints', null), ('NYG', '7', 'New York', 'Giants', 'NY Giants'), ('NYJ', '3', 'New York', 'Jets', 'NY Jets'), ('OAK', '4', 'Oakland', 'Raiders', null), ('PHI', '7', 'Philadelphia', 'Eagles', null), ('PIT', '1', 'Pittsburgh', 'Steelers', null), ('SD', '4', 'San Diego', 'Chargers', null), ('SEA', '8', 'Seattle', 'Seahawks', null), ('SF', '8', 'San Francisco', '49ers', null), ('STL', '8', 'St. Louis', 'Rams', null), ('TB', '6', 'Tampa Bay', 'Buccaneers', null), ('TEN', '2', 'Tennessee', 'Titans', null), ('WAS', '7', 'Washington', 'Redskins', null);
+INSERT INTO `nflp_teams` VALUES ('ARI', '8', 'Arizona', 'Cardinals', null), ('ATL', '6', 'Atlanta', 'Falcons', null), ('BAL', '1', 'Baltimore', 'Ravens', null), ('BUF', '3', 'Buffalo', 'Bills', null), ('CAR', '6', 'Carolina', 'Panthers', null), ('CHI', '5', 'Chicago', 'Bears', null), ('CIN', '1', 'Cincinnati', 'Bengals', null), ('CLE', '1', 'Cleveland', 'Browns', null), ('DAL', '7', 'Dallas', 'Cowboys', null), ('DEN', '4', 'Denver', 'Broncos', null), ('DET', '5', 'Detroit', 'Lions', null), ('GB', '5', 'Green Bay', 'Packers', null), ('HOU', '2', 'Houston', 'Texans', null), ('IND', '2', 'Indianapolis', 'Colts', null), ('JAX', '2', 'Jacksonville', 'Jaguars', null), ('KC', '4', 'Kansas City', 'Chiefs', null), ('MIA', '3', 'Miami', 'Dolphins', null), ('MIN', '5', 'Minnesota', 'Vikings', null), ('NE', '3', 'New England', 'Patriots', null), ('NO', '6', 'New Orleans', 'Saints', null), ('NYG', '7', 'New York', 'Giants', 'NY Giants'), ('NYJ', '3', 'New York', 'Jets', 'NY Jets'), ('OAK', '4', 'Oakland', 'Raiders', null), ('PHI', '7', 'Philadelphia', 'Eagles', null), ('PIT', '1', 'Pittsburgh', 'Steelers', null), ('SD', '4', 'San Diego', 'Chargers', null), ('SEA', '8', 'Seattle', 'Seahawks', null), ('SF', '8', 'San Francisco', '49ers', null), ('LA', '8', 'Los Angeles', 'Rams', null), ('TB', '6', 'Tampa Bay', 'Buccaneers', null), ('TEN', '2', 'Tennessee', 'Titans', null), ('WAS', '7', 'Washington', 'Redskins', null);
 COMMIT;
 
 -- ----------------------------

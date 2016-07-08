@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.2.1 - 7/7/2016
+### Changed
+- Fixed for LA Rams
+
 ## 2.2.0 - 4/21/2016
 ### Changed
 - Updated installer with 2016 schedule

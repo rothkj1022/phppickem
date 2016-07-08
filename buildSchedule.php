@@ -2,9 +2,6 @@
 require('includes/application_top.php');
 error_reporting(E_ALL);
 $weeks = 17;
-$teamCodes = array(
-	'JAC' => 'JAX'
-);
 $schedule = array();
 
 for ($week = 1; $week <= $weeks; $week++) {
@@ -30,10 +27,6 @@ for ($week = 1; $week <= $weeks; $week++) {
 		//get team codes
 		$away_team = $game['v'];
 		$home_team = $game['h'];
-		foreach ($teamCodes as $espnCode => $nflpCode) {
-			if ($away_team == $espnCode) $away_team = $nflpCode;
-			if ($home_team == $espnCode) $home_team = $nflpCode;
-		}
 
 		$schedule[] = array(
 			'weekNum' => $week,

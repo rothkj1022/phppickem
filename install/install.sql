@@ -88,7 +88,7 @@ DROP TABLE IF EXISTS `nflp_picksummary`;
 CREATE TABLE `nflp_picksummary` (
   `weekNum` int(11) NOT NULL DEFAULT '0',
   `userID` int(11) NOT NULL DEFAULT '0',
-  `tieBreakerPoints` int(11) NOT NULL,
+  `tieBreakerPoints` int(11) NOT NULL DEFAULT '0',
   `showPicks` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`weekNum`,`userID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;

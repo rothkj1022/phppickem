@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.2.2 - 7/12/2016
+### Changed/Fixed
+- Time zone offset is now set automatically, based on new SERVER_TIMEZONE constant.  This should fix [issue #2](https://github.com/rothkj1022/phppickem/issues/2) and [issue #16](https://github.com/rothkj1022/phppickem/issues/16)
+- Fixed [issue #17](https://github.com/rothkj1022/phppickem/issues/17)
+
 ## 2.2.1 - 7/7/2016
 ### Changed
 - Fixed for LA Rams

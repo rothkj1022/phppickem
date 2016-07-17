@@ -162,7 +162,7 @@ include('includes/column_right.php');
 			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 			echo '				<div class="matchup">' . "\n";
 			echo '					<div class="row bg-row1">'."\n";
-			if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
+			if (strlen(($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) && ($row['homeScore'] !== 0 && $row['visitorScore'] !== 0)) {
 				//if score is entered, show score
 				$scoreEntered = true;
 				$homeScore = (int)$row['homeScore'];

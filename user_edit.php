@@ -1,10 +1,7 @@
 <?php
 require('includes/application_top.php');
-require('includes/classes/crypto.php');
-$crypto = new phpFreaksCrypto;
 
 include('includes/classes/class.formvalidation.php');
-include('includes/classes/class.phpmailer.php');
 
 if (isset($_POST['submit'])) {
 	$my_form = new validator;

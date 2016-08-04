@@ -1,8 +1,6 @@
 <?php
 require('includes/application_top.php');
 include('includes/classes/class.formvalidation.php');
-require('includes/classes/crypto.php');
-$crypto = new phpFreaksCrypto;
 
 if (!$user->is_admin) {
 	header('Location: ./');

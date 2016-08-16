@@ -1,7 +1,7 @@
 		<p class="skip2content"><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#content">Skip to content &raquo;</a></p>
 
 		<div class="bg-primary">
-			<b>Current Time (Eastern):</b><br />
+			<b>Current Time (<?php echo SERVER_TIMEZONE; ?>):</b><br />
 			<span id="jclock1"></span>
 			<script type="text/javascript">
 			$(function($) {

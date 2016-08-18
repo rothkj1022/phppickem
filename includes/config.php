@@ -16,6 +16,9 @@ define('DISQUS_SHORTNAME', ''); // only needed if using Disqus for comments
 
 define('SEASON_YEAR', '2016');
 define('SERVER_TIMEZONE', 'America/Chicago'); // Your SERVER's timezone. NOTE: Game times will always be displayed in Eastern time, as they are on NFL.com. This setting makes sure cutoff times work properly.
+define('ALLWAYS_HIDE_PICKS', false); // Set to true to hide picks until games are locked out
+define('SHOW_TIEBREAKER_POINTS', false); // Set to true to use tiebreaker points, does not affect wins, mainly for bragging rights
+define('DEFAULT_TIEBREAKER_POINTS', 50); // if using tiebreaker points set default value to fill in on entry form
 
 // ***DO NOT EDIT ANYTHING BELOW THIS LINE***
 error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);

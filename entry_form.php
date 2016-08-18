@@ -9,7 +9,8 @@ if ($_POST['action'] == 'Submit') {
 	//update summary table
 	$sql = "delete from " . DB_PREFIX . "picksummary where weekNum = " . $_POST['week'] . " and userID = " . $user->userID . ";";
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
-	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ");";
+	#$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ");";
+	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks, tieBreakerPoints) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ", " . $_POST['tieBreakerPoints'] . ");";
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
 
 	//loop through non-expire weeks and update picks
@@ -126,6 +127,23 @@ include('includes/column_right.php');
 	<?php
 	//get existing picks
 	$picks = getUserPicks($week, $user->userID);
+
+        //get tie-breaker status
+	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user->userID . ";";
+	$query = $mysqli->query($sql) or die('Error getting tie-breaker status: ' . $mysqli->error);
+	if ($query->num_rows > 0) {
+		$result = $query->fetch_assoc();
+                $tieBreakerPoints = (int)$result['tieBreakerPoints'];
+        } else {
+                $tieBreakerPoints = DEFAULT_TIEBREAKER_POINTS;
+        }
+	//initial db sets tiBreakerPoints=0 so the following is needed to set default points
+	//a user can still set this to 0 since we don't check after a number is entered
+	//if they attempt to change their points/picks again the default value will 
+	//show the default from config.php and if submitted it will be set to the default
+        if ($tieBreakerPoints == 0 OR $tieBreakerPoints == "") {
+		$tieBreakerPoints = DEFAULT_TIEBREAKER_POINTS;
+	}
 
 	//get show picks status
 	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user->userID . ";";
@@ -246,7 +264,16 @@ include('includes/column_right.php');
 		}
 		echo '		</div>' . "\n";
 		echo '		</div>' . "\n";
-		echo '<p class="noprint"><input type="checkbox" name="showPicks" id="showPicks" value="1"' . (($showPicks) ? ' checked="checked"' : '') . ' /> <label for="showPicks">Allow others to see my picks</label></p>' . "\n";
+		if (ALWAYS_HIDE_PICKS) {
+			echo '<p class="noprint"><input type="hidden" name="showPicks" id="showPicks" value="0"' . (($showPicks) ? ' checked="checked"' : '') . ' /> <label for="showPicks">' . "\n";
+		} else {
+			echo '<p class="noprint"><input type="checkbox" name="showPicks" id="showPicks" value="1"' . (($showPicks) ? ' checked="checked"' : '') . ' /> <label for="showPicks">Allow others to see my picks</label></p>' . "\n";
+		}
+		if (SHOW_TIEBREAKER_POINTS) {
+                	echo '<p><strong>Tie Breaker Points</strong> <input type="text" name="tieBreakerPoints" id="tieBreakerPoints" maxlength="3" size=3 value="' . $tieBreakerPoints . '" /> ' . " << Default is 50 (<strong>CURRENTLY BROKEN: DOESN'T SAVE POINTS</strong>) \n";
+		} else {
+                	echo '<input type="hidden" name="tieBreakerPoints" id="tieBreakerPoints" value="0" />' . "\n";
+		}
 		echo '<p class="noprint"><input type="submit" name="action" value="Submit" /></p>' . "\n";
 		echo '</form>' . "\n";
 	}

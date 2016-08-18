@@ -270,7 +270,7 @@ include('includes/column_right.php');
 			echo '<p class="noprint"><input type="checkbox" name="showPicks" id="showPicks" value="1"' . (($showPicks) ? ' checked="checked"' : '') . ' /> <label for="showPicks">Allow others to see my picks</label></p>' . "\n";
 		}
 		if (SHOW_TIEBREAKER_POINTS) {
-                	echo '<p><strong>Tie Breaker Points</strong> <input type="text" name="tieBreakerPoints" id="tieBreakerPoints" maxlength="3" size=3 value="' . $tieBreakerPoints . '" /> ' . " << Default is 50 (<strong>CURRENTLY BROKEN: DOESN'T SAVE POINTS</strong>) \n";
+			echo '<p><strong>Tie Breaker Points</strong> <input type="text" name="tieBreakerPoints" id="tieBreakerPoints" maxlength="3" size=3 value="' . $tieBreakerPoints . '" /> ' . " << Default is " . DEFAULT_TIEBREAKER_POINTS . "\n";
 		} else {
                 	echo '<input type="hidden" name="tieBreakerPoints" id="tieBreakerPoints" value="0" />' . "\n";
 		}

@@ -340,26 +340,26 @@ function getTeamRecord($teamID) {
 	$sql .= "from " . DB_PREFIX . "schedule ";
 	$sql .= "where (homeScore is not null and visitorScore is not null)";
 	$sql .= " and visitorID = '" . $teamID . "' ";
+    $sql .= " and gameTimeEaster > now() ";
 	$sql .= "order by weekNum";
 	//echo $sql;
 	$query = $mysqli->query($sql);
-	if ($query->num_rows > 0) {
 		$wins = 0;
 		$losses = 0;
 		$ties = 0;
-		while ($row = $query->fetch_assoc()) {
-			if ($row['gameTied']) {
-				$ties++;
-			} else if ($row['gameWon']) {
-				$wins++;
-			} else {
-				$losses++;
-			}
-		}
+    if ($query->num_rows > 0) {
+        while ($row = $query->fetch_assoc()) {
+            if ($row['gameTied']) {
+                $ties++;
+            } else if ($row['gameWon']) {
+                $wins++;
+            } else {
+                $losses++;
+            }
+        }
+    }
 		return $wins . '-' . $losses . '-' . $ties;
-	} else {
-		return '';
-	}
+
 	$query->free;
 }
 
@@ -375,6 +375,7 @@ function getTeamStreak($teamID) {
 	$sql .= "from " . DB_PREFIX . "schedule ";
 	$sql .= "where (homeScore is not null and visitorScore is not null)";
 	$sql .= " and visitorID = '" . $teamID . "' ";
+    $sql .= " and gameTimeEaster > now() ";
 	$sql .= "order by weekNum";
 	//echo $sql;
 	$query = $mysqli->query($sql);
@@ -398,7 +399,7 @@ function getTeamStreak($teamID) {
 		}
 		return $current . ' ' . $iStreak;
 	} else {
-		return '';
+        return 'n/a';
 	}
 	$query->free;
 }

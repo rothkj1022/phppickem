@@ -5,7 +5,6 @@ include('includes/classes/class.formvalidation.php');
 
 if (isset($_POST['submit'])) {
 	$my_form = new validator;
-	$mail = new PHPMailer();
 
 	if($my_form->checkEmail($_POST['email'])) { // check for good mail
 

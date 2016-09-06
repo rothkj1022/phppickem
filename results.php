@@ -40,11 +40,13 @@ while ($row = $query->fetch_assoc()) {
 	$games[$row['gameID']]['gameID'] = $row['gameID'];
 	$games[$row['gameID']]['homeID'] = $row['homeID'];
 	$games[$row['gameID']]['visitorID'] = $row['visitorID'];
-	if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
-		if ((int)$row['homeScore'] > (int)$row['visitorScore']) {
+	$homeScore = (int)$row['homeScore'];
+	$visitorScore = (int)$row['visitorScore'];
+	if ($homeScore + $visitorScore > 0) {
+		if ($homeScore > $visitorScore) {
 			$games[$row['gameID']]['winnerID'] = $row['homeID'];
 		}
-		if ((int)$row['visitorScore'] > (int)$row['homeScore']) {
+		if ($visitorScore > $homeScore) {
 			$games[$row['gameID']]['winnerID'] = $row['visitorID'];
 		}
 	} else {
@@ -52,7 +54,7 @@ while ($row = $query->fetch_assoc()) {
 		$allScoresIn = false;
 	}
 }
-$query->free;
+$query->close();
 
 //get array of player picks
 $playerPicks = array();

@@ -333,12 +333,12 @@ function getTeamRecord($teamID) {
 
 	$sql = "select weekNum, (homeScore > visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
 	$sql .= "from " . DB_PREFIX . "schedule ";
-	$sql .= "where (homeScore is not null and visitorScore is not null)";
+	$sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
 	$sql .= " and homeID = '" . $teamID . "' ";
 	$sql .= "union ";
 	$sql .= "select weekNum, (homeScore < visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
 	$sql .= "from " . DB_PREFIX . "schedule ";
-	$sql .= "where (homeScore is not null and visitorScore is not null)";
+	$sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
 	$sql .= " and visitorID = '" . $teamID . "' ";
 	$sql .= "order by weekNum";
 	//echo $sql;
@@ -368,12 +368,12 @@ function getTeamStreak($teamID) {
 
 	$sql = "select weekNum, (homeScore > visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
 	$sql .= "from " . DB_PREFIX . "schedule ";
-	$sql .= "where (homeScore is not null and visitorScore is not null)";
+	$sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
 	$sql .= " and homeID = '" . $teamID . "' ";
 	$sql .= "union ";
 	$sql .= "select weekNum, (homeScore < visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
 	$sql .= "from " . DB_PREFIX . "schedule ";
-	$sql .= "where (homeScore is not null and visitorScore is not null)";
+	$sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
 	$sql .= " and visitorID = '" . $teamID . "' ";
 	$sql .= "order by weekNum";
 	//echo $sql;

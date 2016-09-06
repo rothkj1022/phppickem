@@ -15,10 +15,8 @@ define('COMMENTS_SYSTEM', 'basic'); // basic, disqus, or disabled
 define('DISQUS_SHORTNAME', ''); // only needed if using Disqus for comments
 
 define('SITE_NAME', "NFL Pick 'Em");
-define('SEASON_YEAR', '2015');
-
-//set timezone offset, hours difference between your server's timezone and eastern
-define('SERVER_TIMEZONE_OFFSET', 0);
+define('SEASON_YEAR', '2016');
+define('SERVER_TIMEZONE', 'America/Chicago'); // Your SERVER's timezone. NOTE: Game times will always be displayed in Eastern time, as they are on NFL.com. This setting makes sure cutoff times work properly.
 
 define('ENABLE_SPREAD', false);
 define('ENABLE_BEST_BET', false);
@@ -27,3 +25,18 @@ define('ENABLE_PICK_EMAIL', false);
 
 // ***DO NOT EDIT ANYTHING BELOW THIS LINE***
 error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);
+
+//automatically set timezone offset (hours difference between your server's timezone and eastern time)
+date_default_timezone_set(SERVER_TIMEZONE);
+/*$timeZoneCurrent = @date_default_timezone_get();
+if (ini_get('date.timezone')) {
+	$timeZoneCurrent = ini_get('date.timezone');
+}*/
+$dateTimeZoneCurrent = new DateTimeZone(SERVER_TIMEZONE);
+$dateTimeZoneEastern = new DateTimeZone("America/New_York");
+$dateTimeCurrent = new DateTime("now", $dateTimeZoneCurrent);
+$dateTimeEastern = new DateTime("now", $dateTimeZoneEastern);
+$offsetCurrent = $dateTimeCurrent->getOffset();
+$offsetEastern = $dateTimeEastern->getOffset();
+$offsetHours = ($offsetEastern - $offsetCurrent) / 3600;
+define('SERVER_TIMEZONE_OFFSET', $offsetHours);

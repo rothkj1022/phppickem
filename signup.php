@@ -1,8 +1,6 @@
 <?php
 require_once('includes/application_top.php');
-require('includes/classes/crypto.php');
 include('includes/classes/class.formvalidation.php');
-include('includes/classes/class.phpmailer.php');
 
 if (!ALLOW_SIGNUP) {
 	header('location: login.php?signup=no');
@@ -13,7 +11,6 @@ if (isset($_POST['submit'])) {
 
 	$my_form = new validator;
 	$mail = new PHPMailer();
-	$crypto = new phpFreaksCrypto;
 
 	$firstname = $_POST['firstname'];
 	$lastname = $_POST['lastname'];

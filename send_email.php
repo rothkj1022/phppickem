@@ -1,6 +1,5 @@
 <?php
 require('includes/application_top.php');
-include('includes/classes/class.phpmailer.php');
 
 if (!$user->is_admin) {
 	header('Location: ./');

@@ -37,7 +37,7 @@ switch ($step) {
 		*/
 
 		// Name of the file
-		$filename = 'phppickem2.0.2.sql';
+		$filename = 'install.sql';
 		//////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Temporary variable, used to store current query

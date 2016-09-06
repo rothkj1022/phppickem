@@ -1,7 +1,7 @@
 <?php
 if (COMMENTS_SYSTEM == 'basic' && $_POST['action'] == 'Add Comment') {
 	//if user has not submitted within the last 15 seconds
-	$sql = "select * from " . DB_PREFIX . "comments where userID = " . $user->userID . " and subject = '" . $_POST['subject'] . "' and postDateTime > date_add(now(), INTERVAL -15 SECOND)";
+	$sql = "select * from " . DB_PREFIX . "comments where userID = " . $user->userID . " and subject = '" . $mysqli->real_escape_string($_POST['subject']) . "' and postDateTime > date_add(now(), INTERVAL -15 SECOND)";
 	$query = $mysqli->query($sql) or die($mysqli->error);
 	if ($query->num_rows == 0) {
 		$sql = "insert into " . DB_PREFIX . "comments (userID, subject, comment, postDateTime) values (" . $user->userID . ", '" . $mysqli->real_escape_string($_POST['subject']) . "', '" . $mysqli->real_escape_string($_POST['comment']) . "', now());";

@@ -1,15 +1,11 @@
 <?php
 require('includes/application_top.php');
-require('includes/classes/crypto.php');
-$crypto = new phpFreaksCrypto;
-
-include('includes/classes/class.phpmailer.php');
 
 if ($_GET['reset'] == 'true') {
 	$display = '<div class="responseOk">Your password has been reset, and has been sent to you.</div><br/>';
 }
 
-if (isset($_POST['submit'])) {
+if (is_array($_POST) && sizeof($_POST) > 0) {
 	//create new user, disabled
 	$sql = "SELECT * FROM " . DB_PREFIX . "users WHERE firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
 	$query = $mysqli->query($sql);

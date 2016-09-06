@@ -9,7 +9,7 @@
 			        timeNotation: '12h',
 			        am_pm: true,
 					utc: true,
-					utc_offset: -<?php echo 4 + SERVER_TIMEZONE_OFFSET; ?>
+					utc_offset: <?php echo -1 * (4 + SERVER_TIMEZONE_OFFSET); ?>
 				}
 				$('#jclock1').jclock(optionsEST);
 		    });

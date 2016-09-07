@@ -41,7 +41,11 @@ while ($row = $query->fetch_assoc()) {
 	$games[$row['gameID']]['gameID'] = $row['gameID'];
 	$games[$row['gameID']]['homeID'] = $row['homeID'];
 	$games[$row['gameID']]['visitorID'] = $row['visitorID'];
-	if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
+
+	//$games[$row['gameID']]['homeScore'] = $row['homeScore'];
+	//$games[$row['gameID']]['visitorScore'] = $row['visitorScore'];
+  
+	if ((int)($row['homeScore']) > 0 && (int)($row['visitorScore']) > 0) {
 		if (((int)$row['homeScore'] + (float)$row['spread']) > (int)$row['visitorScore']) {
 			$games[$row['gameID']]['winnerID'] = $row['homeID'];
 		}
@@ -62,6 +66,7 @@ $query->free;
 
 //echo "<pre>\n";
 //print_r($games);
+//print_r($allScoresIn);
 //echo "</pre>\n";
 
 //get array of player picks
@@ -121,10 +126,24 @@ if (sizeof($playerTotals) > 0) {
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
-		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games); ?>">Week <?php echo $week; ?></th><th align="left">Score</th></tr>
+		<tr>
+      <th align="left">Player</th>
+      <th colspan="<?php echo sizeof($games); ?>">Week <?php echo $week; ?></th>
+      <th align="left">Score</th>
+    </tr>
 	</thead>
 	<tbody>
 <?php
+
+  echo "<tr>\n";
+  echo "<td>Winners</td>\n";
+  foreach ($games as $game)
+  {
+    echo "<td>{$game['winnerID']}</td>\n";
+  }
+  echo "<td></td>\n";
+  echo "</tr>\n";
+
 	$i = 0;
 	arsort($playerTotals);
 	foreach($playerTotals as $userID => $totalCorrect) {

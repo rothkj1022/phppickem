@@ -136,7 +136,7 @@ if (sizeof($playerTotals) > 0) {
 <?php
 
   echo "<tr>\n";
-  echo "<td>Winners</td>\n";
+  echo "<td>Correct Picks</td>\n";
   foreach ($games as $game)
   {
     echo "<td>{$game['winnerID']}</td>\n";

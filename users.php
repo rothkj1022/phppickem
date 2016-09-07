@@ -20,7 +20,7 @@ switch ($action) {
 
 		$my_form = new validator;
 		if($my_form->checkEmail($_POST['email'])) { // check for good mail
-			if ($my_form->validate_fields('firstname,lastname,email,userName,password,password2')) { // comma delimited list of the required form fields
+			if ($my_form->validate_fields('firstname,lastname,email,userName,password')) { // comma delimited list of the required form fields
 				if ($password == $password2) {
 					//check that username does not already exist
 					$username = $mysqli->real_escape_string(str_replace(' ', '_', $_POST['username']));
@@ -55,13 +55,14 @@ switch ($action) {
 		$email = $_POST['email'];
 		$userName = $_POST['userName'];
 		$userID = (int)$_POST['userID'];
+		$isAdmin = (int)$_POST['isAdmin'];
 
 		$my_form = new validator;
 		if($my_form->checkEmail($_POST['email'])) { // check for good mail
 			if ($my_form->validate_fields('firstname,lastname,email,userName')) { // comma delimited list of the required form fields
 				//form is valid, perform update
 				$sql = "update " . DB_PREFIX . "users ";
-				$sql .= "set firstname = '" . $firstname . "', lastname = '" . $lastname . "', email = '" . $email . "', userName = '" . $userName . "' ";
+				$sql .= "set firstname = '" . $firstname . "', lastname = '" . $lastname . "', email = '" . $email . "', userName = '" . $userName . "' , isAdmin = '" . $isAdmin . "' ";
 				$sql .= "where userID = " . $userID . ";";
 				$mysqli->query($sql) or die('error updating user');
 				$display = '<div class="responseOk">User ' . $userName . ' Updated</div><br/>';
@@ -115,6 +116,7 @@ if ($action == 'add' || $action == 'edit') {
 			$lastname = $row['lastname'];
 			$email = $row['email'];
 			$userName = $row['userName'];
+			$isAdmin = $row['isAdmin'];
 			$password = $row['password'];
 		} else {
 			header('Location: ' . $_SERVER['PHP_SELF']);
@@ -143,6 +145,11 @@ if ($action == 'add' || $action == 'edit') {
 <input type="text" name="userName" value="<?php echo $userName; ?>"></p>
 
 <?php if ($action != 'edit') { ?>
+<?php if ($user->is_admin){?>
+<p>Is Admin: <input type="checkbox" name="isAdmin" value="<?php echo $isAdmin; ?>"></p>
+<?php } ?>
+
+<?php if ($action == 'add') { ?>
 <p>Password:<br />
 <input type="password" name="password" value=""></p>
 

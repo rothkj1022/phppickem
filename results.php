@@ -1,4 +1,6 @@
 <?php
+header("Refresh: 75;url='results.php'");
+
 require('includes/application_top.php');
 
 $week = (int)$_GET['week'];

@@ -30,7 +30,10 @@ $query->free;
 $weekNav .= '</div>' . "\n";
 echo $weekNav;
 
-include('includes/column_right.php');
+// dtjr
+# include('includes/column_right.php');
+include('includes/column_countdown.php');
+// dtjr
 
 //get array of games
 $allScoresIn = true;
@@ -41,15 +44,19 @@ while ($row = $query->fetch_assoc()) {
 	$games[$row['gameID']]['gameID'] = $row['gameID'];
 	$games[$row['gameID']]['homeID'] = $row['homeID'];
 	$games[$row['gameID']]['visitorID'] = $row['visitorID'];
+	// dtjr
 	$games[$row['gameID']][$row['homeID']]['score'] = $row['homeScore'];
 	$games[$row['gameID']][$row['visitorID']]['score'] = $row['visitorScore'];
 	$games[$row['gameID']]['overtime'] = $row['overtime'];
 	$games[$row['gameID']]['final'] = $row['final'];
-	if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
-		if ((int)$row['homeScore'] > (int)$row['visitorScore']) {
+	// dtjr
+	$homeScore = (int)$row['homeScore'];
+	$visitorScore = (int)$row['visitorScore'];
+	if ($homeScore + $visitorScore > 0) {
+		if ($homeScore > $visitorScore) {
 			$games[$row['gameID']]['winnerID'] = $row['homeID'];
 		}
-		if ((int)$row['visitorScore'] > (int)$row['homeScore']) {
+		if ($visitorScore > $homeScore) {
 			$games[$row['gameID']]['winnerID'] = $row['visitorID'];
 		}
 	} else {
@@ -57,7 +64,7 @@ while ($row = $query->fetch_assoc()) {
 		$allScoresIn = false;
 	}
 }
-$query->free;
+$query->close();
 
 //get array of player picks
 $playerPicks = array();
@@ -100,10 +107,11 @@ $(document).ready(function(){
 <style type="text/css">
 .pickTD { width: 24px; font-size: 9px; text-align: center; }
 </style>
+<!-- dtjr -->
+<!-- <h1>Results - Week <?php echo $week; ?></h1> -->
 <!-- <h2>Results - Week <?php echo $week; ?> ( <?php echo date('H:i'); ?> ) </h2> -->
-
 		<div class="bg-primary">
-			<b>Results - Week <?php echo $week; ?>:</b>
+			<b>Results - Week <?php echo $week; ?> &nbsp; : &nbsp; </b> &nbsp; Last updated: &nbsp; <?php echo date('Y_m_d'); ?> &nbsp; -  &nbsp; <?php echo date('H:i'); ?>
 			<span id="jclock1"></span>
 			<script type="text/javascript">
 			$(function($) {
@@ -117,7 +125,7 @@ $(document).ready(function(){
 		    });
 			</script>
 		</div>
-
+<!-- dtjr -->
 <?php
 if (!$allScoresIn) {
 	echo '<p style="font-weight: bold; color: #DBA400;">* Not all scores have been updated for week ' . $week . ' yet.</p>' . "\n";
@@ -130,7 +138,7 @@ if ($hideMyPicks && !$weekExpired) {
 
 if (sizeof($playerTotals) > 0) {
 ?>
-<!--  beg scores -->
+<!-- dtjr - beg scores -->
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
@@ -167,7 +175,7 @@ if (sizeof($playerTotals) > 0) {
 	</tbody>
 </table>
 </div>
-<!--  end scores -->
+<!-- dtjr - end scores -->
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
@@ -204,7 +212,9 @@ if (sizeof($playerTotals) > 0) {
 		foreach($games as $game) {
 			$pick = '';
 			$pick = $playerPicks[$userID][$game['gameID']];
+			// dtjr
 			$score = $game[$pick]['score'] ;
+			// dtjr
 			if (!empty($game['winnerID'])) {
 				//score has been entered
 				if ($playerPicks[$userID][$game['gameID']] == $game['winnerID']) {
@@ -273,6 +283,10 @@ if (sizeof($playerTotals) > 0) {
 	}
 	$query->free;
 }
+
+// dtjr
+include('includes/column_stats.php');
+// dtjr
 
 include('includes/comments.php');
 

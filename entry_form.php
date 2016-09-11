@@ -159,10 +159,12 @@ include('includes/column_right.php');
 			$scoreEntered = false;
 			$homeTeam = new team($row['homeID']);
 			$visitorTeam = new team($row['visitorID']);
+			$homeScore = (int)$row['homeScore'];
+			$visitorScore = (int)$row['visitorScore'];
 			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 			echo '				<div class="matchup">' . "\n";
 			echo '					<div class="row bg-row1">'."\n";
-			if (strlen($row['homeScore']) > 0 && strlen($row['visitorScore']) > 0) {
+			if (!empty($homeScore) || !empty($visitorScore)) {
 				//if score is entered, show score
 				$scoreEntered = true;
 				$homeScore = (int)$row['homeScore'];
@@ -207,13 +209,25 @@ include('includes/column_right.php');
 			echo '					<div class="row bg-row3">'."\n";
 			echo '						<div class="col-xs-6 center">'."\n";
 			echo '							<div class="team">' . $visitorTeam->city . ' ' . $visitorTeam->team . '</div>'."\n";
-			echo '							<div class="record">Record: ' . getTeamRecord($visitorTeam->teamID) . '</div>'."\n";
-			echo '							<div class="streak">Streak: ' . getTeamStreak($visitorTeam->teamID) . '</div>'."\n";
+			$teamRecord = trim(getTeamRecord($visitorTeam->teamID));
+			if (!empty($teamRecord)) {
+				echo '							<div class="record">Record: ' . $teamRecord . '</div>'."\n";
+			}
+			$teamStreak = trim(getTeamStreak($visitorTeam->teamID));
+			if (!empty($teamStreak)) {
+				echo '							<div class="streak">Streak: ' . $teamStreak . '</div>'."\n";
+			}
 			echo '						</div>'."\n";
 			echo '						<div class="col-xs-6 center">' . "\n";
 			echo '							<div class="team">' . $homeTeam->city . ' ' . $homeTeam->team . '</div>'."\n";
-			echo '							<div class="record">Record: ' . getTeamRecord($homeTeam->teamID) . '</div>'."\n";
-			echo '							<div class="streak">Streak: ' . getTeamStreak($homeTeam->teamID) . '</div>'."\n";
+			$teamRecord = trim(getTeamRecord($homeTeam->teamID));
+			if (!empty($teamRecord)) {
+				echo '							<div class="record">Record: ' . $teamRecord . '</div>'."\n";
+			}
+			$teamStreak = trim(getTeamStreak($homeTeam->teamID));
+			if (!empty($teamStreak)) {
+				echo '							<div class="streak">Streak: ' . $teamStreak . '</div>'."\n";
+			}
 			echo '						</div>' . "\n";
 			echo '					</div>'."\n";
 			if ($row['expired']) {

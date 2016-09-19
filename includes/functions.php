@@ -328,20 +328,22 @@ function sort2d ($array, $index, $order='asc', $natsort=FALSE, $case_sensitive=F
 	return $array;
 }
 
-function getTeamRecord($teamID) {
+function getTeamRecord($teamID,$week) {
 	global $mysqli;
 
 	$sql = "select weekNum, (homeScore > visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
 	$sql .= "from " . DB_PREFIX . "schedule ";
-	$sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
+	// $sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
+	$sql .= "where weekNum < " . $week . " and final = 1";
 	$sql .= " and homeID = '" . $teamID . "' ";
 	$sql .= "union ";
 	$sql .= "select weekNum, (homeScore < visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
 	$sql .= "from " . DB_PREFIX . "schedule ";
-	$sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
+	// $sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
+	$sql .= "where weekNum < " . $week . " and final = 1";
 	$sql .= " and visitorID = '" . $teamID . "' ";
 	$sql .= "order by weekNum";
-	//echo $sql;
+	// echo $sql;
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
 		$wins = 0;
@@ -363,17 +365,19 @@ function getTeamRecord($teamID) {
 	$query->free;
 }
 
-function getTeamStreak($teamID) {
+function getTeamStreak($teamID,$week) {
 	global $mysqli;
 
 	$sql = "select weekNum, (homeScore > visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
 	$sql .= "from " . DB_PREFIX . "schedule ";
-	$sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
+	// $sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
+	$sql .= "where weekNum < " . $week . " and final = 1";
 	$sql .= " and homeID = '" . $teamID . "' ";
 	$sql .= "union ";
 	$sql .= "select weekNum, (homeScore < visitorScore) as gameWon, (homeScore = visitorScore) as gameTied ";
 	$sql .= "from " . DB_PREFIX . "schedule ";
-	$sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
+	// $sql .= "where (homeScore not in(null, '0') and visitorScore not in(null, '0'))";
+	$sql .= "where weekNum < " . $week . " and final = 1";
 	$sql .= " and visitorID = '" . $teamID . "' ";
 	$sql .= "order by weekNum";
 	//echo $sql;

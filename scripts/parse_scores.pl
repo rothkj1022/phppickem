@@ -102,7 +102,7 @@
 		{
 			print ( "F = $F\n" ) if ( $DEBUG ) ;
 
-			$FF = ( /FINAL|END OF 4TH|00:00 IN 4TH/ ) ? 1 : 0 ;
+			$FF = ( /FINAL|END OF 4TH|00:00 IN 4TH|00:00 IN OT/ ) ? 1 : 0 ;
 
 			print ( "FF = $FF\n" ) if ( $DEBUG ) ;
 

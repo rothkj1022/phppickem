@@ -32,11 +32,6 @@ $query->free;
 $weekNav .= '</div>' . "\n";
 echo $weekNav;
 
-// dtjr
-# include('includes/column_right.php');
-include('includes/column_countdown.php');
-// dtjr
-
 //get array of games
 $allScoresIn = true;
 $games = array();
@@ -67,6 +62,13 @@ while ($row = $query->fetch_assoc()) {
 	}
 }
 $query->close();
+
+// dtjr
+# include('includes/column_right.php');
+if (!$allScoresIn) {
+	include('includes/column_countdown.php');
+}
+// dtjr
 
 //get array of player picks
 $playerPicks = array();

@@ -52,8 +52,9 @@ include('includes/column_right.php');
 		//$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 		echo '		<div class="row-week">' . "\n";
 		echo '			<p><b>Week ' . $row['weekNum'] . '</b><br />' . "\n";
-		echo '			First game: ' . date('n/j g:i a', strtotime($row['firstGameTime'])) . '<br />' . "\n";
-		echo '			Cutoff: ' . date('n/j g:i a', strtotime($row['cutoffTime'])) . '</p>' . "\n";
+		# echo '			First game: ' . date('n/j g:i a', strtotime($row['firstGameTime'])-(SERVER_TIMEZONE_OFFSET * 3600)) . '<br />' . "\n";
+		echo '			First game: &nbsp; ' . date('Y_m_d - H:i', strtotime($row['firstGameTime'])-(SERVER_TIMEZONE_OFFSET * 3600)) . ' (' . SERVER_TIMEZONE_ABBR . ') <br />' . "\n";
+		echo '			Cutoff: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ' . date('Y_m_d - H:i', strtotime($row['cutoffTime'])-(SERVER_TIMEZONE_OFFSET * 3600)) . ' (' . SERVER_TIMEZONE_ABBR . ') </p>' . "\n";
 		//echo '		</tr>'."\n";
 		if ($row['expired']) {
 			//if week is expired, show score (if scores are entered)

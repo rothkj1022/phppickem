@@ -41,12 +41,12 @@ while ($row = $query->fetch_assoc()) {
 	$games[$row['gameID']]['gameID'] = $row['gameID'];
 	$games[$row['gameID']]['homeID'] = $row['homeID'];
 	$games[$row['gameID']]['visitorID'] = $row['visitorID'];
-	// dtjr
+
 	$games[$row['gameID']][$row['homeID']]['score'] = $row['homeScore'];
 	$games[$row['gameID']][$row['visitorID']]['score'] = $row['visitorScore'];
 	$games[$row['gameID']]['overtime'] = $row['overtime'];
 	$games[$row['gameID']]['final'] = $row['final'];
-	// dtjr
+
 	$homeScore = (int)$row['homeScore'];
 	$visitorScore = (int)$row['visitorScore'];
 	if ($homeScore + $visitorScore > 0) {
@@ -63,12 +63,10 @@ while ($row = $query->fetch_assoc()) {
 }
 $query->close();
 
-// dtjr
 # include('includes/column_right.php');
 if (!$allScoresIn) {
 	include('includes/column_countdown.php');
 }
-// dtjr
 
 //get array of player picks
 $playerPicks = array();
@@ -111,9 +109,7 @@ $(document).ready(function(){
 <style type="text/css">
 .pickTD { width: 24px; font-size: 9px; text-align: center; }
 </style>
-<!-- dtjr -->
-<!-- <h1>Results - Week <?php echo $week; ?></h1> -->
-<!-- <h2>Results - Week <?php echo $week; ?> ( <?php echo date('H:i'); ?> ) </h2> -->
+
 		<div class="bg-primary">
 			<b>Results - Week <?php echo $week; ?> &nbsp; : &nbsp; </b> &nbsp; Last updated: &nbsp; <?php echo date('Y_m_d'); ?> &nbsp; -  &nbsp; <?php echo date('H:i'); ?>
 			<span id="jclock1"></span>
@@ -129,7 +125,7 @@ $(document).ready(function(){
 		    });
 			</script>
 		</div>
-<!-- dtjr -->
+
 <?php
 if (!$allScoresIn) {
 	echo '<p style="font-weight: bold; color: #DBA400;">* Not all scores have been updated for week ' . $week . ' yet.</p>' . "\n";
@@ -142,7 +138,7 @@ if ($hideMyPicks && !$weekExpired) {
 
 if (sizeof($playerTotals) > 0) {
 ?>
-<!-- dtjr - beg scores -->
+
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
@@ -155,11 +151,11 @@ if (sizeof($playerTotals) > 0) {
 	echo '<td>Away</td>' . "\n";
 	foreach($games as $game) {
 		if ($game['visitorID'] == $game['winnerID'] && (int)$game['final'] == 1) {
-			echo '<td><span class="winner">' . $game['visitorID'] . "&nbsp;-&nbsp;" . $game[$game['visitorID']]['score'] . '</span></td>' . "\n";
 			// echo '<td><span class="winner">' . $game[$game['visitorID']]['score'] . '</span></td>' . "\n";
+			echo '<td style="font-size:60%;"><span class="winner">' . $game['visitorID'] . "&nbsp;-&nbsp;" . $game[$game['visitorID']]['score'] . '</span></td>' . "\n";
 		} else {
-			echo '<td>' . $game['visitorID'] . "&nbsp;-&nbsp;" . $game[$game['visitorID']]['score'] . '</td>' . "\n";
 			// echo '<td> ' . $game[$game['visitorID']]['score'] . ' </td>' . "\n";
+			echo '<td style="font-size:60%;">' . $game['visitorID'] . "&nbsp;-&nbsp;" . $game[$game['visitorID']]['score'] . '</td>' . "\n";
 		}
 	}
 	echo '</tr>' . "\n";
@@ -167,11 +163,11 @@ if (sizeof($playerTotals) > 0) {
 	echo '<td>Home</td>' . "\n";
 	foreach($games as $game) {
 		if ($game['homeID'] == $game['winnerID'] && (int)$game['final'] == 1) {
-			echo '<td><span class="winner">' . $game['homeID'] . "&nbsp;-&nbsp;" . $game[$game['homeID']]['score'] . '</span></td>' . "\n";
 			// echo '<td><span class="winner">' . $game[$game['homeID']]['score'] . '</span></td>' . "\n";
+			echo '<td style="font-size:60%;"><span class="winner">' . $game['homeID'] . "&nbsp;-&nbsp;" . $game[$game['homeID']]['score'] . '</span></td>' . "\n";
 		} else {
-			echo '<td>' . $game['homeID'] . "&nbsp;-&nbsp;" . $game[$game['homeID']]['score'] . '</td>' . "\n";
 			// echo '<td> ' . $game[$game['homeID']]['score'] . ' </td>' . "\n";
+			echo '<td style="font-size:60%;">' . $game['homeID'] . "&nbsp;-&nbsp;" . $game[$game['homeID']]['score'] . '</td>' . "\n";
 		}
 	}
 	echo '</tr>' . "\n";
@@ -179,11 +175,11 @@ if (sizeof($playerTotals) > 0) {
 	</tbody>
 </table>
 </div>
-<!-- dtjr - end scores -->
+
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
-		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games); ?>">Week <?php echo $week; ?></th><th align="left">Score</th></tr>
+		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games) -1 ; ?>">Week <?php echo $week; ?></th><th align="left">Score</th></tr>
 	</thead>
 	<tbody>
 <?php
@@ -203,22 +199,24 @@ if (sizeof($playerTotals) > 0) {
 		echo '	<tr>' . "\n";
 		switch (USER_NAMES_DISPLAY) {
 			case 1:
-				echo '		<td>' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '</td>' . "\n";
+				echo '		<td colspan="3">' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '</td></tr><tr>' . "\n";
 				break;
 			case 2:
-				echo '		<td>' . trim($tmpUser->userName) . '</td>' . "\n";
+				echo '		<td colspan="3">' . trim($tmpUser->userName) . '</td></tr><tr>' . "\n";
 				break;
 			default: //3
-				echo '		<td><abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . trim($tmpUser->userName) . '</abbr></td>' . "\n";
+				echo '		<td colspan="3"><abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . trim($tmpUser->userName) . '</abbr></td></tr><tr>' . "\n";
 				break;
 		}
 		//loop through all games
 		foreach($games as $game) {
 			$pick = '';
 			$pick = $playerPicks[$userID][$game['gameID']];
-			// dtjr
-			$score = $game[$pick]['score'] ;
-			// dtjr
+			if(empty($pick)){$pick = 'no_pick';}
+			// $score = $game[$pick]['score'] ;
+			// $pick = '<img src="images/helmets_small/' . $pick . 'R.gif" / title="'.$pick.'">';
+			$pick = '<img src="images/helmets_big/' . strtolower ( $pick ) . '1.gif" / title="'.$pick.'" height="28" width="42">';
+
 			if (!empty($game['winnerID'])) {
 				//score has been entered
 				if ($playerPicks[$userID][$game['gameID']] == $game['winnerID']) {
@@ -231,6 +229,7 @@ if (sizeof($playerTotals) > 0) {
 					$pick = '***';
 				}
 			}
+			// echo '		<td class="pickTD"><img src="images/helmets_small/' . $pick . 'R.gif" /></td>' . "\n";
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";
 		}
 		echo '		<td nowrap><b>' . $totalCorrect . '/' . sizeof($games) . ' (' . number_format(($totalCorrect / sizeof($games)) * 100, 2) . '%)</b></td>' . "\n";
@@ -255,7 +254,7 @@ if (sizeof($playerTotals) > 0) {
 					break;
 			}
 		}
-		echo '	<tr><th colspan="' . (sizeof($games) + 2) . '" align="left">Winner: ' . $winnersHtml . '</th></tr>' . "\n";
+		echo '	<tr><th colspan="' . (sizeof($games) + 2) . '" align="left">Winner(s): ' . $winnersHtml . '</th></tr>' . "\n";
 	}
 ?>
 	</tbody>
@@ -288,9 +287,7 @@ if (sizeof($playerTotals) > 0) {
 	$query->free;
 }
 
-// dtjr
 include('includes/column_stats.php');
-// dtjr
 
 include('includes/comments.php');
 

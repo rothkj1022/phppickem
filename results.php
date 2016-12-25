@@ -45,7 +45,7 @@ while ($row = $query->fetch_assoc()) {
 	//$games[$row['gameID']]['homeScore'] = $row['homeScore'];
 	//$games[$row['gameID']]['visitorScore'] = $row['visitorScore'];
   
-	if ((int)($row['homeScore']) > 0 && (int)($row['visitorScore']) > 0) {
+	if ((int)($row['homeScore']) > 0 || (int)($row['visitorScore']) > 0) {
 		if (((int)$row['homeScore'] + (float)$row['spread']) > (int)$row['visitorScore']) {
 			$games[$row['gameID']]['winnerID'] = $row['homeID'];
 		}

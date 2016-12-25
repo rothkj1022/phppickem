@@ -130,23 +130,42 @@ if ($_POST['action'] == 'Send Message') {
 			$message = stripslashes($_POST['message']);
 			$message = str_replace('{player}', $row['firstname'], $message);
 
-			$mail = new PHPMailer();
-			$mail->IsHTML(true);
+			//$mail = new PHPMailer();
+			//$mail->IsHTML(true);
 
-			$mail->From = $adminUser->email; // the email field of the form
-			$mail->FromName = SITE_NAME; // the name field of the form
+			//$mail->From = $adminUser->email; // the email field of the form
+			//$mail->FromName = SITE_NAME; // the name field of the form
 
 			$addresses .= ((strlen($addresses) > 0) ? ', ' : '') . $row['email'];
-			$mail->AddAddress($row['email']); // the form will be sent to this address
-			$mail->Subject = $subject; // the subject of email
+			//$mail->AddAddress($row['email']); // the form will be sent to this address
+			//$mail->Subject = $subject; // the subject of email
 
 			// html text block
-			$mail->Body = $message;
-			$mail->Send();
+			//$mail->Body = $message;
+			//$mail->Send();
 			//echo $subject . '<br />';
 			//echo $message;
+
+			$headers  = 'MIME-Version: 1.0' . "\r\n";
+			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
+			// Additional headers
+			$to = $row['email'];
+			$headers .= 'To: ' . $row['email'] . "\r\n";
+			$headers .= 'From: ' . SITE_NAME . ' <' . $adminUser->email . '>' . "\r\n";
+
+			// Mail it
+			$result = mail($to, $subject, $message, $headers);
+
 		}
-		$display = '<div class="responseOk">Message successfully sent to: ' . $addresses . '.</div><br/>';
+		if ($result)
+			$display = '<div class="responseOk">Message successfully sent to: ' . $addresses . '.</div><br/>';
+		else
+			$display = '<div class="responseOk">Failed to send message to: ' . $addresses . '.</div><br/>';
+		$display .= '<p>to      = ' . $to . '</p>';
+		$display .= '<p>subject = ' . $subject . '</p>';
+		$display .= '<p>message = ' . $message . '</p>';
+		$display .= '<p>headers = ' . $headers . '</p>';
 		//header('Location: send_email.php');
 		//exit;
 	}

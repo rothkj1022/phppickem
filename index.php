@@ -10,9 +10,8 @@ if ($user->userName == 'admin') {
 ?>
 	<img src="images/art_holst_nfl.jpg" width="192" height="295" alt="ref" style="float: right; padding-left: 10px;" />
 	<h1>Welcome, Admin!</h1>
-	<p><b>If you feel that the work I've done has value to you,</b> I would greatly appreciate a paypal donation (click button below).  I have spent many hours working on this project, and I will continue its development as I find the time.  Again, I am very grateful for any and all contributions.</p>
+	<p></p>
 <?php
-	include('includes/donate_button.inc.php');
 } else {
 	if ($weekExpired) {
 		//current week is expired, show message

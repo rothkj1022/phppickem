@@ -210,8 +210,8 @@ $query->free;
 			$visitorTeam = new team($row['visitorID']);
 			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 			echo '		<tr' . $rowclass . '>' . "\n";
-			echo '			<td><img src="images/helmets_small/' . $homeTeam->teamID . 'R.gif" /></td>' . "\n";
-			echo '			<td><img src="images/helmets_small/' . $visitorTeam->teamID . 'L.gif" /></td>' . "\n";
+			echo '			<td><img src="images/logos/' . $homeTeam->teamID . '.svg" style="width: 50px; height: 50px;" /></td>' . "\n";
+			echo '			<td><img src="images/logos/' . $visitorTeam->teamID . '.svg" style="width: 50px; height: 50px;" /></td>' . "\n";
 			echo '			<td>' . $visitorTeam->teamName . ' @ ' . $homeTeam->teamName . '</td>' . "\n";
 			if (is_numeric($row['homeScore']) && is_numeric($row['visitorScore'])) {
 				//if score is entered, show result

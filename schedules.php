@@ -62,7 +62,7 @@ if (!empty($team)) {
 $sql .= $where . " order by gameTimeEastern";
 $query = $mysqli->query($sql);
 if ($query->num_rows > 0) {
-	echo '<table cellpadding="4" cellspacing="0" class="table1">' . "\n";
+	echo '<table cellpadding="4" cellspacing="0" class="">' . "\n";
 	echo '	<tr><th>Home</th><th>Visitor</th><th align="left">Game</th><th>Time / Result</th></tr>' . "\n";
 	$i = 0;
 	$prevWeek = 0;
@@ -74,8 +74,8 @@ if ($query->num_rows > 0) {
 		$visitorTeam = new team($row['visitorID']);
 		$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 		echo '	<tr' . $rowclass . '>' . "\n";
-		echo '		<td><img src="images/helmets_small/' . $homeTeam->teamID . 'R.gif" /></td>' . "\n";
-		echo '		<td><img src="images/helmets_small/' . $visitorTeam->teamID . 'L.gif" /></td>' . "\n";
+		echo '		<td><img src="images/logos/' . $homeTeam->teamID . '.svg" style="width: 42px; height: 28px;" /></td>' . "\n";
+		echo '		<td><img src="images/logos/' . $visitorTeam->teamID . '.svg" style="width: 42px; height: 28px;" /></td>' . "\n";
 		echo '		<td>' . $visitorTeam->teamName . ' @ ' . $homeTeam->teamName . '</td>' . "\n";
 		if (is_numeric($row['homeScore']) && is_numeric($row['visitorScore'])) {
 			//if score is entered, show result

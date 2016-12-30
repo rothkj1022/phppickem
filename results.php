@@ -215,7 +215,7 @@ if (sizeof($playerTotals) > 0) {
 			if(empty($pick)){$pick = 'no_pick';}
 			// $score = $game[$pick]['score'] ;
 			// $pick = '<img src="images/helmets_small/' . $pick . 'R.gif" / title="'.$pick.'">';
-			$pick = '<img src="images/helmets_big/' . strtolower ( $pick ) . '1.gif" / title="'.$pick.'" height="28" width="42">';
+			$pick = '<img src="images/logos/' . $pick . '.svg" / title="'.$pick.'" height="28" width="42">';
 
 			if (!empty($game['winnerID'])) {
 				//score has been entered

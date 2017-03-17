@@ -57,6 +57,7 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
 									<ul class="dropdown-menu">
 										<li><a href="scores.php">Enter Scores</a></li>
+										<li><a href="admin_entry_form.php">Edit User Picks</a></li>
 										<li><a href="send_email.php">Send Email</a></li>
 										<li><a href="users.php">Update Users</a></li>
 										<li><a href="schedule_edit.php">Edit Schedule</a></li>

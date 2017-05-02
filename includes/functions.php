@@ -119,6 +119,23 @@ function getUserPicks($week, $userID) {
 	return $picks;
 }
 
+function get_pick_summary($user, $week) {
+	global $mysqli;
+
+	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user . ";";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$pickSummary = $query->fetch_assoc();
+	} else {
+		$pickSummary['weekNum'] = $week;
+		$pickSummary['userID'] = $user;
+		$pickSummary['showPicks'] = 1;
+		$pickSummary['bestBet'] = 0;
+	}
+
+	return $pickSummary;
+}
+
 function getUserScore($week, $userID) {
 	global $mysqli, $user;
 
@@ -234,19 +251,29 @@ function calculateStats() {
 			$games[$row['gameID']]['gameID'] = $row['gameID'];
 			$games[$row['gameID']]['homeID'] = $row['homeID'];
 			$games[$row['gameID']]['visitorID'] = $row['visitorID'];
-			if ((int)$row['homeScore'] > (int)$row['visitorScore']) {
+			if (((int)$row['homeScore'] + (float)$row['spread']) > (int)$row['visitorScore']) {
 				$games[$row['gameID']]['winnerID'] = $row['homeID'];
-			}
-			if ((int)$row['visitorScore'] > (int)$row['homeScore']) {
+			} else if (((int)$row['visitorScore'] - (float)$row['spread']) > (int)$row['homeScore']) {
 				$games[$row['gameID']]['winnerID'] = $row['visitorID'];
+			} else {
+				$games[$row['gameID']]['winnerID'] = 'Push';
 			}
+		}
+		$query->free;
+
+		//get array of player best bets
+		$playerBBs = array();
+		$sql = "select userID, bestBet from " . DB_PREFIX . "picksummary where weekNum = " . $week;
+		$query = $mysqli->query($sql);
+		while ($row = $query->fetch_assoc()) {
+			$playerBBs[$row['userID']] = $row['bestBet'];
 		}
 		$query->free;
 
 		//get array of player picks
 		$playerPicks = array();
 		$playerWeeklyTotals = array();
-		$sql = "select p.userID, p.gameID, p.pickID, p.points, u.firstname, u.lastname, u.userName ";
+		$sql = "select p.userID, p.gameID, p.pickID, p.points, u.firstname, u.lastname, u.userName, s.gameTimeEastern ";
 		$sql .= "from " . DB_PREFIX . "picks p ";
 		$sql .= "inner join " . DB_PREFIX . "users u on p.userID = u.userID ";
 		$sql .= "inner join " . DB_PREFIX . "schedule s on p.gameID = s.gameID ";
@@ -259,10 +286,16 @@ function calculateStats() {
 			$playerTotals[$row['userID']][wins] += 0;
 			$playerTotals[$row['userID']][name] = $row['firstname'] . ' ' . $row['lastname'];
 			$playerTotals[$row['userID']][userName] = $row['userName'];
+			$playerTotals[$row['userID']]['bestBets'] += 0;
+			$playerTotals[$row['userID']]['mnf'] += 0;
 			if (!empty($games[$row['gameID']]['winnerID']) && $row['pickID'] == $games[$row['gameID']]['winnerID']) {
 				//player has picked the winning team
 				$playerWeeklyTotals[$row['userID']][score] += 1;
 				$playerTotals[$row['userID']][score] += 1;
+				if ($playerBBs[$row['userID']] == $row['gameID'])
+					$playerTotals[$row['userID']]['bestBets'] += 1;
+				if (date('D', strtotime($row['gameTimeEastern'])) == 'Mon')
+					$playerTotals[$row['userID']]['mnf'] += 1;
 			} else {
 				$playerWeeklyTotals[$row['userID']][score] += 0;
 				$playerTotals[$row['userID']][score] += 0;
@@ -402,4 +435,20 @@ function getTeamStreak($teamID) {
         return 'n/a';
 	}
 	$query->free;
+}
+
+function cmp_overall($a, $b) {
+	if ($a['score'] == $b['score']) {
+		if ($a['bestBets'] == $b['bestBets']) {
+			if ($a['mnf'] == $b['mnf']) {
+				return 0;
+			}
+
+			return $a['mnf'] < $b['mnf'] ? 1 : -1;
+		}
+
+		return $a['bestBets'] < $b['bestBets'] ? 1 : -1;
+	}
+
+	return $a['score'] < $b['score'] ? 1 : -1;
 }

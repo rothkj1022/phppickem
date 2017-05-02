@@ -22,7 +22,7 @@ class phpFreaksCrypto
   var $td;
 
   // this gets called when class is instantiated
-  function phpFreaksCrypto($key = 'a843l?nv89rjfd}O(jdnsleken0', $iv = false, $algorithm = 'tripledes', $mode = 'ecb')
+  function __construct($key = 'a843l?nv89rjfd}O(jdnsleken0', $iv = false, $algorithm = 'tripledes', $mode = 'ecb')
   {
 
     if(extension_loaded('mcrypt') === FALSE)

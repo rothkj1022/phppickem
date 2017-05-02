@@ -20,7 +20,7 @@ if(empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>NFL Pick 'Em</title>
+	<title><?php echo SITE_NAME . ' ' . SEASON_YEAR;?></title>
 
 	<base href="<?php echo SITE_URL; ?>" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
@@ -44,7 +44,7 @@ if(empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
 <body>
 	<div class="container">
 		<form class="form-signin" role="form" action="login.php" method="POST">
-			<h2 class="form-signin-heading">NFL Pick 'Em Login</h2>
+			<h2 class="form-signin-heading"><?php echo SITE_NAME;?> Login</h2>
 			<?php
 			//print_r($_POST);
 			if ($_GET['login'] == 'failed') {

@@ -1,20 +1,26 @@
 <?php
 require_once('includes/application_top.php');
 require('includes/classes/team.php');
+require_once('includes/classes/class.phpmailer.php');
 
 if ($_POST['action'] == 'Submit') {
 	$week = $_POST['week'];
 	$cutoffDateTime = getCutoffDateTime($week);
+	$bestBet = (isset($_POST['bestBet']) ? (int)($_POST['bestBet']) : 0);
 
 	//update summary table
 	$sql = "delete from " . DB_PREFIX . "picksummary where weekNum = " . $_POST['week'] . " and userID = " . $user->userID . ";";
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
-	#$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ");";
-	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks, tieBreakerPoints) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ", " . $_POST['tieBreakerPoints'] . ");";
+	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks, bestBet, tieBreakerPoints) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ", $bestBet);";
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
 
 	//loop through non-expire weeks and update picks
-	$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $_POST['week'] . " and (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern and DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < '" . $cutoffDateTime . "');";
+	$pickText = "";
+	$bbTeam = "";
+	if (ENABLE_LATE_PICKS)
+		$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $_POST['week'] . ";";
+	else
+		$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $_POST['week'] . " and (DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < gameTimeEastern and DATE_ADD(NOW(), INTERVAL " . SERVER_TIMEZONE_OFFSET . " HOUR) < '" . $cutoffDateTime . "');";
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
 		while ($row = $query->fetch_assoc()) {
@@ -24,10 +30,32 @@ if ($_POST['action'] == 'Submit') {
 			if (!empty($_POST['game' . $row['gameID']])) {
 				$sql = "insert into " . DB_PREFIX . "picks (userID, gameID, pickID) values (" . $user->userID . ", " . $row['gameID'] . ", '" . $_POST['game' . $row['gameID']] . "')";
 				$mysqli->query($sql) or die('Error inserting picks: ' . $mysqli->error);
+
+				$pickText .= $_POST['game' . $row['gameID']] . " ";
+				if ($row['gameID'] == $bestBet)
+					$bbTeam = $_POST['game' . $row['gameID']];
 			}
 		}
 	}
 	$query->free;
+
+	if (ENABLE_PICK_EMAIL) {
+		// Send notification email
+		$mail = new PHPMailer();
+		$mail->IsHTML(true);
+
+		$mail->From = $adminUser->email;
+		$mail->FromName = SITE_NAME;
+
+		$addresses .= ((strlen($addresses) > 0) ? ', ' : '') . $result['email'];
+		$mail->AddAddress(MAILING_LIST);
+		$mail->Subject = $user->userName . " has entered picks";
+
+		// html text block
+		$mail->Body = "Picks: $pickText, Best Bet = $bbTeam";
+		$mail->Send();
+	}
+
 	header('Location: results.php?week=' . $_POST['week']);
 	exit;
 } else {
@@ -139,12 +167,12 @@ include('includes/column_right.php');
         }
 	//initial db sets tiBreakerPoints=0 so the following is needed to set default points
 	//a user can still set this to 0 since we don't check after a number is entered
-	//if they attempt to change their points/picks again the default value will 
+	//if they attempt to change their points/picks again the default value will
 	//show the default from config.php and if submitted it will be set to the default
         if ($tieBreakerPoints == 0 OR $tieBreakerPoints == "") {
 		$tieBreakerPoints = DEFAULT_TIEBREAKER_POINTS;
 	}
-
+$pickSummary = get_pick_summary($user->userID, $week);
 	//get show picks status
 	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user->userID . ";";
 	$query = $mysqli->query($sql);
@@ -198,7 +226,13 @@ include('includes/column_right.php');
 			}
 			echo '					</div>'."\n";
 			echo '					<div class="row versus">' . "\n";
-			echo '						<div class="col-xs-1"></div>' . "\n";
+
+			echo '						<div class="col-xs-1 center">' . "\n";
+			if (ENABLE_BEST_BET) {
+				echo '							<label for="bb' . $row['gameID'] . '" class="label-for-check"><div class="bbLabel" onclick="document.entryForm.bb'.$row['gameID'].'[0].checked=true;"><p>BB</p></div>'. "\n";
+			}
+			echo '						</div>' . "\n";
+
 			echo '						<div class="col-xs-4">'."\n";
 			echo '							<label for="' . $row['gameID'] . $visitorTeam->teamID . '" class="label-for-check"><div class="team-logo"><img src="images/logos/'.$visitorTeam->teamID.'.svg" onclick="document.entryForm.game'.$row['gameID'].'[0].checked=true;" /></div></label>' . "\n";
 			echo '						</div>'."\n";
@@ -208,9 +242,16 @@ include('includes/column_right.php');
 			echo '						</div>' . "\n";
 			echo '						<div class="col-xs-1"></div>' . "\n";
 			echo '					</div>' . "\n";
-			if (!$row['expired']) {
+			if (!$row['expired'] || ENABLE_LATE_PICKS) {
 				echo '					<div class="row bg-row2">'."\n";
-				echo '						<div class="col-xs-1"></div>' . "\n";
+
+				echo '						<div class="col-xs-1 center">' . "\n";
+				if (ENABLE_BEST_BET) {
+					$checkedText = (($pickSummary['bestBet'] == $row['gameID']) ? ' checked="checked"' : '');
+					echo '							<input type="radio" name="bestBet" value="' . $row['gameID'] . '" id="bb' . $row['gameID'] . '"' . $checkedText . '/>' . "\n";
+				}
+				echo '						</div>' . "\n";
+
 				echo '						<div class="col-xs-4 center">'."\n";
 				echo '							<input type="radio" class="check-with-label" name="game' . $row['gameID'] . '" value="' . $visitorTeam->teamID . '" id="' . $row['gameID'] . $visitorTeam->teamID . '"' . (($picks[$row['gameID']]['pickID'] == $visitorTeam->teamID) ? ' checked' : '') . ' />'."\n";
 				echo '						</div>'."\n";
@@ -222,19 +263,29 @@ include('includes/column_right.php');
 				echo '						<div class="col-xs-1"></div>' . "\n";
 				echo '					</div>' . "\n";
 			}
+			if (ENABLE_SPREAD) {
+				$homeSpread = (($row['spread'] == "") ? 0 : $row['spread']);
+				$awaySpread = $homeSpread * -1;
+				$homeSpreadStr = " (" . sprintf("%+.1f", $homeSpread) . ")";
+				$awaySpreadStr = " (" . sprintf("%+.1f", $awaySpread) . ")";
+			} else {
+				$homeSpreadStr = "";
+				$awaySpreadStr = "";
+			}
+
 			echo '					<div class="row bg-row3">'."\n";
 			echo '						<div class="col-xs-6 center">'."\n";
-			echo '							<div class="team">' . $visitorTeam->city . ' ' . $visitorTeam->team . '</div>'."\n";
+			echo '							<div class="team">' . $visitorTeam->city . ' ' . $visitorTeam->team . $awaySpreadStr . '</div>'."\n";
 			echo '							<div class="record">Record: ' . getTeamRecord($visitorTeam->teamID) . '</div>'."\n";
 			echo '							<div class="streak">Streak: ' . getTeamStreak($visitorTeam->teamID) . '</div>'."\n";
 			echo '						</div>'."\n";
 			echo '						<div class="col-xs-6 center">' . "\n";
-			echo '							<div class="team">' . $homeTeam->city . ' ' . $homeTeam->team . '</div>'."\n";
+			echo '							<div class="team">' . $homeTeam->city . ' ' . $homeTeam->team . $homeSpreadStr . '</div>'."\n";
 			echo '							<div class="record">Record: ' . getTeamRecord($homeTeam->teamID) . '</div>'."\n";
 			echo '							<div class="streak">Streak: ' . getTeamStreak($homeTeam->teamID) . '</div>'."\n";
 			echo '						</div>' . "\n";
 			echo '					</div>'."\n";
-			if ($row['expired']) {
+			if ($row['expired'] && !ENABLE_LATE_PICKS) {
 				//else show locked pick
 				echo '					<div class="row bg-row4">'."\n";
 				$pickID = getPickID($row['gameID'], $user->userID);
@@ -256,6 +307,8 @@ include('includes/column_right.php');
 				}
 				echo '						<div class="col-xs-12 center your-pick"><b>Your Pick:</b></br />';
 				echo $statusImg . ' ' . $pickLabel;
+				if (ENABLE_BEST_BET && ($pickSummary['bestBet'] == $result['gameID']))
+					echo "<p>Best Bet</p>\n";
 				echo '</div>' . "\n";
 				echo '					</div>' . "\n";
 			}

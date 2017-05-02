@@ -12,7 +12,7 @@ class team {
 	var $teamName = '';
 
 	// Class constructor
-	function team($teamID) {
+	function __construct($teamID) {
 		return $this->getTeam($teamID);
 	}
 

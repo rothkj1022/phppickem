@@ -14,11 +14,43 @@ define('USER_NAMES_DISPLAY', 3); // 1 = real names, 2 = usernames, 3 = usernames
 define('COMMENTS_SYSTEM', 'basic'); // basic, disqus, or disabled
 define('DISQUS_SHORTNAME', ''); // only needed if using Disqus for comments
 
+define('SITE_NAME', "NFL Pick 'Em");
 define('SEASON_YEAR', '2016');
 define('SERVER_TIMEZONE', 'America/Chicago'); // Your SERVER's timezone. NOTE: Game times will always be displayed in Eastern time, as they are on NFL.com. This setting makes sure cutoff times work properly.
 define('ALLWAYS_HIDE_PICKS', false); // Set to true to hide picks until games are locked out
 define('SHOW_TIEBREAKER_POINTS', false); // Set to true to use tiebreaker points, does not affect wins, mainly for bragging rights
 define('DEFAULT_TIEBREAKER_POINTS', 50); // if using tiebreaker points set default value to fill in on entry form
+
+// Allow setting point spreads on games
+define('ENABLE_SPREAD', false);
+
+// Add tie breaker where users to select the bet they are most confident in
+define('ENABLE_BEST_BET', false);
+
+// Add tie breaker for the number of correct picks on Monday night games
+define('ENABLE_MNF', false);
+
+// Generate an email when users make their wickly picks
+// NOTE: This currently requires ENABLE_MAILING_LIST
+define('ENABLE_PICK_EMAIL', false);  // This currently requires ENABLE_MAILING_LIST
+
+// Enable weekly win statistics
+define('ENABLE_WEEK_STATS', true);
+
+// Send emails destined for all users to a mailing list instead of individual users
+define('ENABLE_MAILING_LIST', false);
+define('MAILING_LIST', 'pickem@googlegroups.com');
+
+// Allow users to make picks after the wekks games have already started
+define('ENABLE_LATE_PICKS', false);
+
+// Show standings in the right column panel
+// NOTE: These do not currently display correctly with some options
+//       enabled such as ENABLE_BEST_BET and ENABLE_MNF
+define('ENABLE_RIGHT_COLUMN_STANDINGS', true);
+
+// Show donation request in footer
+define('ENABLE_DONATE_FOOTER', true);
 
 // ***DO NOT EDIT ANYTHING BELOW THIS LINE***
 error_reporting(E_ALL ^ E_NOTICE ^ E_STRICT);

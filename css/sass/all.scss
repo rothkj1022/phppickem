@@ -225,9 +225,33 @@ td.fieldLabel {
 			@include transform(translate(-50%, -50%));
 		}
 	}
+	.bbLabel {
+		margin: 0.5em 0;
+		/*max-width: 90%;*/
+		/*max-height: 90%;*/
+		border: 1px solid #ccc;
+		position: relative;
+		background: #fff;
+		@include border-top-radius(5px);
+		@include border-bottom-radius(5px);
+		@include border-left-radius(5px);
+		@include border-right-radius(5px);
+		p {
+			@include transform(rotate(90deg));
+			white-space: nowrap;
+		}
+		label {
+			margin: 0;
+		}
+	}
 }
 
 .highlight .team-logo {
+	box-shadow: 0 0 10px rgba(81, 203, 238, 1);
+	border: 1px solid rgba(81, 203, 238, 1);
+}
+
+.highlight .bbLabel {
 	box-shadow: 0 0 10px rgba(81, 203, 238, 1);
 	border: 1px solid rgba(81, 203, 238, 1);
 }
@@ -318,6 +342,15 @@ input[type=image] {
 .winner {
 	border: 1px solid #aaa;
 	padding: 0 2px;
+}
+
+.bestBet {
+	font-weight: bold;
+}
+
+.mnf {
+	font-style: italic;
+	padding-right: 4px;
 }
 
 div.fieldLoaded,

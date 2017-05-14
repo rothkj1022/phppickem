@@ -81,7 +81,7 @@ include('includes/column_right.php');
         <h2>Week <?php echo $week; ?> - Make Your Picks:</h2>
         <p>Please make your picks below for each game.</p>
 
-<form action="admin_entry_form.php" method="post" >
+<form action="admin_entry_form.php?week=<?php echo $week;?>" method="post" >
 <select name="user" onchange="this.form.submit();">
 <option></option>
 <?php

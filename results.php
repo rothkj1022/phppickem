@@ -68,6 +68,7 @@ if (!$allScoresIn) {
 	include('includes/column_countdown.php');
 }
 
+
 //get array of player picks
 $playerPicks = array();
 $playerTotals = array();
@@ -111,8 +112,8 @@ $(document).ready(function(){
 </style>
 
 		<div class="bg-primary">
-			<b>Results - Week <?php echo $week; ?> &nbsp; : &nbsp; </b> &nbsp; Last updated: &nbsp; <?php echo date('Y_m_d'); ?> &nbsp; -  &nbsp; <?php echo date('H:i'); ?>
-			<span id="jclock1"></span>
+			<b>Results - Week <?php echo $week; ?> &nbsp; : &nbsp; </b> &nbsp; Last updated: &nbsp; <?php echo date('Y-m-d'); ?> &nbsp; -  &nbsp; <?php echo date('H:i'); ?>
+			<span id="jclock1" class='pull-right'></span>
 			<script type="text/javascript">
 			$(function($) {
 				var optionsEST = {
@@ -179,7 +180,7 @@ if (sizeof($playerTotals) > 0) {
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
-		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games) -1 ; ?>">Week <?php echo $week; ?></th><th align="left">Score</th></tr>
+		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games) -1 ; ?>">Week <?php echo $week; ?></th><th class="center">Tie Breaker</th><th align="left">Score</th></tr>
 	</thead>
 	<tbody>
 <?php
@@ -187,6 +188,7 @@ if (sizeof($playerTotals) > 0) {
 	arsort($playerTotals);
 	foreach($playerTotals as $userID => $totalCorrect) {
 		$hidePicks = hidePicks($userID, $week);
+		$tieBreaker = abs(getMondayCombinedScore($week) - getTieBreaker($userID, $week));
 		if ($i == 0) {
 			$topScore = $totalCorrect;
 			$winners[] = $userID;
@@ -227,11 +229,13 @@ if (sizeof($playerTotals) > 0) {
 				$gameIsLocked = gameIsLocked($game['gameID']);
 				if (!$gameIsLocked && !$weekExpired && $hidePicks && (int)$userID !== (int)$user->userID) {
 					$pick = '***';
+					$tieBreaker = '***';
 				}
 			}
 			// echo '		<td class="pickTD"><img src="images/helmets_small/' . $pick . 'R.gif" /></td>' . "\n";
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";
 		}
+		echo '<td class="center"> '. $tieBreaker .' </td>';
 		echo '		<td nowrap><b>' . $totalCorrect . '/' . sizeof($games) . ' (' . number_format(($totalCorrect / sizeof($games)) * 100, 2) . '%)</b></td>' . "\n";
 		echo '	</tr>' . "\n";
 		$i++;

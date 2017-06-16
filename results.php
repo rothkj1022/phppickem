@@ -68,7 +68,6 @@ if (!$allScoresIn) {
 	include('includes/column_countdown.php');
 }
 
-
 //get array of player picks
 $playerPicks = array();
 $playerTotals = array();
@@ -147,10 +146,13 @@ if (sizeof($playerTotals) > 0) {
 	</thead>
 	<tbody>
 <?php
+	// make list of winners
+	$winnerList = array();
 	//loop through all games
 	echo '<tr>' . "\n";
 	echo '<td>Away</td>' . "\n";
 	foreach($games as $game) {
+		$winnerList[] = $game['winnerID'];
 		if ($game['visitorID'] == $game['winnerID'] && (int)$game['final'] == 1) {
 			// echo '<td><span class="winner">' . $game[$game['visitorID']]['score'] . '</span></td>' . "\n";
 			echo '<td style="font-size:60%;"><span class="winner">' . $game['visitorID'] . "&nbsp;-&nbsp;" . $game[$game['visitorID']]['score'] . '</span></td>' . "\n";
@@ -172,15 +174,17 @@ if (sizeof($playerTotals) > 0) {
 		}
 	}
 	echo '</tr>' . "\n";
+	console_log($winners);
 ?>
 	</tbody>
 </table>
 </div>
 
+
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
-		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games) -1 ; ?>">Week <?php echo $week; ?></th><th class="center">Tie Breaker</th><th align="left">Score</th></tr>
+		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games) -1 ; ?>">Week <?php echo $week; ?></th><th class="center">Tie Breaker</th><th>Survivor</th><th align="left">Score</th></tr>
 	</thead>
 	<tbody>
 <?php
@@ -189,6 +193,10 @@ if (sizeof($playerTotals) > 0) {
 	foreach($playerTotals as $userID => $totalCorrect) {
 		$hidePicks = hidePicks($userID, $week);
 		$tieBreaker = abs(getMondayCombinedScore($week) - getTieBreaker($userID, $week));
+
+		$survivor = getSurvivorPick($userID, $week);
+		$survivorEl = '';
+
 		if ($i == 0) {
 			$topScore = $totalCorrect;
 			$winners[] = $userID;
@@ -214,6 +222,7 @@ if (sizeof($playerTotals) > 0) {
 		foreach($games as $game) {
 			$pick = '';
 			$pick = $playerPicks[$userID][$game['gameID']];
+
 			if(empty($pick)){$pick = 'no_pick';}
 			// $score = $game[$pick]['score'] ;
 			// $pick = '<img src="images/helmets_small/' . $pick . 'R.gif" / title="'.$pick.'">';
@@ -235,7 +244,14 @@ if (sizeof($playerTotals) > 0) {
 			// echo '		<td class="pickTD"><img src="images/helmets_small/' . $pick . 'R.gif" /></td>' . "\n";
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";
 		}
+		if(!is_null($survivor)) {
+			$survivorEl = '<img src="images/logos/' . $survivor . '.svg" / title="'.$survivor.'" height="28" width="42">';
+			if(in_array($survivor, $winnerList)) {
+				$survivorEl = '<span class="winner">' . $survivorEl . '</span>';
+			}
+		}
 		echo '<td class="center"> '. $tieBreaker .' </td>';
+		echo '<td class="pickTD">'. $survivorEl .'</td>';
 		echo '		<td nowrap><b>' . $totalCorrect . '/' . sizeof($games) . ' (' . number_format(($totalCorrect / sizeof($games)) * 100, 2) . '%)</b></td>' . "\n";
 		echo '	</tr>' . "\n";
 		$i++;

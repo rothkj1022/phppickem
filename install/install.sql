@@ -90,6 +90,7 @@ CREATE TABLE `nflp_picksummary` (
   `userID` int(11) NOT NULL DEFAULT '0',
   `tieBreakerPoints` int(11) NOT NULL DEFAULT '0',
   `showPicks` tinyint(1) NOT NULL DEFAULT '1',
+  `survivor` varchar(10),
   PRIMARY KEY (`weekNum`,`userID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 

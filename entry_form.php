@@ -9,7 +9,7 @@ if ($_POST['action'] == 'Submit') {
 	//update summary table
 	$sql = "delete from " . DB_PREFIX . "picksummary where weekNum = " . $_POST['week'] . " and userID = " . $user->userID . ";";
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
-	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks, tieBreakerPoints) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ", " . (int)$_POST['tiebreaker'] . ");";
+	$sql = "insert into " . DB_PREFIX . "picksummary (weekNum, userID, showPicks, tieBreakerPoints, survivor) values (" . $_POST['week'] . ", " . $user->userID . ", " . (int)$_POST['showPicks'] . ", " . (int)$_POST['tiebreaker'] . ", '" . $_POST['survivor'] . "');";
 	$mysqli->query($sql) or die('Error updating picks summary: ' . $mysqli->error);
 
 	//loop through non-expire weeks and update picks
@@ -37,6 +37,7 @@ if ($_POST['action'] == 'Submit') {
 	}
 	$cutoffDateTime = getCutoffDateTime($week);
 	$firstGameTime = getFirstGameTime($week);
+	$teamList = getTeamsList();
 }
 
 include('includes/header.php');
@@ -60,6 +61,10 @@ include('includes/header.php');
 		}
 		if (document.getElementById('tiebreaker').value == ""){
       return confirm('You have not entered a tiebreaker score!  Do you want to submit anyway?');
+    }
+    if(document.getElementById('survivor').value === "") {
+    	alert('You have not entered a survivor pick');
+    	return false;
     }
 		return true;
 	}
@@ -130,6 +135,8 @@ include('includes/column_right.php');
 	<?php
 	//get existing picks
 	$picks = getUserPicks($week, $user->userID);
+	$survivorPicks = getSurvivorPrevPicks($user->userID);
+	$survivorPick = "";
 
 	//get show picks status
 	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user->userID . ";";
@@ -138,6 +145,7 @@ include('includes/column_right.php');
 		$row = $query->fetch_assoc();
 		$showPicks = (int)$row['showPicks'];
 		$tiebreaker = $row['tieBreakerPoints'];
+		$survivorPick = $row['survivor'];
 	} else {
 		$showPicks = 1;
 		$tiebreaker = "";
@@ -277,6 +285,24 @@ include('includes/column_right.php');
     } else {
         echo '          <input type="hidden" name="tiebreaker" id="tiebreaker" value="0" />' . "\n";
     }
+
+    echo '          <div title="Tiebreaker" class="row bg-row1">'."\n";
+    echo '            <div class="col-xs-12 center">' . "\n";
+    echo '						  <p>Survior Pick  <br />'."\n";
+    echo '								<select name="survivor" id="survivor">'."\n";
+    if($survivorPick == "") {
+			echo '									<option value=""></option>'."\n";
+		}
+    foreach( $teamList as $team) {
+      if(!in_array($team, $survivorPicks) or $team == $survivorPick) {
+    		echo '<option value="'.$team.'" '. ($team == $survivorPick ? "selected" : "") .'>'.$team.'</option>'."\n";
+    	}
+    }
+    echo '								</select>'."\n";
+    echo '							</p>'."\n";
+    echo '            </div>'."\n";
+    echo '          </div>'."\n";
+
 		echo '<p class="noprint"><input type="checkbox" name="showPicks" id="showPicks" value="1"' . (($showPicks) ? ' checked="checked"' : '') . ' /> <label for="showPicks">Allow others to see my picks</label></p>' . "\n";
 		echo '<p class="noprint"><input type="submit" name="action" value="Submit" /></p>' . "\n";
 		echo '</form>' . "\n";

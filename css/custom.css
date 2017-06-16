@@ -1,0 +1,5 @@
+.panel {
+  border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.25);
+}

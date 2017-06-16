@@ -459,3 +459,39 @@ function getMondayCombinedScore($week) {
 	}
 	return $combinedScore;
 }
+
+function getSurvivorPick($userID, $week) {
+	global $mysqli;
+	$sql = "select survivor from " . DB_PREFIX . "picksummary where userID = " . $userID . " and weekNum = " . $week;
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$rstGetSurvivor = $query->fetch_assoc();
+		return $rstGetSurvivor['survivor'];
+	}
+	return NULL;
+}
+
+function getSurvivorPrevPicks($userID) {
+  global $mysqli;
+	$sql = "select survivor from " . DB_PREFIX . "picksummary where survivor is not NULL and userID = " . $userID;
+	$picks = array();
+	$query = $mysqli->query($sql);
+
+	while($row = $query->fetch_assoc()){
+		$picks[] = $row['survivor'];
+	}
+	$query->free;
+	return $picks;
+}
+
+function getTeamsList() {
+	global $mysqli;
+	$sql = "select teamID from " . DB_PREFIX . "teams";
+	$teams = array();
+	$query = $mysqli->query($sql);
+	while($row = $query->fetch_assoc()){
+		$teams[] = $row['teamID'];
+	}
+	$query->free;
+	return $teams;
+}

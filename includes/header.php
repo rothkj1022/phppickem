@@ -12,6 +12,7 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 	<base href="<?php echo SITE_URL; ?>" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/all.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/custom.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" />
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>

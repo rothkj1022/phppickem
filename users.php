@@ -107,6 +107,7 @@ if ($action == 'add' || $action == 'edit') {
 			$lastname = $row['lastname'];
 			$email = $row['email'];
 			$userName = $row['userName'];
+			$password = $row['password'];
 		} else {
 			header('Location: ' . $_SERVER['PHP_SELF']);
 			exit;
@@ -133,12 +134,12 @@ if ($action == 'add' || $action == 'edit') {
 <p>User Name:<br />
 <input type="text" name="userName" value="<?php echo $userName; ?>"></p>
 
-<?php if ($action == 'add') { ?>
+<?php if ($action != 'add') { ?>
 <p>Password:<br />
-<input type="password" name="password" value=""></p>
+<input type="text" name="password" value="<?php echo $password; ?>"></p>
 
 <p>Confirm Password:<br />
-<input type="password" name="password2" value=""></p>
+<input type="text" name="password2" value=""></p>
 <?php } ?>
 
 <p><input type="submit" name="action" value="Submit" class="btn btn-info" /></p>

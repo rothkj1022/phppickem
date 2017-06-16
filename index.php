@@ -49,7 +49,8 @@ include('includes/column_right.php');
 	$rowclass = '';
 	while ($row = $query->fetch_assoc()) {
 		//$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
-		echo '		<div class="row-week">' . "\n";
+		echo '		<div class="row-week panel">' . "\n";
+		echo '			<div class="panel-body">' . "\n";
 		echo '			<p><b>Week ' . $row['weekNum'] . '</b><br />' . "\n";
 		# echo '			First game: ' . date('n/j g:i a', strtotime($row['firstGameTime'])-(SERVER_TIMEZONE_OFFSET * 3600)) . '<br />' . "\n";
 		echo '			First game: &nbsp; ' . date('Y_m_d - H:i', strtotime($row['firstGameTime'])-(SERVER_TIMEZONE_OFFSET * 3600)) . ' (' . SERVER_TIMEZONE_ABBR . ') <br />' . "\n";
@@ -83,6 +84,8 @@ include('includes/column_right.php');
 				echo '			<div class="bg-info" style="color: green;"><b>All picks entered.</b><br /><a href="entry_form.php?week=' . $row['weekNum'] . '">Change your picks &raquo;</a></div>' . "\n";
 			}
 		}
+
+		echo '			</div>'."\n";
 		echo '		</div>'."\n";
 		$i++;
 	}

@@ -44,7 +44,7 @@
 		'Oakland'       => 'OAK' ,
 		'Philadelphia'  => 'PHI' ,
 		'Pittsburgh'    => 'PIT' ,
-		'San_Diego'     => 'SD' ,
+		'LA_Chargers'   => 'LAC' ,
 		'Seattle'       => 'SEA' ,
 		'San_Francisco' => 'SF' ,
 		'Tampa_Bay'     => 'TB' ,

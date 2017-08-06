@@ -51,8 +51,14 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 								<?php } ?>
 								<li><a href="results.php<?php echo ((!empty($_GET['week'])) ? '?week=' . (int)$_GET['week'] : ''); ?>">Results</a></li>
 								<li><a href="standings.php">Standings</a></li>
-								<!--li><a href="teams.php">Teams</a></li-->
-								<!--li><a href="schedules.php">Schedules</a></li-->
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">NFL News <b class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a href="nflnews.php">News</a></li>
+										<li><a href="teams.php">Teams</a></li>
+										<li><a href="schedules.php">Schedules</a></li>
+									</ul>
+								</li>
 								<?php if ($_SESSION['logged'] === 'yes' && $user->is_admin) { ?>
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>

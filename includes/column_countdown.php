@@ -1,20 +1,5 @@
 <p class="skip2content"><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#content">Skip to content &raquo;</a></p>
 
-<div class="bg-primary">
-	<b>Current Time (<?php echo SERVER_TIMEZONE_ABBR; ?>) &nbsp; :</b> &nbsp; <?php echo date('Y-m-d'); ?> &nbsp; -  &nbsp;
-	<span id="jclock1"></span>
-	<script type="text/javascript">
-	$(function($) {
-		var optionsEST = {
-	        timeNotation: '24h',
-	        am_pm: false,
-			utc: true,
-			utc_offset: <?php echo -1 * (4 + SERVER_TIMEZONE_OFFSET); ?>
-		}
-		$('#jclock1').jclock(optionsEST);
-    });
-	</script>
-</div>
 
 <!-- start countdown code - http://keith-wood.name/countdown.html -->
 <?php

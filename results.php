@@ -111,19 +111,7 @@ $(document).ready(function(){
 </style>
 
 		<div class="bg-primary">
-			<b>Results - Week <?php echo $week; ?> &nbsp; : &nbsp; </b> &nbsp; Last updated: &nbsp; <?php echo date('Y-m-d'); ?> &nbsp; -  &nbsp; <?php echo date('H:i'); ?>
-			<span id="jclock1" class='pull-right'></span>
-			<script type="text/javascript">
-			$(function($) {
-				var optionsEST = {
-			        timeNotation: '24h',
-			        am_pm: false,
-					utc: true,
-					utc_offset: <?php echo -1 * (4 + SERVER_TIMEZONE_OFFSET); ?>
-				}
-				$('#jclock1').jclock(optionsEST);
-		    });
-			</script>
+			<b>Results - Week <?php echo $week; ?></b>
 		</div>
 
 <?php
@@ -135,8 +123,6 @@ $hideMyPicks = hidePicks($user->userID, $week);
 if ($hideMyPicks && !$weekExpired) {
 	echo '<p style="font-weight: bold; color: green;">* Your picks are currently hidden to other users.</p>' . "\n";
 }
-
-if (sizeof($playerTotals) > 0) {
 ?>
 
 <div class="table-responsive">
@@ -174,13 +160,14 @@ if (sizeof($playerTotals) > 0) {
 		}
 	}
 	echo '</tr>' . "\n";
-	console_log($winners);
 ?>
 	</tbody>
 </table>
 </div>
 
-
+<?php
+if (sizeof($playerTotals) > 0) {
+?>
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>

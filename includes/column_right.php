@@ -1,7 +1,7 @@
 <?php
 
 // dtjr
-include('includes/column_countdown.php');
+//include('includes/column_countdown.php');
 
 include('includes/column_stats.php');
 // dtjr

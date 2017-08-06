@@ -10,7 +10,6 @@ if (COMMENTS_SYSTEM == 'basic' && $_POST['action'] == 'Add Comment') {
 	$query->free;
 }
 ?>
-<div class="back2top"><a href="<?php echo $_SERVER['REQUEST_URI']; ?>#">Back to top</a></div>
 <div id="comments">
 <?php
 if (COMMENTS_SYSTEM == 'basic') {

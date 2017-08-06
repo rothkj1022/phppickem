@@ -20,7 +20,7 @@ switch ($action) {
 
 		$my_form = new validator;
 		if($my_form->checkEmail($_POST['email'])) { // check for good mail
-			if ($my_form->validate_fields('firstname,lastname,email,userName,password')) { // comma delimited list of the required form fields
+			if ($my_form->validate_fields('firstname,lastname,email,userName,password,password2')) { // comma delimited list of the required form fields
 				if ($password == $password2) {
 					//check that username does not already exist
 					$username = $mysqli->real_escape_string(str_replace(' ', '_', $_POST['username']));
@@ -64,13 +64,21 @@ switch ($action) {
 				$sql .= "set firstname = '" . $firstname . "', lastname = '" . $lastname . "', email = '" . $email . "', userName = '" . $userName . "' ";
 				$sql .= "where userID = " . $userID . ";";
 				$mysqli->query($sql) or die('error updating user');
-
 				$display = '<div class="responseOk">User ' . $userName . ' Updated</div><br/>';
-				/*
-				if ($_POST['password'] == $_POST['password2']) {
-				} else {
-					$display = '<div class="responseError">Passwords do not match, please try again.</div><br/>';
-				}*/
+
+				// Hacks, to update password, un-comment this and password fields, comment above sql query
+				// if ($_POST['password'] == $_POST['password2']) {
+				// 	$password = $_POST['password'];
+				// 	$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
+				// 	$secure_password = $crypto->encrypt($salt . $crypto->encrypt($password));
+				// 	$sql .= "set firstname = '" . $firstname . "', lastname = '" . $lastname . "', email = '" . $email . "', userName = '" . $userName . "', password = '" . $secure_password . "', salt = '". $salt ."' ";
+
+				// 	$sql .= "where userID = " . $userID . ";";
+				// 	$mysqli->query($sql) or die('error updating user');
+				// 	$display = '<div class="responseOk">User ' . $userName . ' Updated</div><br/>';
+				// } else {
+				// 	$display = '<div class="responseError">Passwords do not match, please try again.</div><br/>';
+				// }
 			} else {
 				$display = '<div class="responseError">' . $my_form->error . '</div><br/>';
 			}
@@ -134,12 +142,12 @@ if ($action == 'add' || $action == 'edit') {
 <p>User Name:<br />
 <input type="text" name="userName" value="<?php echo $userName; ?>"></p>
 
-<?php if ($action != 'add') { ?>
+<?php if ($action != 'edit') { ?>
 <p>Password:<br />
-<input type="text" name="password" value="<?php echo $password; ?>"></p>
+<input type="password" name="password" value=""></p>
 
 <p>Confirm Password:<br />
-<input type="text" name="password2" value=""></p>
+<input type="password" name="password2" value=""></p>
 <?php } ?>
 
 <p><input type="submit" name="action" value="Submit" class="btn btn-info" /></p>

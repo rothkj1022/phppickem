@@ -9,7 +9,7 @@ if (empty($team)) {
 }
 
 
-$teamsids=array("NFL", "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC", "LA", "LAC", "MIA", "MIN", "NE", "NO", "NYG", "NYJ", "OAK", "PHI", "PIT", "SEA", "SF",  "TB", "TEN", "WAS");
+$teamsids=array("NFL", "ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC", "LAR", "LAC", "MIA", "MIN", "NE", "NO", "NYG", "NYJ", "OAK", "PHI", "PIT", "SEA", "SF",  "TB", "TEN", "WAS");
 $teamsnames=array(" NFL ", " Arizona Cardinals ", " Atlanta Falcons ", " Baltimore Ravens ", " Buffalo Bills ", " Carolina Panthers ", " Chicago Bears ", " Cincinnati Bengals ", " Cleveland Browns ", " Dallas Cowboys ", " Denver Broncos ", " Detroit Lions ", " Green Bay Packers ", " Houston Texans ", " Indianapolis Colts ", " Jacksonville Jaguars ", " Kansas City Chiefs ", " Los Angeles Rams ", " Los Angeles Chargers ", " Miami Dolphins ", " Minnesota Vikings ", " New England Patriots ", " New Orleans Saints ", " New York Giants ", " New York Jets ", " Oakland Raiders ", " Philadelphia Eagles ", " Pittsburgh Steelers ", " Seattle Seahawks ", " San Francisco 49ers ", " Tampa Bay Buccaneers ", " Tennessee Titans ", " Washington Redskins ");
 ?>
 <BR>
@@ -36,7 +36,7 @@ document.getElementById('my_selection').onchange = function() {
    <tr><td><div class="navbar"><h1>
   <center>
   <?php
-  $searches = array('ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'OAK', 'PHI', 'PIT', 'SEA', 'SF',  'TB', 'TEN', 'WAS');
+  $searches = array('ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LAR', 'LAC', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'OAK', 'PHI', 'PIT', 'SEA', 'SF',  'TB', 'TEN', 'WAS');
   $replacements = array(Cardinals, Falcons, Ravens, Bills, Panthers, Bears, Bengals, Browns, Cowboys, Broncos, Lions, Packers, Texans, Colts, Jaguars, Chiefs, Rams, Chargers, Dolphins, Vikings, Patriots, Saints, Giants, Jets, Raiders, Eagles, Steelers, Seahawks, Niners, Buccaneers, Titans, Redskins);
   $j = array_search($team, $teamsids);
   echo $teamsnames[$j];

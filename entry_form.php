@@ -147,7 +147,7 @@ include('includes/column_right.php');
 		$tiebreaker = $row['tieBreakerPoints'];
 		$survivorPick = $row['survivor'];
 	} else {
-		$showPicks = 1;
+		$showPicks = 0;
 		$tiebreaker = "";
 	}
 	$query->free;

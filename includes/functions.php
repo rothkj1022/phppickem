@@ -28,6 +28,19 @@ function getCurrentWeek() {
 	die('Error getting current week: ' . $mysqli->error);
 }
 
+function setupMailer() {
+	global $mail;
+	$mail = new PHPMailer();
+	$mail->isSMTP();
+	$mail->SMTPAuth = true;
+	$mail->Host = EMAIL_HOST;
+	$mail->Port = EMAIL_PORT;
+	$mail->Username = EMAIL_USERNAME;
+	$mail->Password = EMAIL_PASSWORD;
+
+	$mail->IsHTML(true);
+}
+
 function getCutoffDateTime($week) {
 	//get the cutoff date for a given week
 	global $mysqli;

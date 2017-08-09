@@ -129,8 +129,7 @@ if ($_POST['action'] == 'Send Message') {
 			$message = stripslashes($_POST['message']);
 			$message = str_replace('{player}', $row['firstname'], $message);
 
-			$mail = new PHPMailer();
-			$mail->IsHTML(true);
+			setupMailer();
 
 			$mail->From = $adminUser->email; // the email field of the form
 			$mail->FromName = 'NFL Pick \'Em Admin'; // the name field of the form
@@ -141,11 +140,15 @@ if ($_POST['action'] == 'Send Message') {
 
 			// html text block
 			$mail->Body = $message;
-			$mail->Send();
+			if (!$mail->send()) {
+			   echo "Mailer Error: " . $mail->ErrorInfo;
+			} else {
+				$display = '<div class="responseOk">Message successfully sent to: ' . $addresses . '.</div><br/>';
+			}
 			//echo $subject . '<br />';
 			//echo $message;
 		}
-		$display = '<div class="responseOk">Message successfully sent to: ' . $addresses . '.</div><br/>';
+		//$display = '<div class="responseOk">Message successfully sent to: ' . $addresses . '.</div><br/>';
 		//header('Location: send_email.php');
 		//exit;
 	}

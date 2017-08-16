@@ -35,7 +35,7 @@
 		'Jacksonville'  => 'JAX' ,
 		'Kansas_City'   => 'KC' ,
 		'LA_Chargers'   => 'LAC' ,
-		'LA_Rams'       => 'LA' ,
+		'LA_Rams'       => 'LAR' ,
 		'Miami'         => 'MIA' ,
 		'Minnesota'     => 'MIN' ,
 		'New_England'   => 'NE' ,

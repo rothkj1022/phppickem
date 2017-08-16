@@ -183,6 +183,7 @@ if (sizeof($playerTotals) > 0) {
 
 		$survivor = getSurvivorPick($userID, $week);
 		$survivorEl = '';
+		$survivorPick = '';
 
 		if ($i == 0) {
 			$topScore = $totalCorrect;
@@ -209,6 +210,7 @@ if (sizeof($playerTotals) > 0) {
 		foreach($games as $game) {
 			$pick = '';
 			$pick = $playerPicks[$userID][$game['gameID']];
+			if($survivor == $game[''])
 
 			if(empty($pick)){$pick = 'no_pick';}
 			// $score = $game[$pick]['score'] ;
@@ -226,15 +228,22 @@ if (sizeof($playerTotals) > 0) {
 				if (!$gameIsLocked && !$weekExpired && $hidePicks && (int)$userID !== (int)$user->userID) {
 					$pick = '***';
 					$tieBreaker = '***';
+					if($survivor == $game['visitorID'] || $survivor == $game['homeID']) {
+						$survivorPick = '***';
+					}
 				}
 			}
 			// echo '		<td class="pickTD"><img src="images/helmets_small/' . $pick . 'R.gif" /></td>' . "\n";
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";
 		}
 		if(!is_null($survivor)) {
-			$survivorEl = '<img src="images/logos/' . $survivor . '.svg" / title="'.$survivor.'" height="28" width="42">';
-			if(in_array($survivor, $winnerList)) {
-				$survivorEl = '<span class="winner">' . $survivorEl . '</span>';
+			if($survivorPick == '***') {
+				$survivorEl = $survivorPick;
+			} else {
+				$survivorEl = '<img src="images/logos/' . $survivor . '.svg" / title="'.$survivor.'" height="28" width="42">';
+				if(in_array($survivor, $winnerList)) {
+					$survivorEl = '<span class="winner">' . $survivorEl . '</span>';
+				}
 			}
 		}
 		echo '<td class="center"> '. $tieBreaker .' </td>';

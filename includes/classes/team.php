@@ -12,8 +12,19 @@ class team {
 	var $teamName = '';
 
 	// Class constructor
+/*
 	function team($teamID) {
 		return $this->getTeam($teamID);
+	}
+*/
+	public function __construct()
+	{
+		return $this->getTeam($teamID);
+	}
+
+	public function team($teamID)
+	{
+		self::__construct($teamID);
 	}
 
 	function getTeam($teamID) {

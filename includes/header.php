@@ -90,4 +90,3 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 			}
 			echo '</div>';
 		}
-		?>

@@ -205,6 +205,8 @@ $pickSummary = get_pick_summary($user->userID, $week);
 			$scoreEntered = false;
 			$homeTeam = new team($row['homeID']);
 			$visitorTeam = new team($row['visitorID']);
+			$homeScore = (int)$row['homeScore'];
+			$visitorScore = (int)$row['visitorScore'];
 			$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
 			echo '				<div class="matchup">' . "\n";
 			echo '					<div class="row bg-row1">'."\n";
@@ -275,11 +277,29 @@ $pickSummary = get_pick_summary($user->userID, $week);
 
 			echo '					<div class="row bg-row3">'."\n";
 			echo '						<div class="col-xs-6 center">'."\n";
+			echo '							<div class="team">' . $visitorTeam->city . ' ' . $visitorTeam->team . '</div>'."\n";
+			$teamRecord = trim(getTeamRecord($visitorTeam->teamID,$week));
+			if (!empty($teamRecord)) {
+				echo '							<div class="record">Record: ' . $teamRecord . '</div>'."\n";
+			}
+			$teamStreak = trim(getTeamStreak($visitorTeam->teamID,$week));
+			if (!empty($teamStreak)) {
+				echo '							<div class="streak">Streak: ' . $teamStreak . '</div>'."\n";
+			}
 			echo '							<div class="team">' . $visitorTeam->city . ' ' . $visitorTeam->team . $awaySpreadStr . '</div>'."\n";
 			echo '							<div class="record">Record: ' . getTeamRecord($visitorTeam->teamID) . '</div>'."\n";
 			echo '							<div class="streak">Streak: ' . getTeamStreak($visitorTeam->teamID) . '</div>'."\n";
 			echo '						</div>'."\n";
 			echo '						<div class="col-xs-6 center">' . "\n";
+			echo '							<div class="team">' . $homeTeam->city . ' ' . $homeTeam->team . '</div>'."\n";
+			$teamRecord = trim(getTeamRecord($homeTeam->teamID,$week));
+			if (!empty($teamRecord)) {
+				echo '							<div class="record">Record: ' . $teamRecord . '</div>'."\n";
+			}
+			$teamStreak = trim(getTeamStreak($homeTeam->teamID,$week));
+			if (!empty($teamStreak)) {
+				echo '							<div class="streak">Streak: ' . $teamStreak . '</div>'."\n";
+			}
 			echo '							<div class="team">' . $homeTeam->city . ' ' . $homeTeam->team . $homeSpreadStr . '</div>'."\n";
 			echo '							<div class="record">Record: ' . getTeamRecord($homeTeam->teamID) . '</div>'."\n";
 			echo '							<div class="streak">Streak: ' . getTeamStreak($homeTeam->teamID) . '</div>'."\n";

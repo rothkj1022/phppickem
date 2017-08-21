@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.2.3 - 9/5/2016
+### Changed
+- Updated README.md with new minimum requirements
+
+### Fixed
+- LA Rams Logo was not displaying
+- Results showed week 1 winners before any games have been played
+- Team record and team streak are no longer displayed for week 1 until scores have been entered
+
+### Removed
+- Removed old helmet logos
+
 ## 2.2.2 - 7/12/2016
 ### Changed/Fixed
 - Time zone offset is now set automatically, based on new SERVER_TIMEZONE constant.  This should fix [issue #2](https://github.com/rothkj1022/phppickem/issues/2) and [issue #16](https://github.com/rothkj1022/phppickem/issues/16)

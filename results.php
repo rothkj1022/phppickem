@@ -1,4 +1,6 @@
 <?php
+header("Refresh: 75;url='results.php'");
+
 require('includes/application_top.php');
 require_once('includes/functions.php');
 
@@ -12,7 +14,6 @@ $cutoffDateTime = getCutoffDateTime($week);
 $weekExpired = ((date("U", time()+(SERVER_TIMEZONE_OFFSET * 3600)) > strtotime($cutoffDateTime)) ? 1 : 0);
 
 include('includes/header.php');
-//include('includes/column_right.php');
 
 //display week nav
 $sql = "select distinct weekNum from " . DB_PREFIX . "schedule order by weekNum;";
@@ -42,13 +43,24 @@ while ($row = $query->fetch_assoc()) {
 	$games[$row['gameID']]['homeID'] = $row['homeID'];
 	$games[$row['gameID']]['visitorID'] = $row['visitorID'];
 
+	$games[$row['gameID']][$row['homeID']]['score'] = $row['homeScore'];
+	$games[$row['gameID']][$row['visitorID']]['score'] = $row['visitorScore'];
+	$games[$row['gameID']]['overtime'] = $row['overtime'];
+	$games[$row['gameID']]['final'] = $row['final'];
+
+	$homeScore = (int)$row['homeScore'];
+	$visitorScore = (int)$row['visitorScore'];
+	if ($homeScore + $visitorScore > 0) {
+		if ($homeScore > $visitorScore) {
+
 	//$games[$row['gameID']]['homeScore'] = $row['homeScore'];
 	//$games[$row['gameID']]['visitorScore'] = $row['visitorScore'];
-  
+
 	if ((int)($row['homeScore']) > 0 || (int)($row['visitorScore']) > 0) {
 		if (((int)$row['homeScore'] + (float)$row['spread']) > (int)$row['visitorScore']) {
 			$games[$row['gameID']]['winnerID'] = $row['homeID'];
 		}
+		if ($visitorScore > $homeScore) {
 		else if (((int)$row['visitorScore'] - (float)$row['spread']) > (int)$row['homeScore']) {
 			$games[$row['gameID']]['winnerID'] = $row['visitorID'];
 		}
@@ -62,7 +74,12 @@ while ($row = $query->fetch_assoc()) {
 	}
 	$games[$row['gameID']]['gameTimeEastern'] = $row['gameTimeEastern'];
 }
-$query->free;
+$query->close();
+
+# include('includes/column_right.php');
+if (!$allScoresIn) {
+	include('includes/column_countdown.php');
+}
 
 //echo "<pre>\n";
 //print_r($games);
@@ -110,7 +127,23 @@ $(document).ready(function(){
 <style type="text/css">
 .pickTD { width: 24px; font-size: 9px; text-align: center; }
 </style>
-<h1>Results - Week <?php echo $week; ?></h1>
+
+		<div class="bg-primary">
+			<b>Results - Week <?php echo $week; ?> &nbsp; : &nbsp; </b> &nbsp; Last updated: &nbsp; <?php echo date('Y_m_d'); ?> &nbsp; -  &nbsp; <?php echo date('H:i'); ?>
+			<span id="jclock1"></span>
+			<script type="text/javascript">
+			$(function($) {
+				var optionsEST = {
+			        timeNotation: '24h',
+			        am_pm: false,
+					utc: true,
+					utc_offset: <?php echo -1 * (4 + SERVER_TIMEZONE_OFFSET); ?>
+				}
+				$('#jclock1').jclock(optionsEST);
+		    });
+			</script>
+		</div>
+
 <?php
 if (!$allScoresIn) {
 	echo '<p style="font-weight: bold; color: #DBA400;">* Not all scores have been updated for week ' . $week . ' yet.</p>' . "\n";
@@ -123,6 +156,7 @@ if ($hideMyPicks && !$weekExpired) {
 
 if (sizeof($playerTotals) > 0) {
 ?>
+
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
@@ -131,6 +165,44 @@ if (sizeof($playerTotals) > 0) {
       <th colspan="<?php echo sizeof($games); ?>">Week <?php echo $week; ?></th>
       <th align="left">Score</th>
     </tr>
+		<tr><th align="left">Scores</th></tr>
+	</thead>
+	<tbody>
+<?php
+	//loop through all games
+	echo '<tr>' . "\n";
+	echo '<td>Away</td>' . "\n";
+	foreach($games as $game) {
+		if ($game['visitorID'] == $game['winnerID'] && (int)$game['final'] == 1) {
+			// echo '<td><span class="winner">' . $game[$game['visitorID']]['score'] . '</span></td>' . "\n";
+			echo '<td style="font-size:60%;"><span class="winner">' . $game['visitorID'] . "&nbsp;-&nbsp;" . $game[$game['visitorID']]['score'] . '</span></td>' . "\n";
+		} else {
+			// echo '<td> ' . $game[$game['visitorID']]['score'] . ' </td>' . "\n";
+			echo '<td style="font-size:60%;">' . $game['visitorID'] . "&nbsp;-&nbsp;" . $game[$game['visitorID']]['score'] . '</td>' . "\n";
+		}
+	}
+	echo '</tr>' . "\n";
+	echo '<tr>' . "\n";
+	echo '<td>Home</td>' . "\n";
+	foreach($games as $game) {
+		if ($game['homeID'] == $game['winnerID'] && (int)$game['final'] == 1) {
+			// echo '<td><span class="winner">' . $game[$game['homeID']]['score'] . '</span></td>' . "\n";
+			echo '<td style="font-size:60%;"><span class="winner">' . $game['homeID'] . "&nbsp;-&nbsp;" . $game[$game['homeID']]['score'] . '</span></td>' . "\n";
+		} else {
+			// echo '<td> ' . $game[$game['homeID']]['score'] . ' </td>' . "\n";
+			echo '<td style="font-size:60%;">' . $game['homeID'] . "&nbsp;-&nbsp;" . $game[$game['homeID']]['score'] . '</td>' . "\n";
+		}
+	}
+	echo '</tr>' . "\n";
+?>
+	</tbody>
+</table>
+</div>
+
+<div class="table-responsive">
+<table class="table table-striped">
+	<thead>
+		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games) -1 ; ?>">Week <?php echo $week; ?></th><th align="left">Score</th></tr>
 	</thead>
 	<tbody>
 <?php
@@ -161,17 +233,35 @@ if (sizeof($playerTotals) > 0) {
 		echo '	<tr>' . "\n";
 		switch (USER_NAMES_DISPLAY) {
 			case 1:
-				echo '		<td>' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '</td>' . "\n";
+				echo '		<td colspan="3">' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '</td></tr><tr>' . "\n";
 				break;
 			case 2:
-				echo '		<td>' . trim($tmpUser->userName) . '</td>' . "\n";
+				echo '		<td colspan="3">' . trim($tmpUser->userName) . '</td></tr><tr>' . "\n";
 				break;
 			default: //3
-				echo '		<td><abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . trim($tmpUser->userName) . '</abbr></td>' . "\n";
+				echo '		<td colspan="3"><abbr title="' . trim($tmpUser->firstname . ' ' . $tmpUser->lastname) . '">' . trim($tmpUser->userName) . '</abbr></td></tr><tr>' . "\n";
 				break;
 		}
 		//loop through all games
 		foreach($games as $game) {
+			$pick = '';
+			$pick = $playerPicks[$userID][$game['gameID']];
+			if(empty($pick)){$pick = 'no_pick';}
+			// $score = $game[$pick]['score'] ;
+			// $pick = '<img src="images/helmets_small/' . $pick . 'R.gif" / title="'.$pick.'">';
+			$pick = '<img src="images/helmets_big/' . strtolower ( $pick ) . '1.gif" / title="'.$pick.'" height="28" width="42">';
+
+			if (!empty($game['winnerID'])) {
+				//score has been entered
+				if ($playerPicks[$userID][$game['gameID']] == $game['winnerID']) {
+					$pick = '<span class="winner">' . $pick . '</span>';
+				}
+			} else {
+				//mask pick if pick and week is not locked and user has opted to hide their picks
+				$gameIsLocked = gameIsLocked($game['gameID']);
+				if (!$gameIsLocked && !$weekExpired && $hidePicks && (int)$userID !== (int)$user->userID) {
+					$pick = '***';
+				}
 			$classes = '';
 			$gameIsLocked = gameIsLocked($game['gameID']);
 			if (empty($game['winnerID']) && !$gameIsLocked && !$weekExpired && $hidePicks && (int)$userID !== (int)$user->userID) {
@@ -188,6 +278,7 @@ if (sizeof($playerTotals) > 0) {
 				$classes = trim($classes);
 				$pick = '<span class="' . $classes . '">' . $pick . '</span>';
 			}
+			// echo '		<td class="pickTD"><img src="images/helmets_small/' . $pick . 'R.gif" /></td>' . "\n";
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";
 		}
 		echo '		<td nowrap><b>' . $totalCorrect . '/' . sizeof($games) . ' (' . number_format(($totalCorrect / sizeof($games)) * 100, 2) . '%)</b></td>' . "\n";
@@ -212,7 +303,7 @@ if (sizeof($playerTotals) > 0) {
 					break;
 			}
 		}
-		echo '	<tr><th colspan="' . (sizeof($games) + 2) . '" align="left">Winner: ' . $winnersHtml . '</th></tr>' . "\n";
+		echo '	<tr><th colspan="' . (sizeof($games) + 2) . '" align="left">Winner(s): ' . $winnersHtml . '</th></tr>' . "\n";
 	}
 ?>
 	</tbody>
@@ -244,6 +335,8 @@ if (sizeof($playerTotals) > 0) {
 	}
 	$query->free;
 }
+
+include('includes/column_stats.php');
 
 include('includes/comments.php');
 

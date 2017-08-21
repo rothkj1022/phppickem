@@ -69,3 +69,6 @@ $offsetCurrent = $dateTimeCurrent->getOffset();
 $offsetEastern = $dateTimeEastern->getOffset();
 $offsetHours = ($offsetEastern - $offsetCurrent) / 3600;
 define('SERVER_TIMEZONE_OFFSET', $offsetHours);
+$theTime = time();
+$transition = $dateTimeZoneCurrent->getTransitions($theTime,$theTime);
+define('SERVER_TIMEZONE_ABBR', $transition[0]['abbr']);

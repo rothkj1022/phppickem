@@ -1,6 +1,6 @@
 <?php
 class Login{
-	function __construct(){
+	function Login(){
 	}
 
 	function new_user($user_name, $password, $confirm) {

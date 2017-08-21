@@ -88,7 +88,7 @@ if ($query->num_rows > 0) {
 	echo '<table class="table table-striped">' . "\n";
 	echo '	<tr><th colspan="6" align="left">Week ' . $week . '</th>';
 	if (ENABLE_SPREAD)
-		echo '<th>Spread</th>';	
+		echo '<th>Spread</th>';
 	echo '</tr>' . "\n";
 	$i = 0;
 	while ($row = $query->fetch_assoc()) {

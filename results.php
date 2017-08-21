@@ -111,7 +111,7 @@ $(document).ready(function(){
 </style>
 
 		<div class="bg-primary">
-			<b>Results - Week <?php echo $week; ?> &nbsp; : &nbsp; </b> &nbsp; Last updated: &nbsp; <?php echo date('Y_m_d'); ?> &nbsp; -  &nbsp; <?php echo date('H:i'); ?>
+			<b>Results - Week <?php echo $week; ?> &nbsp; : &nbsp; </b> &nbsp; Last updated: &nbsp; <?php echo date('Y-m-d'); ?> &nbsp; -  &nbsp; <?php echo date('H:i'); ?>
 			<span id="jclock1"></span>
 			<script type="text/javascript">
 			$(function($) {

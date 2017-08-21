@@ -10,9 +10,8 @@ if ($user->userName == 'admin') {
 ?>
 	<img src="images/art_holst_nfl.jpg" width="192" height="295" alt="ref" style="float: right; padding-left: 10px;" />
 	<h1>Welcome, Admin!</h1>
-	<p><b>If you feel that the work I've done has value to you,</b> I would greatly appreciate a paypal donation (click button below).  I have spent many hours working on this project, and I will continue its development as I find the time.  Again, I am very grateful for any and all contributions.</p>
+	<p></p>
 <?php
-	include('includes/donate_button.inc.php');
 } else {
 	if ($weekExpired) {
 		//current week is expired, show message
@@ -50,7 +49,8 @@ include('includes/column_right.php');
 	$rowclass = '';
 	while ($row = $query->fetch_assoc()) {
 		//$rowclass = (($i % 2 == 0) ? ' class="altrow"' : '');
-		echo '		<div class="row-week">' . "\n";
+		echo '		<div class="row-week panel">' . "\n";
+		echo '			<div class="panel-body">' . "\n";
 		echo '			<p><b>Week ' . $row['weekNum'] . '</b><br />' . "\n";
 		# echo '			First game: ' . date('n/j g:i a', strtotime($row['firstGameTime'])-(SERVER_TIMEZONE_OFFSET * 3600)) . '<br />' . "\n";
 		echo '			First game: &nbsp; ' . date('Y-m-d - H:i', strtotime($row['firstGameTime'])-(SERVER_TIMEZONE_OFFSET * 3600)) . ' (' . SERVER_TIMEZONE_ABBR . ') <br />' . "\n";
@@ -84,6 +84,8 @@ include('includes/column_right.php');
 				echo '			<div class="bg-info" style="color: green;"><b>All picks entered.</b><br /><a href="entry_form.php?week=' . $row['weekNum'] . '">Change your picks &raquo;</a></div>' . "\n";
 			}
 		}
+
+		echo '			</div>'."\n";
 		echo '		</div>'."\n";
 		$i++;
 	}

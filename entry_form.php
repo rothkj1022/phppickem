@@ -66,6 +66,7 @@ if ($_POST['action'] == 'Submit') {
 	}
 	$cutoffDateTime = getCutoffDateTime($week);
 	$firstGameTime = getFirstGameTime($week);
+	$teamList = getTeamsList();
 }
 
 include('includes/header.php');
@@ -82,10 +83,18 @@ include('includes/header.php');
 					allChecked = false;
 				}
 			}
-	    }
-	    if (!allChecked) {
+	  }
+
+	  if (!allChecked) {
 			return confirm('One or more picks are missing for the current week.  Do you wish to submit anyway?');
 		}
+		if (document.getElementById('tiebreaker').value == ""){
+      return confirm('You have not entered a tiebreaker score!  Do you want to submit anyway?');
+    }
+    if(document.getElementById('survivor').value === "") {
+    	alert('You have not entered a survivor pick');
+    	return false;
+    }
 		return true;
 	}
 	function radioIsChecked(elmName) {
@@ -155,6 +164,8 @@ include('includes/column_right.php');
 	<?php
 	//get existing picks
 	$picks = getUserPicks($week, $user->userID);
+	$survivorPicks = getSurvivorPrevPicks($user->userID);
+	$survivorPick = "";
 
         //get tie-breaker status
 	$sql = "select * from " . DB_PREFIX . "picksummary where weekNum = " . $week . " and userID = " . $user->userID . ";";
@@ -179,8 +190,11 @@ $pickSummary = get_pick_summary($user->userID, $week);
 	if ($query->num_rows > 0) {
 		$row = $query->fetch_assoc();
 		$showPicks = (int)$row['showPicks'];
+		$tiebreaker = $row['tieBreakerPoints'];
+		$survivorPick = $row['survivor'];
 	} else {
-		$showPicks = 1;
+		$showPicks = 0;
+		$tiebreaker = "";
 	}
 	$query->free;
 

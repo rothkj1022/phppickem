@@ -81,11 +81,6 @@ if (!$allScoresIn) {
 	include('includes/column_countdown.php');
 }
 
-//echo "<pre>\n";
-//print_r($games);
-//print_r($allScoresIn);
-//echo "</pre>\n";
-
 //get array of player picks
 $playerPicks = array();
 $playerTotals = array();
@@ -199,10 +194,13 @@ if (sizeof($playerTotals) > 0) {
 </table>
 </div>
 
+<?php
+if (sizeof($playerTotals) > 0) {
+?>
 <div class="table-responsive">
 <table class="table table-striped">
 	<thead>
-		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games) -1 ; ?>">Week <?php echo $week; ?></th><th align="left">Score</th></tr>
+		<tr><th align="left">Player</th><th colspan="<?php echo sizeof($games) -1 ; ?>">Week <?php echo $week; ?></th><th class="center">Tie Breaker</th><th>Survivor</th><th align="left">Score</th></tr>
 	</thead>
 	<tbody>
 <?php
@@ -221,6 +219,12 @@ if (sizeof($playerTotals) > 0) {
 	foreach($playerTotals as $userID => $totalCorrect) {
 		$pickSummary = get_pick_summary($userID, $week);
 		$hidePicks = hidePicks($userID, $week);
+		$tieBreaker = abs(getMondayCombinedScore($week) - getTieBreaker($userID, $week));
+
+		$survivor = getSurvivorPick($userID, $week);
+		$survivorEl = '';
+		$survivorPick = '';
+
 		if ($i == 0) {
 			$topScore = $totalCorrect;
 			$winners[] = $userID;
@@ -246,6 +250,8 @@ if (sizeof($playerTotals) > 0) {
 		foreach($games as $game) {
 			$pick = '';
 			$pick = $playerPicks[$userID][$game['gameID']];
+			if($survivor == $game[''])
+
 			if(empty($pick)){$pick = 'no_pick';}
 			// $score = $game[$pick]['score'] ;
 			// $pick = '<img src="images/helmets_small/' . $pick . 'R.gif" / title="'.$pick.'">';
@@ -261,6 +267,10 @@ if (sizeof($playerTotals) > 0) {
 				$gameIsLocked = gameIsLocked($game['gameID']);
 				if (!$gameIsLocked && !$weekExpired && $hidePicks && (int)$userID !== (int)$user->userID) {
 					$pick = '***';
+					$tieBreaker = '***';
+					if($survivor == $game['visitorID'] || $survivor == $game['homeID']) {
+						$survivorPick = '***';
+					}
 				}
 			$classes = '';
 			$gameIsLocked = gameIsLocked($game['gameID']);
@@ -281,6 +291,18 @@ if (sizeof($playerTotals) > 0) {
 			// echo '		<td class="pickTD"><img src="images/helmets_small/' . $pick . 'R.gif" /></td>' . "\n";
 			echo '		<td class="pickTD">' . $pick . '</td>' . "\n";
 		}
+		if(!is_null($survivor)) {
+			if($survivorPick == '***') {
+				$survivorEl = $survivorPick;
+			} else {
+				$survivorEl = '<img src="images/logos/' . $survivor . '.svg" / title="'.$survivor.'" height="28" width="42">';
+				if(in_array($survivor, $winnerList)) {
+					$survivorEl = '<span class="winner">' . $survivorEl . '</span>';
+				}
+			}
+		}
+		echo '<td class="center"> '. $tieBreaker .' </td>';
+		echo '<td class="pickTD">'. $survivorEl .'</td>';
 		echo '		<td nowrap><b>' . $totalCorrect . '/' . sizeof($games) . ' (' . number_format(($totalCorrect / sizeof($games)) * 100, 2) . '%)</b></td>' . "\n";
 		echo '	</tr>' . "\n";
 		$i++;

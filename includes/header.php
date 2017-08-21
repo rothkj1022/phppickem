@@ -12,6 +12,7 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 	<base href="<?php echo SITE_URL; ?>" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" media="all" href="css/all.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/custom.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/jquery.countdown.css" />
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
@@ -50,13 +51,20 @@ header('X-UA-Compatible:IE=Edge,chrome=1'); //IE8 respects this but not the meta
 								<?php } ?>
 								<li><a href="results.php<?php echo ((!empty($_GET['week'])) ? '?week=' . (int)$_GET['week'] : ''); ?>">Results</a></li>
 								<li><a href="standings.php">Standings</a></li>
-								<li><a href="teams.php">Teams</a></li>
-								<li><a href="schedules.php">Schedules</a></li>
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">NFL News <b class="caret"></b></a>
+									<ul class="dropdown-menu">
+										<li><a href="nflnews.php">News</a></li>
+										<li><a href="teams.php">Teams</a></li>
+										<li><a href="schedules.php">Schedules</a></li>
+									</ul>
+								</li>
 								<?php if ($_SESSION['logged'] === 'yes' && $user->is_admin) { ?>
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
 									<ul class="dropdown-menu">
 										<li><a href="scores.php">Enter Scores</a></li>
+										<li><a href="admin_entry_form.php">Edit User Picks</a></li>
 										<li><a href="send_email.php">Send Email</a></li>
 										<li><a href="users.php">Update Users</a></li>
 										<li><a href="schedule_edit.php">Edit Schedule</a></li>

@@ -1,4 +1,11 @@
 <?php
+
+function console_log( $data ){
+  echo '<script>';
+  echo 'console.log('. json_encode( $data ) .')';
+  echo '</script>';
+}
+
 // functions.php
 function getCurrentWeek() {
 	//get the current week number
@@ -19,6 +26,19 @@ function getCurrentWeek() {
 	}
 	$query->free;
 	die('Error getting current week: ' . $mysqli->error);
+}
+
+function setupMailer() {
+	global $mail;
+	$mail = new PHPMailer();
+	$mail->isSMTP();
+	$mail->SMTPAuth = true;
+	$mail->Host = EMAIL_HOST;
+	$mail->Port = EMAIL_PORT;
+	$mail->Username = EMAIL_USERNAME;
+	$mail->Password = EMAIL_PASSWORD;
+
+	$mail->IsHTML(true);
 }
 
 function getCutoffDateTime($week) {
@@ -305,13 +325,35 @@ function calculateStats() {
 
 		//get winners & highest score for current week
 		$highestScore = 0;
+		$bestTiebreaker = 1000;
+		$weekWinner = array();
 		arsort($playerWeeklyTotals);
+
 		foreach($playerWeeklyTotals as $playerID => $stats) {
-			if ($stats[score] > $highestScore) $highestScore = $stats[score];
+			$myTieBreaker = abs(getMondayCombinedScore($week) - getTieBreaker($playerID, $week));
+			//see if they're our current winner
+			if ($stats[score] > $highestScore) {
+				$highestScore = $stats[score];
+				$bestTiebreaker = $myTieBreaker;
+			}
+			//if they arent better, get out
 			if ($stats[score] < $highestScore) break;
-			$weekStats[$week][winners][] = $playerID;
-			$playerTotals[$playerID][wins] += 1;
+			if($myTieBreaker < $bestTiebreaker) {
+				//if our weekWinner had multiple values, reset since we now have only 1 winner;
+				if(count($weekWinner) > 1) {
+					$weekWinner = array();
+				}
+				$weekWinner[0] = $playerID;
+			} else if( $myTieBreaker == $bestTiebreaker) {
+				$weekWinner[] = $playerID;
+			}
 		}
+
+		foreach($weekWinner as $weekWinnerID) {
+			$playerTotals[$weekWinnerID][wins] += 1;
+			$weekStats[$week][winners][] = $weekWinnerID;
+		}
+
 		$weekStats[$week][highestScore] = $highestScore;
 		$weekStats[$week][possibleScore] = getGameTotal($week);
 		$possibleScoreTotal += $weekStats[$week][possibleScore];
@@ -456,4 +498,64 @@ function cmp_overall($a, $b) {
 	}
 
 	return $a['score'] < $b['score'] ? 1 : -1;
+}
+
+function getTieBreaker($userID, $week) {
+	//get Tie-Breaker score
+	global $mysqli;
+	$sql = "select tieBreakerPoints from " . DB_PREFIX . "picksummary where userID = " . $userID . " and weekNum = " . $week;
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$rstGetTiebreaker = $query->fetch_assoc();
+		return $rstGetTiebreaker['tieBreakerPoints'];
+	}
+	return 0;
+}
+
+function getMondayCombinedScore($week) {
+	global $mysqli;
+	$sql = "select * from " . DB_PREFIX . "schedule where weekNum = " . $week . " order by gameTimeEastern DESC, gameID DESC limit 1";
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		while ($row = $query->fetch_assoc()) {
+			$combinedScore = $row['homeScore'] + $row['visitorScore'];
+		}
+	}
+	return $combinedScore;
+}
+
+function getSurvivorPick($userID, $week) {
+	global $mysqli;
+	$sql = "select survivor from " . DB_PREFIX . "picksummary where userID = " . $userID . " and weekNum = " . $week;
+	$query = $mysqli->query($sql);
+	if ($query->num_rows > 0) {
+		$rstGetSurvivor = $query->fetch_assoc();
+		return $rstGetSurvivor['survivor'];
+	}
+	return NULL;
+}
+
+function getSurvivorPrevPicks($userID) {
+  global $mysqli;
+	$sql = "select survivor from " . DB_PREFIX . "picksummary where survivor is not NULL and userID = " . $userID;
+	$picks = array();
+	$query = $mysqli->query($sql);
+
+	while($row = $query->fetch_assoc()){
+		$picks[] = $row['survivor'];
+	}
+	$query->free;
+	return $picks;
+}
+
+function getTeamsList() {
+	global $mysqli;
+	$sql = "select teamID from " . DB_PREFIX . "teams";
+	$teams = array();
+	$query = $mysqli->query($sql);
+	while($row = $query->fetch_assoc()){
+		$teams[] = $row['teamID'];
+	}
+	$query->free;
+	return $teams;
 }

@@ -34,7 +34,8 @@
 		'Indianapolis'  => 'IND' ,
 		'Jacksonville'  => 'JAX' ,
 		'Kansas_City'   => 'KC' ,
-		'Los_Angeles'   => 'LA' ,
+		'LA_Chargers'   => 'LAC' ,
+		'LA_Rams'       => 'LAR' ,
 		'Miami'         => 'MIA' ,
 		'Minnesota'     => 'MIN' ,
 		'New_England'   => 'NE' ,
@@ -44,7 +45,7 @@
 		'Oakland'       => 'OAK' ,
 		'Philadelphia'  => 'PHI' ,
 		'Pittsburgh'    => 'PIT' ,
-		'San_Diego'     => 'SD' ,
+
 		'Seattle'       => 'SEA' ,
 		'San_Francisco' => 'SF' ,
 		'Tampa_Bay'     => 'TB' ,

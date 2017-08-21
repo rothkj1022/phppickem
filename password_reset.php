@@ -7,7 +7,7 @@ if ($_GET['reset'] == 'true') {
 
 if (is_array($_POST) && sizeof($_POST) > 0) {
 	//create new user, disabled
-	$sql = "SELECT * FROM " . DB_PREFIX . "users WHERE firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
+	$sql = "SELECT * FROM " . DB_PREFIX . "users WHERE userName='".$_POST['userName']."' and email = '".$_POST['email']."';";
 	$query = $mysqli->query($sql);
 	if ($query->num_rows > 0) {
 		$row = $query->fetch_assoc();
@@ -16,12 +16,11 @@ if (is_array($_POST) && sizeof($_POST) > 0) {
 		$password = randomString(10);
 		$salt = substr($crypto->encrypt((uniqid(mt_rand(), true))), 0, 10);
 		$secure_password = $crypto->encrypt($salt . $crypto->encrypt($password));
-		$sql = "update " . DB_PREFIX . "users set salt = '".$salt."', password = '".$secure_password."' where firstname='".$_POST['firstname']."' and email = '".$_POST['email']."';";
+		$sql = "update " . DB_PREFIX . "users set salt = '".$salt."', password = '".$secure_password."' where userName='".$_POST['userName']."' and email = '".$_POST['email']."';";
 		$mysqli->query($sql) or die($mysqli->error);
 
 		//send confirmation email
-		$mail = new PHPMailer();
-		$mail->IsHTML(true);
+		setupMailer();
 
 		$mail->From = $adminUser->email; // the email field of the form
 		$mail->FromName = 'NFL Pick \'Em Admin'; // the name field of the form
@@ -30,17 +29,20 @@ if (is_array($_POST) && sizeof($_POST) > 0) {
 		$mail->Subject = 'NFL Pick \'Em Password'; // the subject of email
 
 		// html text block
-		$msg = '<p>Your new password for NFL Pick \'Em has been generated.  Your username is: ' . $result['userName'] . '</p>' . "\n\n";
+		$msg = '<p>Your new password for NFL Pick \'Em has been generated.  Your userName is: ' . $result['userName'] . '</p>' . "\n\n";
 		$msg .= '<p>Your new password is: ' . $password . '</p>' . "\n\n";
 		$msg .= '<a href="' . SITE_URL . 'login.php">Click here to sign in</a>.</p>';
 
 		$mail->Body = $msg;
 		$mail->AltBody = strip_tags($msg);
 
-		$mail->Send();
+		if (!$mail->send()) {
+		   echo "Mailer Error: " . $mail->ErrorInfo;
+		} else {
+		   header('Location: password_reset.php?reset=true');
+			exit;
+		}
 
-		header('Location: password_reset.php?reset=true');
-		exit;
 	} else {
 		$display = '<div class="responseError">No account matched, please try again.</div><br/>';
 	}
@@ -80,7 +82,7 @@ if (is_array($_POST) && sizeof($_POST) > 0) {
 			<h2 class="form-password-reset-heading">Password Reset</h2>
 			<?php if(isset($display)) echo $display; ?>
 			<p>Enter your name and email address, and a new password will be generated and sent to you.</p>
-			<p><input type="text" name="firstname" class="form-control" placeholder="First Name" required autofocus />
+			<p><input type="text" name="userName" class="form-control" placeholder="Username" required autofocus />
 			<input type="email" name="email" class="form-control" placeholder="Email Address" required /></p>
 			<!--label class="checkbox"><input type="checkbox" value="remember-me"> Remember me</label-->
 			<p><button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button></p>

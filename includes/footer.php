@@ -2,9 +2,6 @@
 		</div><!-- end pageContent row -->
 <?php if (ENABLE_DONATE_FOOTER) { ?>
 		<div id="footer">
-			<div id="donate">
-				<?php include('includes/donate_button.inc.php'); ?>
-			</div>
 		</div><!-- end pageContent row -->
 <?php } ?>
 	</div>

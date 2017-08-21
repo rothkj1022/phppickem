@@ -4,6 +4,7 @@ require('includes/config.php');
 require('includes/functions.php');
 require('includes/classes/crypto.php');
 require('includes/classes/class.phpmailer.php');
+require('includes/classes/class.smtp.php');
 require('includes/htmlpurifier/HTMLPurifier.auto.php');
 
 $crypto = new phpFreaksCrypto;

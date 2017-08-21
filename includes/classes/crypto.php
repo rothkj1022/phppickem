@@ -22,7 +22,8 @@ class phpFreaksCrypto
   var $td;
 
   // this gets called when class is instantiated
-  function phpFreaksCrypto($key = 'a843l?nv89rjfd}O(jdnsleken0', $iv = false, $algorithm = 'tripledes', $mode = 'ecb')
+  // function phpFreaksCrypto($key = 'a843l?nv89rjfd}O(jdnsleken0', $iv = false, $algorithm = 'tripledes', $mode = 'ecb')
+  function __construct($key = 'a843l?nv89rjfd}O(jdnsleken0', $iv = false, $algorithm = 'tripledes', $mode = 'ecb')
   {
 
     if(extension_loaded('mcrypt') === FALSE)
@@ -59,6 +60,11 @@ class phpFreaksCrypto
 
     // initialize mcrypt library with mode/cipher, encryption key, and random initialization vector
     mcrypt_generic_init($this->td, $key, $iv);
+  }
+
+  function phpFreaksCrypto($key = 'a843l?nv89rjfd}O(jdnsleken0', $iv = false, $algorithm = 'tripledes', $mode = 'ecb')
+  {
+    self::__construct($key = 'a843l?nv89rjfd}O(jdnsleken0', $iv = false, $algorithm = 'tripledes', $mode = 'ecb');
   }
 
   function encrypt($plain_string)

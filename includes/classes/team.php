@@ -17,7 +17,8 @@ class team {
 		return $this->getTeam($teamID);
 	}
 */
-	public function __construct()
+// fix per: https://cweiske.de/tagebuch/php4-constructors-php7.htm
+	public function __construct($teamID)
 	{
 		return $this->getTeam($teamID);
 	}

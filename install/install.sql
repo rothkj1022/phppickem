@@ -1,104 +1,123 @@
-/*
- Navicat MySQL Data Transfer
+-- phpMyAdmin SQL Dump
+-- version 4.5.4.1deb2ubuntu2
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Aug 20, 2017 at 07:12 PM
+-- Server version: 5.7.19-0ubuntu0.16.04.1-log
+-- PHP Version: 7.0.22-0ubuntu0.16.04.1
 
- Source Server         : _localhost
- Source Server Type    : MySQL
- Source Server Version : 50542
- Source Host           : localhost
- Source Database       : nflpickem
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
- Target Server Type    : MySQL
- Target Server Version : 50542
- File Encoding         : utf-8
 
- Date: 07/07/2016 19:37:35 PM
-*/
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+--
+-- Database: `nflpickem`
+--
 
--- ----------------------------
---  Table structure for `nflp_comments`
--- ----------------------------
-DROP TABLE IF EXISTS `nflp_comments`;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nflp_comments`
+--
+
 CREATE TABLE `nflp_comments` (
-  `commentID` int(11) NOT NULL AUTO_INCREMENT,
+  `commentID` int(11) NOT NULL,
   `userID` int(11) NOT NULL,
   `subject` varchar(255) DEFAULT NULL,
   `comment` longtext NOT NULL,
-  `postDateTime` datetime DEFAULT NULL,
-  PRIMARY KEY (`commentID`)
+  `postDateTime` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
--- ----------------------------
---  Table structure for `nflp_divisions`
--- ----------------------------
-DROP TABLE IF EXISTS `nflp_divisions`;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nflp_divisions`
+--
+
 CREATE TABLE `nflp_divisions` (
-  `divisionID` int(11) NOT NULL AUTO_INCREMENT,
+  `divisionID` int(11) NOT NULL,
   `conference` varchar(10) NOT NULL,
-  `division` varchar(32) NOT NULL,
-  PRIMARY KEY (`divisionID`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+  `division` varchar(32) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
--- ----------------------------
---  Records of `nflp_divisions`
--- ----------------------------
-BEGIN;
-INSERT INTO `nflp_divisions` VALUES ('1', 'AFC', 'North'), ('2', 'AFC', 'South'), ('3', 'AFC', 'East'), ('4', 'AFC', 'West'), ('5', 'NFC', 'North'), ('6', 'NFC', 'South'), ('7', 'NFC', 'East'), ('8', 'NFC', 'West');
-COMMIT;
+--
+-- Dumping data for table `nflp_divisions`
+--
 
--- ----------------------------
---  Table structure for `nflp_email_templates`
--- ----------------------------
-DROP TABLE IF EXISTS `nflp_email_templates`;
+INSERT INTO `nflp_divisions` (`divisionID`, `conference`, `division`) VALUES
+(1, 'AFC', 'North'),
+(2, 'AFC', 'South'),
+(3, 'AFC', 'East'),
+(4, 'AFC', 'West'),
+(5, 'NFC', 'North'),
+(6, 'NFC', 'South'),
+(7, 'NFC', 'East'),
+(8, 'NFC', 'West');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nflp_email_templates`
+--
+
 CREATE TABLE `nflp_email_templates` (
   `email_template_key` varchar(255) NOT NULL,
   `email_template_title` varchar(255) NOT NULL,
   `default_subject` varchar(255) DEFAULT NULL,
   `default_message` text,
   `subject` varchar(255) DEFAULT NULL,
-  `message` text,
-  PRIMARY KEY (`email_template_key`)
+  `message` text
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
--- ----------------------------
---  Records of `nflp_email_templates`
--- ----------------------------
-BEGIN;
-INSERT INTO `nflp_email_templates` VALUES ('WEEKLY_PICKS_REMINDER', 'Weekly Picks Reminder', 'NFL Pick \'Em Week {week} Reminder', 'Hello {player},<br /><br />You are receiving this email because you do not yet have all of your picks in for week {week}.&nbsp; This is your reminder.&nbsp; The first game is {first_game} (Eastern), so to receive credit for that game, you\'ll have to make your pick before then.<br /><br />Links:<br />&nbsp;- NFL Pick \'Em URL: {site_url}<br />&nbsp;- Help/Rules: {rules_url}<br /><br />Good Luck!<br />', 'NFL Pick \'Em Week {week} Reminder', 'Hello {player},<br /><br />You are receiving this email because you do not yet have all of your picks in for week {week}.&nbsp; This is your reminder.&nbsp; The first game is {first_game} (Eastern), so to receive credit for that game, you\'ll have to make your pick before then.<br /><br />Links:<br />&nbsp;- NFL Pick \'Em URL: {site_url}<br />&nbsp;- Help/Rules: {rules_url}<br /><br />Good Luck!<br />'), ('WEEKLY_RESULTS_REMINDER', 'Last Week Results/Reminder', 'NFL Pick \'Em Week {previousWeek} Standings/Reminder', 'Congratulations this week go to {winners} for winning week {previousWeek}.  The winner(s) had {winningScore} out of {possibleScore} picks correct.<br /><br />The current leaders are:<br />{currentLeaders}<br /><br />The most accurate players are:<br />{bestPickRatios}<br /><br />*Reminder* - Please make your picks for week {week} before {first_game} (Eastern).<br /><br />Links:<br />&nbsp;- NFL Pick \'Em URL: {site_url}<br />&nbsp;- Help/Rules: {rules_url}<br /><br />Good Luck!<br />', 'NFL Pick \'Em Week {previousWeek} Standings/Reminder', 'Congratulations this week go to {winners} for winning week {previousWeek}.  The winner(s) had {winningScore} out of {possibleScore} picks correct.<br /><br />The current leaders are:<br />{currentLeaders}<br /><br />The most accurate players are:<br />{bestPickRatios}<br /><br />*Reminder* - Please make your picks for week {week} before {first_game} (Eastern).<br /><br />Links:<br />&nbsp;- NFL Pick \'Em URL: {site_url}<br />&nbsp;- Help/Rules: {rules_url}<br /><br />Good Luck!<br />'), ('FINAL_RESULTS', 'Final Results', 'NFL Pick \'Em 2016 Final Results', 'Congratulations this week go to {winners} for winning week\r\n{previousWeek}. The winner(s) had {winningScore} out of {possibleScore}\r\npicks correct.<br /><br /><span style=\"font-weight: bold;\">Congratulations to {final_winner}</span> for winning NFL Pick \'Em 2016!&nbsp; {final_winner} had {final_winningScore} wins and had a pick ratio of {picks}/{possible} ({pickpercent}%).<br /><br />Top Wins:<br />{currentLeaders}<br /><br />The most accurate players are:<br />{bestPickRatios}<br /><br />Thanks for playing, and I hope to see you all again for NFL Pick \'Em 2017!', 'NFL Pick \'Em 2016 Final Results', 'Congratulations this week go to {winners} for winning week\r\n{previousWeek}. The winner(s) had {winningScore} out of {possibleScore}\r\npicks correct.<br /><br /><span style=\"font-weight: bold;\">Congratulations to {final_winner}</span> for winning NFL Pick \'Em 2016!&nbsp; {final_winner} had {final_winningScore} wins and had a pick ratio of {picks}/{possible} ({pickpercent}%).<br /><br />Top Wins:<br />{currentLeaders}<br /><br />The most accurate players are:<br />{bestPickRatios}<br /><br />Thanks for playing, and I hope to see you all again for NFL Pick \'Em 2017!');
-COMMIT;
+--
+-- Dumping data for table `nflp_email_templates`
+--
 
--- ----------------------------
---  Table structure for `nflp_picks`
--- ----------------------------
-DROP TABLE IF EXISTS `nflp_picks`;
+INSERT INTO `nflp_email_templates` (`email_template_key`, `email_template_title`, `default_subject`, `default_message`, `subject`, `message`) VALUES
+('WEEKLY_PICKS_REMINDER', 'Weekly Picks Reminder', 'NFL Pick \'Em Week {week} Reminder', 'Hello {player},<br /><br />You are receiving this email because you do not yet have all of your picks in for week {week}.&nbsp; This is your reminder.&nbsp; The first game is {first_game} (Eastern), so to receive credit for that game, you\'ll have to make your pick before then.<br /><br />Links:<br />&nbsp;- NFL Pick \'Em URL: {site_url}<br />&nbsp;- Help/Rules: {rules_url}<br /><br />Good Luck!<br />', 'NFL Pick \'Em Week {week} Reminder', 'Hello {player},<br /><br />You are receiving this email because you do not yet have all of your picks in for week {week}.&nbsp; This is your reminder.&nbsp; The first game is {first_game} (Eastern), so to receive credit for that game, you\'ll have to make your pick before then.<br /><br />Links:<br />&nbsp;- NFL Pick \'Em URL: {site_url}<br />&nbsp;- Help/Rules: {rules_url}<br /><br />Good Luck!<br />'),
+('WEEKLY_RESULTS_REMINDER', 'Last Week Results/Reminder', 'NFL Pick \'Em Week {previousWeek} Standings/Reminder', 'Congratulations this week go to {winners} for winning week {previousWeek}.  The winner(s) had {winningScore} out of {possibleScore} picks correct.<br /><br />The current leaders are:<br />{currentLeaders}<br /><br />The most accurate players are:<br />{bestPickRatios}<br /><br />*Reminder* - Please make your picks for week {week} before {first_game} (Eastern).<br /><br />Links:<br />&nbsp;- NFL Pick \'Em URL: {site_url}<br />&nbsp;- Help/Rules: {rules_url}<br /><br />Good Luck!<br />', 'NFL Pick \'Em Week {previousWeek} Standings/Reminder', 'Congratulations this week go to {winners} for winning week {previousWeek}.  The winner(s) had {winningScore} out of {possibleScore} picks correct.<br /><br />The current leaders are:<br />{currentLeaders}<br /><br />The most accurate players are:<br />{bestPickRatios}<br /><br />*Reminder* - Please make your picks for week {week} before {first_game} (Eastern).<br /><br />Links:<br />&nbsp;- NFL Pick \'Em URL: {site_url}<br />&nbsp;- Help/Rules: {rules_url}<br /><br />Good Luck!<br />'),
+('FINAL_RESULTS', 'Final Results', 'NFL Pick \'Em 2016 Final Results', 'Congratulations this week go to {winners} for winning week\r\n{previousWeek}. The winner(s) had {winningScore} out of {possibleScore}\r\npicks correct.<br /><br /><span style="font-weight: bold;">Congratulations to {final_winner}</span> for winning NFL Pick \'Em 2016!&nbsp; {final_winner} had {final_winningScore} wins and had a pick ratio of {picks}/{possible} ({pickpercent}%).<br /><br />Top Wins:<br />{currentLeaders}<br /><br />The most accurate players are:<br />{bestPickRatios}<br /><br />Thanks for playing, and I hope to see you all again for NFL Pick \'Em 2017!', 'NFL Pick \'Em 2016 Final Results', 'Congratulations this week go to {winners} for winning week\r\n{previousWeek}. The winner(s) had {winningScore} out of {possibleScore}\r\npicks correct.<br /><br /><span style="font-weight: bold;">Congratulations to {final_winner}</span> for winning NFL Pick \'Em 2016!&nbsp; {final_winner} had {final_winningScore} wins and had a pick ratio of {picks}/{possible} ({pickpercent}%).<br /><br />Top Wins:<br />{currentLeaders}<br /><br />The most accurate players are:<br />{bestPickRatios}<br /><br />Thanks for playing, and I hope to see you all again for NFL Pick \'Em 2017!');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nflp_picks`
+--
+
 CREATE TABLE `nflp_picks` (
   `userID` int(11) NOT NULL,
   `gameID` int(11) NOT NULL,
   `pickID` varchar(10) NOT NULL,
-  `points` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`userID`,`gameID`)
+  `points` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
--- ----------------------------
---  Table structure for `nflp_picksummary`
--- ----------------------------
-DROP TABLE IF EXISTS `nflp_picksummary`;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nflp_picksummary`
+--
+
 CREATE TABLE `nflp_picksummary` (
   `weekNum` int(11) NOT NULL DEFAULT '0',
   `userID` int(11) NOT NULL DEFAULT '0',
   `tieBreakerPoints` int(11) NOT NULL DEFAULT '0',
-  `showPicks` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`weekNum`,`userID`)
+  `showPicks` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
--- ----------------------------
---  Table structure for `nflp_schedule`
--- ----------------------------
-DROP TABLE IF EXISTS `nflp_schedule`;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nflp_schedule`
+--
+
 CREATE TABLE `nflp_schedule` (
-  `gameID` int(11) NOT NULL AUTO_INCREMENT,
+  `gameID` int(11) NOT NULL,
   `weekNum` int(11) NOT NULL,
   `gameTimeEastern` datetime DEFAULT NULL,
   `homeID` varchar(10) NOT NULL,
@@ -106,47 +125,331 @@ CREATE TABLE `nflp_schedule` (
   `visitorID` varchar(10) NOT NULL,
   `visitorScore` int(11) DEFAULT NULL,
   `overtime` tinyint(1) NOT NULL DEFAULT '0',
-  `final` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`gameID`),
-  KEY `GameID` (`gameID`),
-  KEY `HomeID` (`homeID`),
-  KEY `VisitorID` (`visitorID`)
-) ENGINE=MyISAM AUTO_INCREMENT=257 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+  `final` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
--- ----------------------------
---  Records of `nflp_schedule`
--- ----------------------------
-BEGIN;
-INSERT INTO `nflp_schedule` VALUES ('1', '1', '2016-09-08 20:30:00', 'DEN', '0', 'CAR', '0', '0', '0'), ('2', '1', '2016-09-11 13:00:00', 'ATL', '0', 'TB', '0', '0', '0'), ('3', '1', '2016-09-11 13:00:00', 'BAL', '0', 'BUF', '0', '0', '0'), ('4', '1', '2016-09-11 13:00:00', 'HOU', '0', 'CHI', '0', '0', '0'), ('5', '1', '2016-09-11 13:00:00', 'JAX', '0', 'GB', '0', '0', '0'), ('6', '1', '2016-09-11 13:00:00', 'KC', '0', 'SD', '0', '0', '0'), ('7', '1', '2016-09-11 13:00:00', 'NO', '0', 'OAK', '0', '0', '0'), ('8', '1', '2016-09-11 13:00:00', 'NYJ', '0', 'CIN', '0', '0', '0'), ('9', '1', '2016-09-11 13:00:00', 'PHI', '0', 'CLE', '0', '0', '0'), ('10', '1', '2016-09-11 13:00:00', 'TEN', '0', 'MIN', '0', '0', '0'), ('11', '1', '2016-09-11 16:05:00', 'SEA', '0', 'MIA', '0', '0', '0'), ('12', '1', '2016-09-11 16:25:00', 'DAL', '0', 'NYG', '0', '0', '0'), ('13', '1', '2016-09-11 16:25:00', 'IND', '0', 'DET', '0', '0', '0'), ('14', '1', '2016-09-11 20:30:00', 'ARI', '0', 'NE', '0', '0', '0'), ('15', '1', '2016-09-12 19:10:00', 'WAS', '0', 'PIT', '0', '0', '0'), ('16', '1', '2016-09-12 22:20:00', 'SF', '0', 'LA', '0', '0', '0'), ('17', '2', '2016-09-15 20:25:00', 'BUF', '0', 'NYJ', '0', '0', '0'), ('18', '2', '2016-09-18 13:00:00', 'CAR', '0', 'SF', '0', '0', '0'), ('19', '2', '2016-09-18 13:00:00', 'CLE', '0', 'BAL', '0', '0', '0'), ('20', '2', '2016-09-18 13:00:00', 'DET', '0', 'TEN', '0', '0', '0'), ('21', '2', '2016-09-18 13:00:00', 'HOU', '0', 'KC', '0', '0', '0'), ('22', '2', '2016-09-18 13:00:00', 'NE', '0', 'MIA', '0', '0', '0'), ('23', '2', '2016-09-18 13:00:00', 'NYG', '0', 'NO', '0', '0', '0'), ('24', '2', '2016-09-18 13:00:00', 'PIT', '0', 'CIN', '0', '0', '0'), ('25', '2', '2016-09-18 13:00:00', 'WAS', '0', 'DAL', '0', '0', '0'), ('26', '2', '2016-09-18 16:05:00', 'ARI', '0', 'TB', '0', '0', '0'), ('27', '2', '2016-09-18 16:05:00', 'LA', '0', 'SEA', '0', '0', '0'), ('28', '2', '2016-09-18 16:25:00', 'DEN', '0', 'IND', '0', '0', '0'), ('29', '2', '2016-09-18 16:25:00', 'OAK', '0', 'ATL', '0', '0', '0'), ('30', '2', '2016-09-18 16:25:00', 'SD', '0', 'JAX', '0', '0', '0'), ('31', '2', '2016-09-18 20:30:00', 'MIN', '0', 'GB', '0', '0', '0'), ('32', '2', '2016-09-19 20:30:00', 'CHI', '0', 'PHI', '0', '0', '0'), ('33', '3', '2016-09-22 20:25:00', 'NE', '0', 'HOU', '0', '0', '0'), ('34', '3', '2016-09-25 13:00:00', 'BUF', '0', 'ARI', '0', '0', '0'), ('35', '3', '2016-09-25 13:00:00', 'CAR', '0', 'MIN', '0', '0', '0'), ('36', '3', '2016-09-25 13:00:00', 'CIN', '0', 'DEN', '0', '0', '0'), ('37', '3', '2016-09-25 13:00:00', 'GB', '0', 'DET', '0', '0', '0'), ('38', '3', '2016-09-25 13:00:00', 'JAX', '0', 'BAL', '0', '0', '0'), ('39', '3', '2016-09-25 13:00:00', 'MIA', '0', 'CLE', '0', '0', '0'), ('40', '3', '2016-09-25 13:00:00', 'NYG', '0', 'WAS', '0', '0', '0'), ('41', '3', '2016-09-25 13:00:00', 'TEN', '0', 'OAK', '0', '0', '0'), ('42', '3', '2016-09-25 16:05:00', 'SEA', '0', 'SF', '0', '0', '0'), ('43', '3', '2016-09-25 16:05:00', 'TB', '0', 'LA', '0', '0', '0'), ('44', '3', '2016-09-25 16:25:00', 'PHI', '0', 'PIT', '0', '0', '0'), ('45', '3', '2016-09-25 16:25:00', 'IND', '0', 'SD', '0', '0', '0'), ('46', '3', '2016-09-25 16:25:00', 'KC', '0', 'NYJ', '0', '0', '0'), ('47', '3', '2016-09-25 20:30:00', 'DAL', '0', 'CHI', '0', '0', '0'), ('48', '3', '2016-09-26 20:30:00', 'NO', '0', 'ATL', '0', '0', '0'), ('49', '4', '2016-09-29 20:25:00', 'CIN', '0', 'MIA', '0', '0', '0'), ('50', '4', '2016-10-02 21:30:00', 'JAX', '0', 'IND', '0', '0', '0'), ('51', '4', '2016-10-02 13:00:00', 'ATL', '0', 'CAR', '0', '0', '0'), ('52', '4', '2016-10-02 13:00:00', 'BAL', '0', 'OAK', '0', '0', '0'), ('53', '4', '2016-10-02 13:00:00', 'CHI', '0', 'DET', '0', '0', '0'), ('54', '4', '2016-10-02 13:00:00', 'HOU', '0', 'TEN', '0', '0', '0'), ('55', '4', '2016-10-02 13:00:00', 'NE', '0', 'BUF', '0', '0', '0'), ('56', '4', '2016-10-02 13:00:00', 'NYJ', '0', 'SEA', '0', '0', '0'), ('57', '4', '2016-10-02 13:00:00', 'WAS', '0', 'CLE', '0', '0', '0'), ('58', '4', '2016-10-02 16:05:00', 'TB', '0', 'DEN', '0', '0', '0'), ('59', '4', '2016-10-02 16:25:00', 'ARI', '0', 'LA', '0', '0', '0'), ('60', '4', '2016-10-02 16:25:00', 'SD', '0', 'NO', '0', '0', '0'), ('61', '4', '2016-10-02 16:25:00', 'SF', '0', 'DAL', '0', '0', '0'), ('62', '4', '2016-10-02 20:30:00', 'PIT', '0', 'KC', '0', '0', '0'), ('63', '4', '2016-10-03 20:30:00', 'MIN', '0', 'NYG', '0', '0', '0'), ('64', '5', '2016-10-06 20:25:00', 'SF', '0', 'ARI', '0', '0', '0'), ('65', '5', '2016-10-09 13:00:00', 'CLE', '0', 'NE', '0', '0', '0'), ('66', '5', '2016-10-09 13:00:00', 'DET', '0', 'PHI', '0', '0', '0'), ('67', '5', '2016-10-09 13:00:00', 'IND', '0', 'CHI', '0', '0', '0'), ('68', '5', '2016-10-09 13:00:00', 'MIA', '0', 'TEN', '0', '0', '0'), ('69', '5', '2016-10-09 13:00:00', 'BAL', '0', 'WAS', '0', '0', '0'), ('70', '5', '2016-10-09 13:00:00', 'MIN', '0', 'HOU', '0', '0', '0'), ('71', '5', '2016-10-09 13:00:00', 'PIT', '0', 'NYJ', '0', '0', '0'), ('72', '5', '2016-10-09 16:05:00', 'DEN', '0', 'ATL', '0', '0', '0'), ('73', '5', '2016-10-09 16:25:00', 'DAL', '0', 'CIN', '0', '0', '0'), ('74', '5', '2016-10-09 16:25:00', 'LA', '0', 'BUF', '0', '0', '0'), ('75', '5', '2016-10-09 16:25:00', 'OAK', '0', 'SD', '0', '0', '0'), ('76', '5', '2016-10-09 20:30:00', 'GB', '0', 'NYG', '0', '0', '0'), ('77', '5', '2016-10-10 20:30:00', 'CAR', '0', 'TB', '0', '0', '0'), ('78', '6', '2016-10-13 20:25:00', 'SD', '0', 'DEN', '0', '0', '0'), ('79', '6', '2016-10-16 13:00:00', 'BUF', '0', 'SF', '0', '0', '0'), ('80', '6', '2016-10-16 13:00:00', 'CHI', '0', 'JAX', '0', '0', '0'), ('81', '6', '2016-10-16 13:00:00', 'DET', '0', 'LA', '0', '0', '0'), ('82', '6', '2016-10-16 13:00:00', 'MIA', '0', 'PIT', '0', '0', '0'), ('83', '6', '2016-10-16 13:00:00', 'NE', '0', 'CIN', '0', '0', '0'), ('84', '6', '2016-10-16 13:00:00', 'NO', '0', 'CAR', '0', '0', '0'), ('85', '6', '2016-10-16 13:00:00', 'NYG', '0', 'BAL', '0', '0', '0'), ('86', '6', '2016-10-16 13:00:00', 'TEN', '0', 'CLE', '0', '0', '0'), ('87', '6', '2016-10-16 13:00:00', 'WAS', '0', 'PHI', '0', '0', '0'), ('88', '6', '2016-10-16 16:05:00', 'OAK', '0', 'KC', '0', '0', '0'), ('89', '6', '2016-10-16 16:25:00', 'GB', '0', 'DAL', '0', '0', '0'), ('90', '6', '2016-10-16 16:25:00', 'SEA', '0', 'ATL', '0', '0', '0'), ('91', '6', '2016-10-16 20:30:00', 'HOU', '0', 'IND', '0', '0', '0'), ('92', '6', '2016-10-17 20:30:00', 'ARI', '0', 'NYJ', '0', '0', '0'), ('93', '7', '2016-10-20 20:25:00', 'GB', '0', 'CHI', '0', '0', '0'), ('94', '7', '2016-10-23 21:30:00', 'LA', '0', 'NYG', '0', '0', '0'), ('95', '7', '2016-10-23 13:00:00', 'CIN', '0', 'CLE', '0', '0', '0'), ('96', '7', '2016-10-23 13:00:00', 'DET', '0', 'WAS', '0', '0', '0'), ('97', '7', '2016-10-23 13:00:00', 'JAX', '0', 'OAK', '0', '0', '0'), ('98', '7', '2016-10-23 13:00:00', 'KC', '0', 'NO', '0', '0', '0'), ('99', '7', '2016-10-23 13:00:00', 'MIA', '0', 'BUF', '0', '0', '0'), ('100', '7', '2016-10-23 13:00:00', 'NYJ', '0', 'BAL', '0', '0', '0'), ('101', '7', '2016-10-23 13:00:00', 'PHI', '0', 'MIN', '0', '0', '0'), ('102', '7', '2016-10-23 13:00:00', 'TEN', '0', 'IND', '0', '0', '0'), ('103', '7', '2016-10-23 16:05:00', 'ATL', '0', 'SD', '0', '0', '0'), ('104', '7', '2016-10-23 16:05:00', 'SF', '0', 'TB', '0', '0', '0'), ('105', '7', '2016-10-23 16:25:00', 'PIT', '0', 'NE', '0', '0', '0'), ('106', '7', '2016-10-23 20:30:00', 'ARI', '0', 'SEA', '0', '0', '0'), ('107', '7', '2016-10-24 20:30:00', 'DEN', '0', 'HOU', '0', '0', '0'), ('108', '8', '2016-10-27 20:25:00', 'TEN', '0', 'JAX', '0', '0', '0'), ('109', '8', '2016-10-30 21:30:00', 'CIN', '0', 'WAS', '0', '0', '0'), ('110', '8', '2016-10-30 13:00:00', 'ATL', '0', 'GB', '0', '0', '0'), ('111', '8', '2016-10-30 13:00:00', 'BUF', '0', 'NE', '0', '0', '0'), ('112', '8', '2016-10-30 13:00:00', 'CLE', '0', 'NYJ', '0', '0', '0'), ('113', '8', '2016-10-30 13:00:00', 'HOU', '0', 'DET', '0', '0', '0'), ('114', '8', '2016-10-30 13:00:00', 'IND', '0', 'KC', '0', '0', '0'), ('115', '8', '2016-10-30 13:00:00', 'NO', '0', 'SEA', '0', '0', '0'), ('116', '8', '2016-10-30 13:00:00', 'TB', '0', 'OAK', '0', '0', '0'), ('117', '8', '2016-10-30 16:05:00', 'DEN', '0', 'SD', '0', '0', '0'), ('118', '8', '2016-10-30 16:25:00', 'CAR', '0', 'ARI', '0', '0', '0'), ('119', '8', '2016-10-30 20:30:00', 'DAL', '0', 'PHI', '0', '0', '0'), ('120', '8', '2016-10-31 20:30:00', 'CHI', '0', 'MIN', '0', '0', '0'), ('121', '9', '2016-11-03 20:25:00', 'TB', '0', 'ATL', '0', '0', '0'), ('122', '9', '2016-11-06 13:00:00', 'BAL', '0', 'PIT', '0', '0', '0'), ('123', '9', '2016-11-06 13:00:00', 'CLE', '0', 'DAL', '0', '0', '0'), ('124', '9', '2016-11-06 13:00:00', 'KC', '0', 'JAX', '0', '0', '0'), ('125', '9', '2016-11-06 13:00:00', 'MIA', '0', 'NYJ', '0', '0', '0'), ('126', '9', '2016-11-06 13:00:00', 'MIN', '0', 'DET', '0', '0', '0'), ('127', '9', '2016-11-06 13:00:00', 'NYG', '0', 'PHI', '0', '0', '0'), ('128', '9', '2016-11-06 16:05:00', 'LA', '0', 'CAR', '0', '0', '0'), ('129', '9', '2016-11-06 16:05:00', 'SF', '0', 'NO', '0', '0', '0'), ('130', '9', '2016-11-06 16:25:00', 'GB', '0', 'IND', '0', '0', '0'), ('131', '9', '2016-11-06 16:25:00', 'SD', '0', 'TEN', '0', '0', '0'), ('132', '9', '2016-11-06 20:30:00', 'OAK', '0', 'DEN', '0', '0', '0'), ('133', '9', '2016-11-07 20:30:00', 'SEA', '0', 'BUF', '0', '0', '0'), ('134', '10', '2016-11-10 20:25:00', 'BAL', '0', 'CLE', '0', '0', '0'), ('135', '10', '2016-11-13 13:00:00', 'JAX', '0', 'HOU', '0', '0', '0'), ('136', '10', '2016-11-13 13:00:00', 'NO', '0', 'DEN', '0', '0', '0'), ('137', '10', '2016-11-13 13:00:00', 'NYJ', '0', 'LA', '0', '0', '0'), ('138', '10', '2016-11-13 13:00:00', 'PHI', '0', 'ATL', '0', '0', '0'), ('139', '10', '2016-11-13 13:00:00', 'CAR', '0', 'KC', '0', '0', '0'), ('140', '10', '2016-11-13 13:00:00', 'TB', '0', 'CHI', '0', '0', '0'), ('141', '10', '2016-11-13 13:00:00', 'TEN', '0', 'GB', '0', '0', '0'), ('142', '10', '2016-11-13 13:00:00', 'WAS', '0', 'MIN', '0', '0', '0'), ('143', '10', '2016-11-13 16:05:00', 'SD', '0', 'MIA', '0', '0', '0'), ('144', '10', '2016-11-13 16:25:00', 'ARI', '0', 'SF', '0', '0', '0'), ('145', '10', '2016-11-13 16:25:00', 'PIT', '0', 'DAL', '0', '0', '0'), ('146', '10', '2016-11-13 20:30:00', 'NE', '0', 'SEA', '0', '0', '0'), ('147', '10', '2016-11-14 20:30:00', 'NYG', '0', 'CIN', '0', '0', '0'), ('148', '11', '2016-11-17 20:25:00', 'CAR', '0', 'NO', '0', '0', '0'), ('149', '11', '2016-11-20 13:00:00', 'CLE', '0', 'PIT', '0', '0', '0'), ('150', '11', '2016-11-20 13:00:00', 'DAL', '0', 'BAL', '0', '0', '0'), ('151', '11', '2016-11-20 13:00:00', 'DET', '0', 'JAX', '0', '0', '0'), ('152', '11', '2016-11-20 13:00:00', 'IND', '0', 'TEN', '0', '0', '0'), ('153', '11', '2016-11-20 13:00:00', 'CIN', '0', 'BUF', '0', '0', '0'), ('154', '11', '2016-11-20 13:00:00', 'KC', '0', 'TB', '0', '0', '0'), ('155', '11', '2016-11-20 13:00:00', 'MIN', '0', 'ARI', '0', '0', '0'), ('156', '11', '2016-11-20 13:00:00', 'NYG', '0', 'CHI', '0', '0', '0'), ('157', '11', '2016-11-20 16:05:00', 'LA', '0', 'MIA', '0', '0', '0'), ('158', '11', '2016-11-20 16:25:00', 'SF', '0', 'NE', '0', '0', '0'), ('159', '11', '2016-11-20 16:25:00', 'SEA', '0', 'PHI', '0', '0', '0'), ('160', '11', '2016-11-20 20:30:00', 'WAS', '0', 'GB', '0', '0', '0'), ('161', '11', '2016-11-21 20:30:00', 'OAK', '0', 'HOU', '0', '0', '0'), ('162', '12', '2016-11-24 12:30:00', 'DET', '0', 'MIN', '0', '0', '0'), ('163', '12', '2016-11-24 16:30:00', 'DAL', '0', 'WAS', '0', '0', '0'), ('164', '12', '2016-11-24 20:30:00', 'IND', '0', 'PIT', '0', '0', '0'), ('165', '12', '2016-11-27 13:00:00', 'CHI', '0', 'TEN', '0', '0', '0'), ('166', '12', '2016-11-27 13:00:00', 'BUF', '0', 'JAX', '0', '0', '0'), ('167', '12', '2016-11-27 13:00:00', 'BAL', '0', 'CIN', '0', '0', '0'), ('168', '12', '2016-11-27 13:00:00', 'ATL', '0', 'ARI', '0', '0', '0'), ('169', '12', '2016-11-27 13:00:00', 'CLE', '0', 'NYG', '0', '0', '0'), ('170', '12', '2016-11-27 13:00:00', 'HOU', '0', 'SD', '0', '0', '0'), ('171', '12', '2016-11-27 13:00:00', 'MIA', '0', 'SF', '0', '0', '0'), ('172', '12', '2016-11-27 13:00:00', 'NO', '0', 'LA', '0', '0', '0'), ('173', '12', '2016-11-27 16:05:00', 'TB', '0', 'SEA', '0', '0', '0'), ('174', '12', '2016-11-27 16:25:00', 'DEN', '0', 'KC', '0', '0', '0'), ('175', '12', '2016-11-27 16:25:00', 'OAK', '0', 'CAR', '0', '0', '0'), ('176', '12', '2016-11-27 20:30:00', 'NYJ', '0', 'NE', '0', '0', '0'), ('177', '12', '2016-11-28 20:30:00', 'PHI', '0', 'GB', '0', '0', '0'), ('178', '13', '2016-12-01 20:25:00', 'MIN', '0', 'DAL', '0', '0', '0'), ('179', '13', '2016-12-04 13:00:00', 'ATL', '0', 'KC', '0', '0', '0'), ('180', '13', '2016-12-04 13:00:00', 'BAL', '0', 'MIA', '0', '0', '0'), ('181', '13', '2016-12-04 13:00:00', 'CHI', '0', 'SF', '0', '0', '0'), ('182', '13', '2016-12-04 13:00:00', 'CIN', '0', 'PHI', '0', '0', '0'), ('183', '13', '2016-12-04 13:00:00', 'GB', '0', 'HOU', '0', '0', '0'), ('184', '13', '2016-12-04 13:00:00', 'JAX', '0', 'DEN', '0', '0', '0'), ('185', '13', '2016-12-04 13:00:00', 'NE', '0', 'LA', '0', '0', '0'), ('186', '13', '2016-12-04 13:00:00', 'NO', '0', 'DET', '0', '0', '0'), ('187', '13', '2016-12-04 16:05:00', 'OAK', '0', 'BUF', '0', '0', '0'), ('188', '13', '2016-12-04 16:25:00', 'ARI', '0', 'WAS', '0', '0', '0'), ('189', '13', '2016-12-04 16:25:00', 'PIT', '0', 'NYG', '0', '0', '0'), ('190', '13', '2016-12-04 16:25:00', 'SD', '0', 'TB', '0', '0', '0'), ('191', '13', '2016-12-04 20:30:00', 'SEA', '0', 'CAR', '0', '0', '0'), ('192', '13', '2016-12-05 20:30:00', 'NYJ', '0', 'IND', '0', '0', '0'), ('193', '14', '2016-12-08 20:25:00', 'KC', '0', 'OAK', '0', '0', '0'), ('194', '14', '2016-12-11 13:00:00', 'BUF', '0', 'PIT', '0', '0', '0'), ('195', '14', '2016-12-11 13:00:00', 'CAR', '0', 'SD', '0', '0', '0'), ('196', '14', '2016-12-11 13:00:00', 'CLE', '0', 'CIN', '0', '0', '0'), ('197', '14', '2016-12-11 13:00:00', 'DET', '0', 'CHI', '0', '0', '0'), ('198', '14', '2016-12-11 13:00:00', 'IND', '0', 'HOU', '0', '0', '0'), ('199', '14', '2016-12-11 13:00:00', 'JAX', '0', 'MIN', '0', '0', '0'), ('200', '14', '2016-12-11 13:00:00', 'MIA', '0', 'ARI', '0', '0', '0'), ('201', '14', '2016-12-11 13:00:00', 'PHI', '0', 'WAS', '0', '0', '0'), ('202', '14', '2016-12-11 13:00:00', 'TB', '0', 'NO', '0', '0', '0'), ('203', '14', '2016-12-11 13:00:00', 'TEN', '0', 'DEN', '0', '0', '0'), ('204', '14', '2016-12-11 16:05:00', 'SF', '0', 'NYJ', '0', '0', '0'), ('205', '14', '2016-12-11 16:25:00', 'GB', '0', 'SEA', '0', '0', '0'), ('206', '14', '2016-12-11 16:25:00', 'LA', '0', 'ATL', '0', '0', '0'), ('207', '14', '2016-12-11 20:30:00', 'NYG', '0', 'DAL', '0', '0', '0'), ('208', '14', '2016-12-12 20:30:00', 'NE', '0', 'BAL', '0', '0', '0'), ('209', '15', '2016-12-15 20:25:00', 'SEA', '0', 'LA', '0', '0', '0'), ('210', '15', '2016-12-17 20:25:00', 'NYJ', '0', 'MIA', '0', '0', '0'), ('211', '15', '2016-12-18 13:00:00', 'CHI', '0', 'GB', '0', '0', '0'), ('212', '15', '2016-12-18 13:00:00', 'DAL', '0', 'TB', '0', '0', '0'), ('213', '15', '2016-12-18 13:00:00', 'HOU', '0', 'JAX', '0', '0', '0'), ('214', '15', '2016-12-18 13:00:00', 'BUF', '0', 'CLE', '0', '0', '0'), ('215', '15', '2016-12-18 13:00:00', 'BAL', '0', 'PHI', '0', '0', '0'), ('216', '15', '2016-12-18 13:00:00', 'KC', '0', 'TEN', '0', '0', '0'), ('217', '15', '2016-12-18 13:00:00', 'MIN', '0', 'IND', '0', '0', '0'), ('218', '15', '2016-12-18 13:00:00', 'NYG', '0', 'DET', '0', '0', '0'), ('219', '15', '2016-12-18 16:05:00', 'ARI', '0', 'NO', '0', '0', '0'), ('220', '15', '2016-12-18 16:05:00', 'ATL', '0', 'SF', '0', '0', '0'), ('221', '15', '2016-12-18 16:25:00', 'DEN', '0', 'NE', '0', '0', '0'), ('222', '15', '2016-12-18 16:25:00', 'SD', '0', 'OAK', '0', '0', '0'), ('223', '15', '2016-12-18 20:30:00', 'CIN', '0', 'PIT', '0', '0', '0'), ('224', '15', '2016-12-19 20:30:00', 'WAS', '0', 'CAR', '0', '0', '0'), ('225', '16', '2016-12-22 20:25:00', 'PHI', '0', 'NYG', '0', '0', '0'), ('226', '16', '2016-12-24 13:00:00', 'BUF', '0', 'MIA', '0', '0', '0'), ('227', '16', '2016-12-24 13:00:00', 'CAR', '0', 'ATL', '0', '0', '0'), ('228', '16', '2016-12-24 13:00:00', 'CHI', '0', 'WAS', '0', '0', '0'), ('229', '16', '2016-12-24 13:00:00', 'CLE', '0', 'SD', '0', '0', '0'), ('230', '16', '2016-12-24 13:00:00', 'GB', '0', 'MIN', '0', '0', '0'), ('231', '16', '2016-12-24 13:00:00', 'JAX', '0', 'TEN', '0', '0', '0'), ('232', '16', '2016-12-24 13:00:00', 'NE', '0', 'NYJ', '0', '0', '0'), ('233', '16', '2016-12-24 13:00:00', 'NO', '0', 'TB', '0', '0', '0'), ('234', '16', '2016-12-24 16:05:00', 'OAK', '0', 'IND', '0', '0', '0'), ('235', '16', '2016-12-24 16:25:00', 'SEA', '0', 'ARI', '0', '0', '0'), ('236', '16', '2016-12-24 16:25:00', 'LA', '0', 'SF', '0', '0', '0'), ('237', '16', '2016-12-24 20:25:00', 'HOU', '0', 'CIN', '0', '0', '0'), ('238', '16', '2016-12-25 16:30:00', 'PIT', '0', 'BAL', '0', '0', '0'), ('239', '16', '2016-12-25 20:30:00', 'KC', '0', 'DEN', '0', '0', '0'), ('240', '16', '2016-12-26 20:30:00', 'DAL', '0', 'DET', '0', '0', '0'), ('241', '17', '2017-01-01 13:00:00', 'ATL', '0', 'NO', '0', '0', '0'), ('242', '17', '2017-01-01 13:00:00', 'DET', '0', 'GB', '0', '0', '0'), ('243', '17', '2017-01-01 13:00:00', 'IND', '0', 'JAX', '0', '0', '0'), ('244', '17', '2017-01-01 13:00:00', 'MIA', '0', 'NE', '0', '0', '0'), ('245', '17', '2017-01-01 13:00:00', 'MIN', '0', 'CHI', '0', '0', '0'), ('246', '17', '2017-01-01 13:00:00', 'NYJ', '0', 'BUF', '0', '0', '0'), ('247', '17', '2017-01-01 13:00:00', 'PHI', '0', 'DAL', '0', '0', '0'), ('248', '17', '2017-01-01 13:00:00', 'PIT', '0', 'CLE', '0', '0', '0'), ('249', '17', '2017-01-01 13:00:00', 'TB', '0', 'CAR', '0', '0', '0'), ('250', '17', '2017-01-01 13:00:00', 'TEN', '0', 'HOU', '0', '0', '0'), ('251', '17', '2017-01-01 13:00:00', 'WAS', '0', 'NYG', '0', '0', '0'), ('252', '17', '2017-01-01 13:00:00', 'CIN', '0', 'BAL', '0', '0', '0'), ('253', '17', '2017-01-01 16:25:00', 'SF', '0', 'SEA', '0', '0', '0'), ('254', '17', '2017-01-01 16:25:00', 'DEN', '0', 'OAK', '0', '0', '0'), ('255', '17', '2017-01-01 16:25:00', 'LA', '0', 'ARI', '0', '0', '0'), ('256', '17', '2017-01-01 16:25:00', 'SD', '0', 'KC', '0', '0', '0');
-COMMIT;
+--
+-- Dumping data for table `nflp_schedule`
+--
 
--- ----------------------------
---  Table structure for `nflp_teams`
--- ----------------------------
-DROP TABLE IF EXISTS `nflp_teams`;
+INSERT INTO `nflp_schedule` (`gameID`, `weekNum`, `gameTimeEastern`, `homeID`, `homeScore`, `visitorID`, `visitorScore`, `overtime`, `final`) VALUES
+(57234, 1, '2017-09-07 20:30:00', 'NE', NULL, 'KC', NULL, 0, 0),
+(57235, 1, '2017-09-10 13:00:00', 'BUF', NULL, 'NYJ', NULL, 0, 0),
+(57236, 1, '2017-09-10 13:00:01', 'CHI', NULL, 'ATL', NULL, 0, 0),
+(57237, 1, '2017-09-10 13:00:02', 'CIN', NULL, 'BAL', NULL, 0, 0),
+(57238, 1, '2017-09-10 13:00:03', 'CLE', NULL, 'PIT', NULL, 0, 0),
+(57239, 1, '2017-09-10 13:00:04', 'DET', NULL, 'ARI', NULL, 0, 0),
+(57240, 1, '2017-09-10 13:00:05', 'HOU', NULL, 'JAX', NULL, 0, 0),
+(57241, 1, '2017-09-10 13:00:06', 'MIA', NULL, 'TB', NULL, 0, 0),
+(57242, 1, '2017-09-10 13:00:07', 'TEN', NULL, 'OAK', NULL, 0, 0),
+(57243, 1, '2017-09-10 13:00:08', 'WAS', NULL, 'PHI', NULL, 0, 0),
+(57244, 1, '2017-09-10 16:05:09', 'LA', NULL, 'IND', NULL, 0, 0),
+(57245, 1, '2017-09-10 16:25:10', 'GB', NULL, 'SEA', NULL, 0, 0),
+(57246, 1, '2017-09-10 16:25:11', 'SF', NULL, 'CAR', NULL, 0, 0),
+(57247, 1, '2017-09-10 20:30:12', 'DAL', NULL, 'NYG', NULL, 0, 0),
+(57248, 1, '2017-09-11 19:10:00', 'MIN', NULL, 'NO', NULL, 0, 0),
+(57249, 1, '2017-09-11 22:20:01', 'DEN', NULL, 'LAC', NULL, 0, 0),
+(57250, 2, '2017-09-14 20:25:00', 'CIN', NULL, 'HOU', NULL, 0, 0),
+(57251, 2, '2017-09-17 13:00:00', 'BAL', NULL, 'CLE', NULL, 0, 0),
+(57252, 2, '2017-09-17 13:00:01', 'CAR', NULL, 'BUF', NULL, 0, 0),
+(57253, 2, '2017-09-17 13:00:02', 'IND', NULL, 'ARI', NULL, 0, 0),
+(57254, 2, '2017-09-17 13:00:03', 'JAX', NULL, 'TEN', NULL, 0, 0),
+(57255, 2, '2017-09-17 13:00:04', 'KC', NULL, 'PHI', NULL, 0, 0),
+(57256, 2, '2017-09-17 13:00:05', 'NO', NULL, 'NE', NULL, 0, 0),
+(57257, 2, '2017-09-17 13:00:06', 'PIT', NULL, 'MIN', NULL, 0, 0),
+(57258, 2, '2017-09-17 13:00:07', 'TB', NULL, 'CHI', NULL, 0, 0),
+(57259, 2, '2017-09-17 16:05:08', 'LAC', NULL, 'MIA', NULL, 0, 0),
+(57260, 2, '2017-09-17 16:05:09', 'OAK', NULL, 'NYJ', NULL, 0, 0),
+(57261, 2, '2017-09-17 16:25:10', 'DEN', NULL, 'DAL', NULL, 0, 0),
+(57262, 2, '2017-09-17 16:25:11', 'LA', NULL, 'WAS', NULL, 0, 0),
+(57263, 2, '2017-09-17 16:25:12', 'SEA', NULL, 'SF', NULL, 0, 0),
+(57264, 2, '2017-09-17 20:30:13', 'ATL', NULL, 'GB', NULL, 0, 0),
+(57265, 2, '2017-09-18 20:30:00', 'NYG', NULL, 'DET', NULL, 0, 0),
+(57266, 3, '2017-09-21 20:25:00', 'SF', NULL, 'LA', NULL, 0, 0),
+(57267, 3, '2017-09-24 09:30:00', 'JAX', NULL, 'BAL', NULL, 0, 0),
+(57268, 3, '2017-09-24 13:00:01', 'BUF', NULL, 'DEN', NULL, 0, 0),
+(57269, 3, '2017-09-24 13:00:02', 'CAR', NULL, 'NO', NULL, 0, 0),
+(57270, 3, '2017-09-24 13:00:03', 'CHI', NULL, 'PIT', NULL, 0, 0),
+(57271, 3, '2017-09-24 13:00:04', 'DET', NULL, 'ATL', NULL, 0, 0),
+(57272, 3, '2017-09-24 13:00:05', 'IND', NULL, 'CLE', NULL, 0, 0),
+(57273, 3, '2017-09-24 13:00:06', 'MIN', NULL, 'TB', NULL, 0, 0),
+(57274, 3, '2017-09-24 13:00:07', 'NE', NULL, 'HOU', NULL, 0, 0),
+(57275, 3, '2017-09-24 13:00:08', 'NYJ', NULL, 'MIA', NULL, 0, 0),
+(57276, 3, '2017-09-24 13:00:09', 'PHI', NULL, 'NYG', NULL, 0, 0),
+(57277, 3, '2017-09-24 16:05:10', 'TEN', NULL, 'SEA', NULL, 0, 0),
+(57278, 3, '2017-09-24 16:25:11', 'GB', NULL, 'CIN', NULL, 0, 0),
+(57279, 3, '2017-09-24 16:25:12', 'LAC', NULL, 'KC', NULL, 0, 0),
+(57280, 3, '2017-09-24 20:30:13', 'WAS', NULL, 'OAK', NULL, 0, 0),
+(57281, 3, '2017-09-25 20:30:00', 'ARI', NULL, 'DAL', NULL, 0, 0),
+(57282, 4, '2017-09-28 20:25:00', 'GB', NULL, 'CHI', NULL, 0, 0),
+(57283, 4, '2017-10-01 09:30:00', 'MIA', NULL, 'NO', NULL, 0, 0),
+(57284, 4, '2017-10-01 13:00:01', 'ATL', NULL, 'BUF', NULL, 0, 0),
+(57285, 4, '2017-10-01 13:00:02', 'BAL', NULL, 'PIT', NULL, 0, 0),
+(57286, 4, '2017-10-01 13:00:03', 'CLE', NULL, 'CIN', NULL, 0, 0),
+(57287, 4, '2017-10-01 13:00:04', 'DAL', NULL, 'LA', NULL, 0, 0),
+(57288, 4, '2017-10-01 13:00:05', 'HOU', NULL, 'TEN', NULL, 0, 0),
+(57289, 4, '2017-10-01 13:00:06', 'MIN', NULL, 'DET', NULL, 0, 0),
+(57290, 4, '2017-10-01 13:00:07', 'NE', NULL, 'CAR', NULL, 0, 0),
+(57291, 4, '2017-10-01 13:00:08', 'NYJ', NULL, 'JAX', NULL, 0, 0),
+(57292, 4, '2017-10-01 16:05:09', 'ARI', NULL, 'SF', NULL, 0, 0),
+(57293, 4, '2017-10-01 16:05:10', 'LAC', NULL, 'PHI', NULL, 0, 0),
+(57294, 4, '2017-10-01 16:05:11', 'TB', NULL, 'NYG', NULL, 0, 0),
+(57295, 4, '2017-10-01 16:25:12', 'DEN', NULL, 'OAK', NULL, 0, 0),
+(57296, 4, '2017-10-01 20:30:13', 'SEA', NULL, 'IND', NULL, 0, 0),
+(57297, 4, '2017-10-02 20:30:00', 'KC', NULL, 'WAS', NULL, 0, 0),
+(57298, 5, '2017-10-05 20:25:00', 'TB', NULL, 'NE', NULL, 0, 0),
+(57299, 5, '2017-10-08 13:00:00', 'CIN', NULL, 'BUF', NULL, 0, 0),
+(57300, 5, '2017-10-08 13:00:01', 'CLE', NULL, 'NYJ', NULL, 0, 0),
+(57301, 5, '2017-10-08 13:00:02', 'DET', NULL, 'CAR', NULL, 0, 0),
+(57302, 5, '2017-10-08 13:00:03', 'IND', NULL, 'SF', NULL, 0, 0),
+(57303, 5, '2017-10-08 13:00:04', 'MIA', NULL, 'TEN', NULL, 0, 0),
+(57304, 5, '2017-10-08 13:00:05', 'NYG', NULL, 'LAC', NULL, 0, 0),
+(57305, 5, '2017-10-08 13:00:06', 'PHI', NULL, 'ARI', NULL, 0, 0),
+(57306, 5, '2017-10-08 13:00:07', 'PIT', NULL, 'JAX', NULL, 0, 0),
+(57307, 5, '2017-10-08 16:05:08', 'LA', NULL, 'SEA', NULL, 0, 0),
+(57308, 5, '2017-10-08 16:05:09', 'OAK', NULL, 'BAL', NULL, 0, 0),
+(57309, 5, '2017-10-08 16:25:10', 'DAL', NULL, 'GB', NULL, 0, 0),
+(57310, 5, '2017-10-08 20:30:11', 'HOU', NULL, 'KC', NULL, 0, 0),
+(57311, 5, '2017-10-09 20:30:00', 'CHI', NULL, 'MIN', NULL, 0, 0),
+(57312, 6, '2017-10-12 20:25:00', 'CAR', NULL, 'PHI', NULL, 0, 0),
+(57313, 6, '2017-10-15 13:00:00', 'ATL', NULL, 'MIA', NULL, 0, 0),
+(57314, 6, '2017-10-15 13:00:01', 'BAL', NULL, 'CHI', NULL, 0, 0),
+(57315, 6, '2017-10-15 13:00:02', 'HOU', NULL, 'CLE', NULL, 0, 0),
+(57316, 6, '2017-10-15 13:00:03', 'MIN', NULL, 'GB', NULL, 0, 0),
+(57317, 6, '2017-10-15 13:00:04', 'NO', NULL, 'DET', NULL, 0, 0),
+(57318, 6, '2017-10-15 13:00:05', 'NYJ', NULL, 'NE', NULL, 0, 0),
+(57319, 6, '2017-10-15 13:00:06', 'WAS', NULL, 'SF', NULL, 0, 0),
+(57320, 6, '2017-10-15 16:05:07', 'ARI', NULL, 'TB', NULL, 0, 0),
+(57321, 6, '2017-10-15 16:05:08', 'JAX', NULL, 'LA', NULL, 0, 0),
+(57322, 6, '2017-10-15 16:25:09', 'KC', NULL, 'PIT', NULL, 0, 0),
+(57323, 6, '2017-10-15 16:25:10', 'OAK', NULL, 'LAC', NULL, 0, 0),
+(57324, 6, '2017-10-15 20:30:11', 'DEN', NULL, 'NYG', NULL, 0, 0),
+(57325, 6, '2017-10-16 20:30:00', 'TEN', NULL, 'IND', NULL, 0, 0),
+(57326, 7, '2017-10-19 20:25:00', 'OAK', NULL, 'KC', NULL, 0, 0),
+(57327, 7, '2017-10-22 13:00:00', 'BUF', NULL, 'TB', NULL, 0, 0),
+(57328, 7, '2017-10-22 13:00:01', 'CHI', NULL, 'CAR', NULL, 0, 0),
+(57329, 7, '2017-10-22 13:00:02', 'CLE', NULL, 'TEN', NULL, 0, 0),
+(57330, 7, '2017-10-22 13:00:03', 'GB', NULL, 'NO', NULL, 0, 0),
+(57331, 7, '2017-10-22 13:00:04', 'IND', NULL, 'JAX', NULL, 0, 0),
+(57332, 7, '2017-10-22 13:00:05', 'LA', NULL, 'ARI', NULL, 0, 0),
+(57333, 7, '2017-10-22 13:00:06', 'MIA', NULL, 'NYJ', NULL, 0, 0),
+(57334, 7, '2017-10-22 13:00:07', 'MIN', NULL, 'BAL', NULL, 0, 0),
+(57335, 7, '2017-10-22 13:00:08', 'PIT', NULL, 'CIN', NULL, 0, 0),
+(57336, 7, '2017-10-22 16:05:09', 'SF', NULL, 'DAL', NULL, 0, 0),
+(57337, 7, '2017-10-22 16:25:10', 'LAC', NULL, 'DEN', NULL, 0, 0),
+(57338, 7, '2017-10-22 16:25:11', 'NYG', NULL, 'SEA', NULL, 0, 0),
+(57339, 7, '2017-10-22 20:30:12', 'NE', NULL, 'ATL', NULL, 0, 0),
+(57340, 7, '2017-10-23 20:30:00', 'PHI', NULL, 'WAS', NULL, 0, 0),
+(57341, 8, '2017-10-26 20:25:00', 'BAL', NULL, 'MIA', NULL, 0, 0),
+(57342, 8, '2017-10-29 09:30:00', 'CLE', NULL, 'MIN', NULL, 0, 0),
+(57343, 8, '2017-10-29 13:00:01', 'BUF', NULL, 'OAK', NULL, 0, 0),
+(57344, 8, '2017-10-29 13:00:02', 'CIN', NULL, 'IND', NULL, 0, 0),
+(57345, 8, '2017-10-29 13:00:03', 'NE', NULL, 'LAC', NULL, 0, 0),
+(57346, 8, '2017-10-29 13:00:04', 'NO', NULL, 'CHI', NULL, 0, 0),
+(57347, 8, '2017-10-29 13:00:05', 'NYJ', NULL, 'ATL', NULL, 0, 0),
+(57348, 8, '2017-10-29 13:00:06', 'PHI', NULL, 'SF', NULL, 0, 0),
+(57349, 8, '2017-10-29 13:00:07', 'TB', NULL, 'CAR', NULL, 0, 0),
+(57350, 8, '2017-10-29 16:05:08', 'SEA', NULL, 'HOU', NULL, 0, 0),
+(57351, 8, '2017-10-29 16:25:09', 'WAS', NULL, 'DAL', NULL, 0, 0),
+(57352, 8, '2017-10-29 20:30:10', 'DET', NULL, 'PIT', NULL, 0, 0),
+(57353, 8, '2017-10-30 20:30:00', 'KC', NULL, 'DEN', NULL, 0, 0),
+(57354, 9, '2017-11-02 20:25:00', 'NYJ', NULL, 'BUF', NULL, 0, 0),
+(57355, 9, '2017-11-05 13:00:00', 'CAR', NULL, 'ATL', NULL, 0, 0),
+(57356, 9, '2017-11-05 13:00:01', 'HOU', NULL, 'IND', NULL, 0, 0),
+(57357, 9, '2017-11-05 13:00:02', 'JAX', NULL, 'CIN', NULL, 0, 0),
+(57358, 9, '2017-11-05 13:00:03', 'NO', NULL, 'TB', NULL, 0, 0),
+(57359, 9, '2017-11-05 13:00:04', 'NYG', NULL, 'LA', NULL, 0, 0),
+(57360, 9, '2017-11-05 13:00:05', 'PHI', NULL, 'DEN', NULL, 0, 0),
+(57361, 9, '2017-11-05 13:00:06', 'TEN', NULL, 'BAL', NULL, 0, 0),
+(57362, 9, '2017-11-05 16:05:07', 'SF', NULL, 'ARI', NULL, 0, 0),
+(57363, 9, '2017-11-05 16:05:08', 'SEA', NULL, 'WAS', NULL, 0, 0),
+(57364, 9, '2017-11-05 16:25:09', 'DAL', NULL, 'KC', NULL, 0, 0),
+(57365, 9, '2017-11-05 20:30:10', 'MIA', NULL, 'OAK', NULL, 0, 0),
+(57366, 9, '2017-11-06 20:30:00', 'GB', NULL, 'DET', NULL, 0, 0),
+(57367, 10, '2017-11-09 20:25:00', 'ARI', NULL, 'SEA', NULL, 0, 0),
+(57368, 10, '2017-11-12 13:00:00', 'BUF', NULL, 'NO', NULL, 0, 0),
+(57369, 10, '2017-11-12 13:00:01', 'CHI', NULL, 'GB', NULL, 0, 0),
+(57370, 10, '2017-11-12 13:00:02', 'DET', NULL, 'CLE', NULL, 0, 0),
+(57371, 10, '2017-11-12 13:00:03', 'IND', NULL, 'PIT', NULL, 0, 0),
+(57372, 10, '2017-11-12 13:00:04', 'JAX', NULL, 'LAC', NULL, 0, 0),
+(57373, 10, '2017-11-12 13:00:05', 'TB', NULL, 'NYJ', NULL, 0, 0),
+(57374, 10, '2017-11-12 13:00:06', 'TEN', NULL, 'CIN', NULL, 0, 0),
+(57375, 10, '2017-11-12 13:00:07', 'WAS', NULL, 'MIN', NULL, 0, 0),
+(57376, 10, '2017-11-12 16:05:08', 'LA', NULL, 'HOU', NULL, 0, 0),
+(57377, 10, '2017-11-12 16:25:09', 'ATL', NULL, 'DAL', NULL, 0, 0),
+(57378, 10, '2017-11-12 16:25:10', 'SF', NULL, 'NYG', NULL, 0, 0),
+(57379, 10, '2017-11-12 20:30:11', 'DEN', NULL, 'NE', NULL, 0, 0),
+(57380, 10, '2017-11-13 20:30:00', 'CAR', NULL, 'MIA', NULL, 0, 0),
+(57381, 11, '2017-11-16 20:25:00', 'PIT', NULL, 'TEN', NULL, 0, 0),
+(57382, 11, '2017-11-19 13:00:00', 'CHI', NULL, 'DET', NULL, 0, 0),
+(57383, 11, '2017-11-19 13:00:01', 'CLE', NULL, 'JAX', NULL, 0, 0),
+(57384, 11, '2017-11-19 13:00:02', 'GB', NULL, 'BAL', NULL, 0, 0),
+(57385, 11, '2017-11-19 13:00:03', 'HOU', NULL, 'ARI', NULL, 0, 0),
+(57386, 11, '2017-11-19 13:00:04', 'MIN', NULL, 'LA', NULL, 0, 0),
+(57387, 11, '2017-11-19 13:00:05', 'NO', NULL, 'WAS', NULL, 0, 0),
+(57388, 11, '2017-11-19 13:00:06', 'NYG', NULL, 'KC', NULL, 0, 0),
+(57389, 11, '2017-11-19 16:05:07', 'LAC', NULL, 'BUF', NULL, 0, 0),
+(57390, 11, '2017-11-19 16:25:08', 'DEN', NULL, 'CIN', NULL, 0, 0),
+(57391, 11, '2017-11-19 16:25:09', 'OAK', NULL, 'NE', NULL, 0, 0),
+(57392, 11, '2017-11-19 20:30:10', 'DAL', NULL, 'PHI', NULL, 0, 0),
+(57393, 11, '2017-11-20 20:30:00', 'SEA', NULL, 'ATL', NULL, 0, 0),
+(57394, 12, '2017-11-23 00:30:00', 'DET', NULL, 'MIN', NULL, 0, 0),
+(57395, 12, '2017-11-23 16:30:01', 'DAL', NULL, 'LAC', NULL, 0, 0),
+(57396, 12, '2017-11-23 20:30:02', 'WAS', NULL, 'NYG', NULL, 0, 0),
+(57397, 12, '2017-11-26 13:00:00', 'ATL', NULL, 'TB', NULL, 0, 0),
+(57398, 12, '2017-11-26 13:00:01', 'CIN', NULL, 'CLE', NULL, 0, 0),
+(57399, 12, '2017-11-26 13:00:02', 'IND', NULL, 'TEN', NULL, 0, 0),
+(57400, 12, '2017-11-26 13:00:03', 'KC', NULL, 'BUF', NULL, 0, 0),
+(57401, 12, '2017-11-26 13:00:04', 'NE', NULL, 'MIA', NULL, 0, 0),
+(57402, 12, '2017-11-26 13:00:05', 'NYJ', NULL, 'CAR', NULL, 0, 0),
+(57403, 12, '2017-11-26 13:00:06', 'PHI', NULL, 'CHI', NULL, 0, 0),
+(57404, 12, '2017-11-26 16:05:07', 'LA', 0, 'NO', 10, 0, 0),
+(57405, 12, '2017-11-26 16:05:08', 'SF', NULL, 'SEA', NULL, 0, 0),
+(57406, 12, '2017-11-26 16:25:09', 'ARI', NULL, 'JAX', NULL, 0, 0),
+(57407, 12, '2017-11-26 16:25:10', 'OAK', NULL, 'DEN', NULL, 0, 0),
+(57408, 12, '2017-11-26 20:30:11', 'PIT', NULL, 'GB', NULL, 0, 0),
+(57409, 12, '2017-11-27 20:30:00', 'BAL', NULL, 'HOU', NULL, 0, 0),
+(57410, 13, '2017-11-30 20:25:00', 'DAL', NULL, 'WAS', NULL, 0, 0),
+(57411, 13, '2017-12-03 13:00:00', 'ATL', NULL, 'MIN', NULL, 0, 0),
+(57412, 13, '2017-12-03 13:00:01', 'BAL', NULL, 'DET', NULL, 0, 0),
+(57413, 13, '2017-12-03 13:00:02', 'BUF', NULL, 'NE', NULL, 0, 0),
+(57414, 13, '2017-12-03 13:00:03', 'CHI', NULL, 'SF', NULL, 0, 0),
+(57415, 13, '2017-12-03 13:00:04', 'GB', NULL, 'TB', NULL, 0, 0),
+(57416, 13, '2017-12-03 13:00:05', 'JAX', NULL, 'IND', NULL, 0, 0),
+(57417, 13, '2017-12-03 13:00:06', 'MIA', NULL, 'DEN', NULL, 0, 0),
+(57418, 13, '2017-12-03 13:00:07', 'NO', NULL, 'CAR', NULL, 0, 0),
+(57419, 13, '2017-12-03 13:00:08', 'NYJ', NULL, 'KC', NULL, 0, 0),
+(57420, 13, '2017-12-03 13:00:09', 'TEN', NULL, 'HOU', NULL, 0, 0),
+(57421, 13, '2017-12-03 16:05:10', 'LAC', NULL, 'CLE', NULL, 0, 0),
+(57422, 13, '2017-12-03 16:25:11', 'ARI', NULL, 'LA', NULL, 0, 0),
+(57423, 13, '2017-12-03 16:25:12', 'OAK', NULL, 'NYG', NULL, 0, 0),
+(57424, 13, '2017-12-03 20:30:13', 'SEA', NULL, 'PHI', NULL, 0, 0),
+(57425, 13, '2017-12-04 20:30:00', 'CIN', NULL, 'PIT', NULL, 0, 0),
+(57426, 14, '2017-12-07 20:25:00', 'ATL', NULL, 'NO', NULL, 0, 0),
+(57427, 14, '2017-12-10 13:00:00', 'BUF', NULL, 'IND', NULL, 0, 0),
+(57428, 14, '2017-12-10 13:00:01', 'CAR', NULL, 'MIN', NULL, 0, 0),
+(57429, 14, '2017-12-10 13:00:02', 'CIN', NULL, 'CHI', NULL, 0, 0),
+(57430, 14, '2017-12-10 13:00:03', 'CLE', NULL, 'GB', NULL, 0, 0),
+(57431, 14, '2017-12-10 13:00:04', 'HOU', NULL, 'SF', NULL, 0, 0),
+(57432, 14, '2017-12-10 13:00:05', 'JAX', NULL, 'SEA', NULL, 0, 0),
+(57433, 14, '2017-12-10 13:00:06', 'KC', NULL, 'OAK', NULL, 0, 0),
+(57434, 14, '2017-12-10 13:00:07', 'TB', NULL, 'DET', NULL, 0, 0),
+(57435, 14, '2017-12-10 16:05:08', 'ARI', NULL, 'TEN', NULL, 0, 0),
+(57436, 14, '2017-12-10 16:05:09', 'DEN', NULL, 'NYJ', NULL, 0, 0),
+(57437, 14, '2017-12-10 16:05:10', 'LAC', NULL, 'WAS', NULL, 0, 0),
+(57438, 14, '2017-12-10 16:25:11', 'LA', NULL, 'PHI', NULL, 0, 0),
+(57439, 14, '2017-12-10 16:25:12', 'NYG', NULL, 'DAL', NULL, 0, 0),
+(57440, 14, '2017-12-10 20:30:13', 'PIT', NULL, 'BAL', NULL, 0, 0),
+(57441, 14, '2017-12-11 20:30:00', 'MIA', NULL, 'NE', NULL, 0, 0),
+(57442, 15, '2017-12-14 20:25:00', 'IND', NULL, 'DEN', NULL, 0, 0),
+(57443, 15, '2017-12-16 16:30:00', 'DET', NULL, 'CHI', NULL, 0, 0),
+(57444, 15, '2017-12-16 20:25:01', 'KC', NULL, 'LAC', NULL, 0, 0),
+(57445, 15, '2017-12-17 13:00:00', 'BUF', NULL, 'MIA', NULL, 0, 0),
+(57446, 15, '2017-12-17 13:00:01', 'CAR', NULL, 'GB', NULL, 0, 0),
+(57447, 15, '2017-12-17 13:00:02', 'CLE', NULL, 'BAL', NULL, 0, 0),
+(57448, 15, '2017-12-17 13:00:03', 'JAX', NULL, 'HOU', NULL, 0, 0),
+(57449, 15, '2017-12-17 13:00:04', 'MIN', NULL, 'CIN', NULL, 0, 0),
+(57450, 15, '2017-12-17 13:00:05', 'NO', NULL, 'NYJ', NULL, 0, 0),
+(57451, 15, '2017-12-17 13:00:06', 'NYG', NULL, 'PHI', NULL, 0, 0),
+(57452, 15, '2017-12-17 13:00:07', 'WAS', NULL, 'ARI', NULL, 0, 0),
+(57453, 15, '2017-12-17 16:05:08', 'SEA', NULL, 'LA', NULL, 0, 0),
+(57454, 15, '2017-12-17 16:25:09', 'PIT', NULL, 'NE', NULL, 0, 0),
+(57455, 15, '2017-12-17 16:25:10', 'SF', NULL, 'TEN', NULL, 0, 0),
+(57456, 15, '2017-12-17 20:30:11', 'OAK', NULL, 'DAL', NULL, 0, 0),
+(57457, 15, '2017-12-18 20:30:00', 'TB', NULL, 'ATL', NULL, 0, 0),
+(57458, 16, '2017-12-23 16:30:00', 'BAL', NULL, 'IND', NULL, 0, 0),
+(57459, 16, '2017-12-23 20:30:01', 'GB', NULL, 'MIN', NULL, 0, 0),
+(57460, 16, '2017-12-24 13:00:00', 'CAR', NULL, 'TB', NULL, 0, 0),
+(57461, 16, '2017-12-24 13:00:01', 'CHI', NULL, 'CLE', NULL, 0, 0),
+(57462, 16, '2017-12-24 13:00:02', 'CIN', NULL, 'DET', NULL, 0, 0),
+(57463, 16, '2017-12-24 13:00:03', 'KC', NULL, 'MIA', NULL, 0, 0),
+(57464, 16, '2017-12-24 13:00:04', 'NE', NULL, 'BUF', NULL, 0, 0),
+(57465, 16, '2017-12-24 13:00:05', 'NO', NULL, 'ATL', NULL, 0, 0),
+(57466, 16, '2017-12-24 13:00:06', 'NYJ', NULL, 'LAC', NULL, 0, 0),
+(57467, 16, '2017-12-24 13:00:07', 'TEN', NULL, 'LA', NULL, 0, 0),
+(57468, 16, '2017-12-24 13:00:08', 'WAS', NULL, 'DEN', NULL, 0, 0),
+(57469, 16, '2017-12-24 16:05:09', 'SF', NULL, 'JAX', NULL, 0, 0),
+(57470, 16, '2017-12-24 16:25:10', 'ARI', NULL, 'NYG', NULL, 0, 0),
+(57471, 16, '2017-12-24 16:25:11', 'DAL', NULL, 'SEA', NULL, 0, 0),
+(57472, 16, '2017-12-25 16:30:00', 'HOU', NULL, 'PIT', NULL, 0, 0),
+(57473, 16, '2017-12-25 20:30:01', 'PHI', NULL, 'OAK', NULL, 0, 0),
+(57474, 17, '2017-12-31 13:00:00', 'ATL', NULL, 'CAR', NULL, 0, 0),
+(57475, 17, '2017-12-31 13:00:01', 'BAL', NULL, 'CIN', NULL, 0, 0),
+(57476, 17, '2017-12-31 13:00:02', 'DET', NULL, 'GB', NULL, 0, 0),
+(57477, 17, '2017-12-31 13:00:03', 'IND', NULL, 'HOU', NULL, 0, 0),
+(57478, 17, '2017-12-31 13:00:04', 'MIA', NULL, 'BUF', NULL, 0, 0),
+(57479, 17, '2017-12-31 13:00:05', 'MIN', NULL, 'CHI', NULL, 0, 0),
+(57480, 17, '2017-12-31 13:00:06', 'NE', NULL, 'NYJ', NULL, 0, 0),
+(57481, 17, '2017-12-31 13:00:07', 'NYG', NULL, 'WAS', NULL, 0, 0),
+(57482, 17, '2017-12-31 13:00:08', 'PHI', NULL, 'DAL', NULL, 0, 0),
+(57483, 17, '2017-12-31 13:00:09', 'PIT', NULL, 'CLE', NULL, 0, 0),
+(57484, 17, '2017-12-31 13:00:10', 'TB', NULL, 'NO', NULL, 0, 0),
+(57485, 17, '2017-12-31 13:00:11', 'TEN', NULL, 'JAX', NULL, 0, 0),
+(57486, 17, '2017-12-31 16:25:12', 'DEN', NULL, 'KC', NULL, 0, 0),
+(57487, 17, '2017-12-31 16:25:13', 'LAC', NULL, 'OAK', NULL, 0, 0),
+(57488, 17, '2017-12-31 16:25:14', 'LA', NULL, 'SF', NULL, 0, 0),
+(57489, 17, '2017-12-31 16:25:15', 'SEA', NULL, 'ARI', NULL, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nflp_teams`
+--
+
 CREATE TABLE `nflp_teams` (
   `teamID` varchar(10) NOT NULL,
   `divisionID` int(11) NOT NULL,
   `city` varchar(50) DEFAULT NULL,
   `team` varchar(50) DEFAULT NULL,
-  `displayName` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`teamID`),
-  KEY `ID` (`teamID`)
+  `displayName` varchar(50) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
--- ----------------------------
---  Records of `nflp_teams`
--- ----------------------------
-BEGIN;
-INSERT INTO `nflp_teams` VALUES ('ARI', '8', 'Arizona', 'Cardinals', null), ('ATL', '6', 'Atlanta', 'Falcons', null), ('BAL', '1', 'Baltimore', 'Ravens', null), ('BUF', '3', 'Buffalo', 'Bills', null), ('CAR', '6', 'Carolina', 'Panthers', null), ('CHI', '5', 'Chicago', 'Bears', null), ('CIN', '1', 'Cincinnati', 'Bengals', null), ('CLE', '1', 'Cleveland', 'Browns', null), ('DAL', '7', 'Dallas', 'Cowboys', null), ('DEN', '4', 'Denver', 'Broncos', null), ('DET', '5', 'Detroit', 'Lions', null), ('GB', '5', 'Green Bay', 'Packers', null), ('HOU', '2', 'Houston', 'Texans', null), ('IND', '2', 'Indianapolis', 'Colts', null), ('JAX', '2', 'Jacksonville', 'Jaguars', null), ('KC', '4', 'Kansas City', 'Chiefs', null), ('MIA', '3', 'Miami', 'Dolphins', null), ('MIN', '5', 'Minnesota', 'Vikings', null), ('NE', '3', 'New England', 'Patriots', null), ('NO', '6', 'New Orleans', 'Saints', null), ('NYG', '7', 'New York', 'Giants', 'NY Giants'), ('NYJ', '3', 'New York', 'Jets', 'NY Jets'), ('OAK', '4', 'Oakland', 'Raiders', null), ('PHI', '7', 'Philadelphia', 'Eagles', null), ('PIT', '1', 'Pittsburgh', 'Steelers', null), ('SD', '4', 'San Diego', 'Chargers', null), ('SEA', '8', 'Seattle', 'Seahawks', null), ('SF', '8', 'San Francisco', '49ers', null), ('LA', '8', 'Los Angeles', 'Rams', null), ('TB', '6', 'Tampa Bay', 'Buccaneers', null), ('TEN', '2', 'Tennessee', 'Titans', null), ('WAS', '7', 'Washington', 'Redskins', null);
-COMMIT;
+--
+-- Dumping data for table `nflp_teams`
+--
 
--- ----------------------------
---  Table structure for `nflp_users`
--- ----------------------------
-DROP TABLE IF EXISTS `nflp_users`;
+INSERT INTO `nflp_teams` (`teamID`, `divisionID`, `city`, `team`, `displayName`) VALUES
+('ARI', 8, 'Arizona', 'Cardinals', NULL),
+('ATL', 6, 'Atlanta', 'Falcons', NULL),
+('BAL', 1, 'Baltimore', 'Ravens', NULL),
+('BUF', 3, 'Buffalo', 'Bills', NULL),
+('CAR', 6, 'Carolina', 'Panthers', NULL),
+('CHI', 5, 'Chicago', 'Bears', NULL),
+('CIN', 1, 'Cincinnati', 'Bengals', NULL),
+('CLE', 1, 'Cleveland', 'Browns', NULL),
+('DAL', 7, 'Dallas', 'Cowboys', NULL),
+('DEN', 4, 'Denver', 'Broncos', NULL),
+('DET', 5, 'Detroit', 'Lions', NULL),
+('GB', 5, 'Green Bay', 'Packers', NULL),
+('HOU', 2, 'Houston', 'Texans', NULL),
+('IND', 2, 'Indianapolis', 'Colts', NULL),
+('JAX', 2, 'Jacksonville', 'Jaguars', NULL),
+('KC', 4, 'Kansas City', 'Chiefs', NULL),
+('MIA', 3, 'Miami', 'Dolphins', NULL),
+('MIN', 5, 'Minnesota', 'Vikings', NULL),
+('NE', 3, 'New England', 'Patriots', NULL),
+('NO', 6, 'New Orleans', 'Saints', NULL),
+('NYG', 7, 'New York', 'Giants', 'NY Giants'),
+('NYJ', 3, 'New York', 'Jets', 'NY Jets'),
+('OAK', 4, 'Oakland', 'Raiders', NULL),
+('PHI', 7, 'Philadelphia', 'Eagles', NULL),
+('PIT', 1, 'Pittsburgh', 'Steelers', NULL),
+('LAC', 4, 'Los Angeles', 'Chargers', NULL),
+('SEA', 8, 'Seattle', 'Seahawks', NULL),
+('SF', 8, 'San Francisco', '49ers', NULL),
+('LA', 8, 'Los Angeles', 'Rams', NULL),
+('TB', 6, 'Tampa Bay', 'Buccaneers', NULL),
+('TEN', 2, 'Tennessee', 'Titans', NULL),
+('WAS', 7, 'Washington', 'Redskins', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nflp_users`
+--
+
 CREATE TABLE `nflp_users` (
-  `userID` int(11) NOT NULL AUTO_INCREMENT,
+  `userID` int(11) NOT NULL,
   `userName` varchar(32) NOT NULL,
   `password` varchar(255) NOT NULL,
   `salt` varchar(255) NOT NULL,
@@ -154,15 +457,91 @@ CREATE TABLE `nflp_users` (
   `lastname` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `status` tinyint(1) DEFAULT '1',
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`userID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+  `is_admin` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
--- ----------------------------
---  Records of `nflp_users`
--- ----------------------------
-BEGIN;
-INSERT INTO `nflp_users` VALUES ('1', 'admin', 'jl7LZ1B7ZNUq/RnVqnFmuwRXvMkO/DD5', 'Cb8Jjj0OPy', 'Admin', 'Admin', 'admin@yourdomain.com', '1', '1');
-COMMIT;
+--
+-- Dumping data for table `nflp_users`
+--
 
-SET FOREIGN_KEY_CHECKS = 1;
+INSERT INTO `nflp_users` (`userID`, `userName`, `password`, `salt`, `firstname`, `lastname`, `email`, `status`, `is_admin`) VALUES
+(1, 'admin', 'jl7LZ1B7ZNUq/RnVqnFmuwRXvMkO/DD5', 'Cb8Jjj0OPy', 'Admin', 'Admin', 'admin@yourdomain.com', 1, 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `nflp_comments`
+--
+ALTER TABLE `nflp_comments`
+  ADD PRIMARY KEY (`commentID`);
+
+--
+-- Indexes for table `nflp_divisions`
+--
+ALTER TABLE `nflp_divisions`
+  ADD PRIMARY KEY (`divisionID`);
+
+--
+-- Indexes for table `nflp_email_templates`
+--
+ALTER TABLE `nflp_email_templates`
+  ADD PRIMARY KEY (`email_template_key`);
+
+--
+-- Indexes for table `nflp_picks`
+--
+ALTER TABLE `nflp_picks`
+  ADD PRIMARY KEY (`userID`,`gameID`);
+
+--
+-- Indexes for table `nflp_picksummary`
+--
+ALTER TABLE `nflp_picksummary`
+  ADD PRIMARY KEY (`weekNum`,`userID`);
+
+--
+-- Indexes for table `nflp_schedule`
+--
+ALTER TABLE `nflp_schedule`
+  ADD PRIMARY KEY (`gameID`),
+  ADD KEY `GameID` (`gameID`),
+  ADD KEY `HomeID` (`homeID`),
+  ADD KEY `VisitorID` (`visitorID`);
+
+--
+-- Indexes for table `nflp_teams`
+--
+ALTER TABLE `nflp_teams`
+  ADD PRIMARY KEY (`teamID`),
+  ADD KEY `ID` (`teamID`);
+
+--
+-- Indexes for table `nflp_users`
+--
+ALTER TABLE `nflp_users`
+  ADD PRIMARY KEY (`userID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `nflp_comments`
+--
+ALTER TABLE `nflp_comments`
+  MODIFY `commentID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `nflp_divisions`
+--
+ALTER TABLE `nflp_divisions`
+  MODIFY `divisionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `nflp_users`
+--
+ALTER TABLE `nflp_users`
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -1,4 +1,4 @@
-# NOTICE
+# NOTICE - An Amazing Project
 *4/16/2018 - This application is no longer maintained.  Feel free to fork and update this application as needed.*
 
 ---

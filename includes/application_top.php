@@ -22,7 +22,7 @@ foreach($_GET as $key=>$value){
 	$_GET[$key] = $purifier->purify($value);
 }
 
-$mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE) or die('error connecting to db');
+$mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT) or die('error connecting to db');
 $mysqli->set_charset('utf8');
 if ($mysqli) {
 	//check for presence of install folder
@@ -45,19 +45,21 @@ if ($mysqli) {
 	die('Database not connected.  Please check your config file for proper installation.');
 }
 
-session_start();
-require('includes/classes/login.php');
-$login = new Login;
-
-$adminUser = $login->get_user('admin');
-//print_r($adminUser);
-
-$okFiles = array('login.php', 'signup.php', 'password_reset.php');
-if (!in_array(basename($_SERVER['PHP_SELF']), $okFiles) && (empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes')) {
-	header( 'Location: login.php' );
-	exit;
-} else if (!empty($_SESSION['loggedInUser'])) {
-	$user = $login->get_user($_SESSION['loggedInUser']);
+$okFiles = array('login.php', 'signup.php', 'password_reset.php', 'buildSchedule.php');
+if (!in_array(basename($_SERVER['PHP_SELF']), $okFiles)) {
+	session_start();
+	require('includes/classes/login.php');
+	$login = new Login;
+	
+	$adminUser = $login->get_user('admin');
+	//print_r($adminUser);
+		
+	if (empty($_SESSION['logged']) || $_SESSION['logged'] !== 'yes') {
+		header( 'Location: login.php' );
+		exit;
+	} else if (!empty($_SESSION['loggedInUser'])) {
+		$user = $login->get_user($_SESSION['loggedInUser']);
+	}
 }
 
 if ($_SESSION['loggedInUser'] === 'admin' && $_SESSION['logged'] === 'yes') {

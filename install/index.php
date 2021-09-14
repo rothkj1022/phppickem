@@ -1,8 +1,7 @@
 <?php
 require('../includes/config.php');
-error_reporting(0);
 
-$mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE); // or die('error connecting to db');
+$mysqli = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT) or die('error connecting to db');
 if ($mysqli) {
 	$mysqli->set_charset('utf8');
 }

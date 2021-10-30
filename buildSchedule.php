@@ -1,7 +1,7 @@
 <?php
 require('includes/application_top.php');
 
-$weeks = 17;
+$weeks = 18;
 $schedule = array();
 
 for ($week = 1; $week <= $weeks; $week++) {
